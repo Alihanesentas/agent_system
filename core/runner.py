@@ -4,6 +4,8 @@ import requests
 import functools
 from typing import Dict, Any, Callable, Optional
 
+from core.optimizer import compress_prompt
+
 TRACKER_API_URL = "http://127.0.0.1:8000/api/log"
 
 def log_agent_activity(
@@ -73,18 +75,26 @@ def run_agent_task(
     model_name: str = "gpt-4o",
     system_prompt: Optional[str] = None,
     session_id: Optional[int] = None,
+    optimize_prompt: bool = False,
     agent_fn: Optional[Callable[[str], str]] = None
 ) -> str:
     """
     Executes an agent task, measuring timing and sending telemetry data to the backend.
+    Supports optional prompt optimization to reduce token consumption.
     """
-    full_input = f"System: {system_prompt}\nUser: {user_prompt}" if system_prompt else user_prompt
+    input_to_process = f"System: {system_prompt}\nUser: {user_prompt}" if system_prompt else user_prompt
+    
+    if optimize_prompt:
+        compressed_input, metrics = compress_prompt(input_to_process, model_name)
+        print(f"⚡ [Token Optimizer]: Prompt compressed from {metrics['original_tokens']} -> {metrics['compressed_tokens']} tokens ({metrics['savings_percent']}% savings)")
+        input_to_process = compressed_input
+
     start_time = time.time()
     status = "success"
     
     if agent_fn:
         try:
-            output = agent_fn(full_input)
+            output = agent_fn(input_to_process)
         except Exception as e:
             status = "error"
             output = f"Execution Error: {str(e)}"
@@ -97,7 +107,7 @@ def run_agent_task(
     log_agent_activity(
         agent_name=agent_name,
         model_name=model_name,
-        input_text=full_input,
+        input_text=input_to_process,
         output_text=output,
         execution_time_ms=elapsed_ms,
         session_id=session_id,
