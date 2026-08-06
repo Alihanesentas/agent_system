@@ -1,13 +1,31 @@
 # Virtual Environment
+.venv/
 venv/
+ENV/
 __pycache__/
 *.py[cod]
 
-#Database and logs
-.agent-system/logs/*.db
+# Database & Storage
+*.db
+*.sqlite3
+subagent_tracker/backend/tracker.db
+subagent_tracker/logs/
+subagent_tracker/backend/logs/
 
-#Environment Variables / API Keys
+# Frontend dependencies & build output
+node_modules/
+subagent_tracker/node_modules/
+subagent_tracker/frontend/node_modules/
+subagent_tracker/frontend/dist/
+
+# CSV Exports
+*.csv
+exports/
+
+# Environment Variables / API Keys
 .env
+.env.local
 
 # OS generated files
 .DS_Store
+Thumbs.db
