@@ -6,6 +6,7 @@ from typing import Dict, Any, Callable, Optional
 
 from core.optimizer import compress_prompt
 from core.cache import find_cached_response, store_in_cache
+from core.llm import call_llm
 
 TRACKER_API_URL = "http://127.0.0.1:8000/api/log"
 
@@ -81,8 +82,8 @@ def run_agent_task(
     agent_fn: Optional[Callable[[str], str]] = None
 ) -> str:
     """
-    Executes an agent task with Semantic Caching and Prompt Optimization.
-    Measures latency and telemetry data automatically.
+    Executes an agent task with live LLM API Integration, Semantic Caching, 
+    and Prompt Optimization. Telemetry logged automatically.
     """
     input_to_process = f"System: {system_prompt}\nUser: {user_prompt}" if system_prompt else user_prompt
 
@@ -119,8 +120,12 @@ def run_agent_task(
             status = "error"
             output = f"Execution Error: {str(e)}"
     else:
-        # Default mock simulation for demonstration / benchmarking
-        output = f"[{agent_name} Response ({model_name})]: Processed task for prompt: '{user_prompt[:40]}...'"
+        # Unified Live LLM API Dispatcher (OpenAI, Anthropic, Gemini, Ollama)
+        try:
+            output = call_llm(input_to_process, model_name=model_name, system_prompt=system_prompt)
+        except Exception as e:
+            status = "error"
+            output = f"LLM API Error: {str(e)}"
     
     elapsed_ms = round((time.time() - start_time) * 1000, 2)
     
