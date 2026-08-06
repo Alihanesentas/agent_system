@@ -84,7 +84,10 @@ Type {Colors.YELLOW}/help{Colors.RESET} for slash commands. Enabled: {Colors.CYA
 """
     print(banner)
 
+from core.service import ensure_services_running
+
 def start_interactive_shell(default_agent: str = "orchestrator", default_model: str = "gpt-4o"):
+    ensure_services_running(verbose=True)
     print_banner()
     active_agent = default_agent
     active_model = default_model

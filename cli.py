@@ -201,6 +201,9 @@ def main():
 
     args = parser.parse_args()
 
+    from core.service import ensure_services_running
+    ensure_services_running()
+
     if args.command == "stats":
         cmd_stats(args)
     elif args.command == "logs":
