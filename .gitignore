@@ -4,6 +4,7 @@ venv/
 ENV/
 __pycache__/
 *.py[cod]
+*.egg-info/
 
 # Database & Storage
 *.db
