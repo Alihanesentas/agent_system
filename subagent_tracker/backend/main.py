@@ -9,6 +9,7 @@ from datetime import datetime
 
 from subagent_tracker.backend.database import init_db, AgentLog, BenchmarkSession, db
 from subagent_tracker.backend.tracker import process_agent_activity, MODEL_PRICING
+from core.cache import get_cache_metrics
 
 app = FastAPI(
     title="Subagent Token Tracer API",
@@ -173,6 +174,11 @@ def get_stats():
         "by_agent": by_agent,
         "by_model": by_model
     }
+
+@app.get("/api/cache/stats")
+def cache_stats():
+    """Retrieves semantic cache performance metrics."""
+    return get_cache_metrics()
 
 @app.get("/api/export/csv")
 def export_csv(

@@ -5,6 +5,7 @@ import functools
 from typing import Dict, Any, Callable, Optional
 
 from core.optimizer import compress_prompt
+from core.cache import find_cached_response, store_in_cache
 
 TRACKER_API_URL = "http://127.0.0.1:8000/api/log"
 
@@ -75,18 +76,37 @@ def run_agent_task(
     model_name: str = "gpt-4o",
     system_prompt: Optional[str] = None,
     session_id: Optional[int] = None,
+    use_cache: bool = True,
     optimize_prompt: bool = False,
     agent_fn: Optional[Callable[[str], str]] = None
 ) -> str:
     """
-    Executes an agent task, measuring timing and sending telemetry data to the backend.
-    Supports optional prompt optimization to reduce token consumption.
+    Executes an agent task with Semantic Caching and Prompt Optimization.
+    Measures latency and telemetry data automatically.
     """
     input_to_process = f"System: {system_prompt}\nUser: {user_prompt}" if system_prompt else user_prompt
-    
+
+    # 1. Semantic Cache Lookup
+    if use_cache:
+        cached = find_cached_response(user_prompt, agent_name=agent_name)
+        if cached:
+            print(f"🎯 [Semantic Cache HIT!]: (Similarity: {cached['similarity']*100:.1f}%) Returning instant cached response.")
+            output_text = f"[CACHE HIT] {cached['response']}"
+            log_agent_activity(
+                agent_name=agent_name,
+                model_name=cached['model_name'],
+                input_text=f"[CACHE HIT] {input_to_process}",
+                output_text=output_text,
+                execution_time_ms=0.5,
+                session_id=session_id,
+                status="cache_hit"
+            )
+            return cached['response']
+
+    # 2. Optional Prompt Optimization
     if optimize_prompt:
         compressed_input, metrics = compress_prompt(input_to_process, model_name)
-        print(f"⚡ [Token Optimizer]: Prompt compressed from {metrics['original_tokens']} -> {metrics['compressed_tokens']} tokens ({metrics['savings_percent']}% savings)")
+        print(f"⚡ [Token Optimizer]: Compressed prompt from {metrics['original_tokens']} -> {metrics['compressed_tokens']} tokens ({metrics['savings_percent']}% savings)")
         input_to_process = compressed_input
 
     start_time = time.time()
@@ -104,6 +124,10 @@ def run_agent_task(
     
     elapsed_ms = round((time.time() - start_time) * 1000, 2)
     
+    # Store in Semantic Cache for future identical/similar calls
+    if use_cache and status == "success":
+        store_in_cache(user_prompt, output, agent_name=agent_name, model_name=model_name)
+
     log_agent_activity(
         agent_name=agent_name,
         model_name=model_name,
