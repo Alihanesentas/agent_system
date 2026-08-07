@@ -53,6 +53,11 @@ from core.thermal import analyze_thermal_dissipation
 from core.battery import calculate_battery_lifespan
 from core.embedded_test_gen import generate_unity_c_test
 from core.bom_optimizer import optimize_bom_cost
+from core.rf_antenna import calculate_rf_antenna_dimensions
+from core.harness import calculate_wire_harness
+from core.ota_builder import generate_ota_update_manifest
+from core.gantt_planner import generate_project_gantt_chart
+from core.emc_compliance import audit_emc_fcc_compliance
 
 class Colors:
     CYAN = '\033[96m'
@@ -167,6 +172,12 @@ def print_help():
   {Colors.GREEN}/battery <mah> <active_ma>{Colors.RESET}   -> Battery lifespan & solar panel wattage calculator
   {Colors.GREEN}/unittest-gen <mod> <funcs>{Colors.RESET}  -> Generate Unity C embedded unit test runner code
   {Colors.GREEN}/bom-opt{Colors.RESET}                     -> Analyze BOM cost drivers & production quantity tiers
+{Colors.BOLD}{Colors.YELLOW}  ── Next-Gen RF, Harness, OTA & EMC Tools ──{Colors.RESET}
+  {Colors.GREEN}/rf [freq_mhz]{Colors.RESET}              -> Calculate PCB antenna dimensions & 50Ω matching
+  {Colors.GREEN}/harness <amps> <length>{Colors.RESET}     -> Calculate wire AWG gauge & voltage drop
+  {Colors.GREEN}/ota [version]{Colors.RESET}               -> Generate OTA firmware update manifest & SHA-256
+  {Colors.GREEN}/gantt{Colors.RESET}                       -> Generate multidisciplinary Mermaid Gantt timeline
+  {Colors.GREEN}/emc{Colors.RESET}                        -> Audit PCB for FCC Class B & CE EMC compliance
 {Colors.BOLD}{Colors.YELLOW}  ── System ──{Colors.RESET}
   {Colors.GREEN}/agent <name>{Colors.RESET}               -> Switch sub-agent (orchestrator, planner, software, electronics, reviewer)
   {Colors.GREEN}/model <name>{Colors.RESET}               -> Switch model (gpt-4o, gpt-4o-mini, claude-3-5-sonnet, gemini-1.5-flash)
@@ -670,6 +681,41 @@ def start_interactive_shell(default_agent: str = "orchestrator", default_model: 
                     print(f"  Total Board BOM Cost: ${res['total_bom_unit_cost_usd']}")
                     print(f"  Cost Drivers:         {res['cost_drivers']}")
                     print(f"  Recommendation:       {res['recommendation']}\n")
+                # --- Next-Gen RF, Harness, OTA & EMC Tools ---
+                elif cmd == "/rf":
+                    freq = float(parts[1]) if len(parts) > 1 else 2400.0
+                    res = calculate_rf_antenna_dimensions(freq)
+                    print(f"{Colors.CYAN}--- RF ANTENNA & IMPEDANCE MATCHING ---{Colors.RESET}")
+                    print(f"  Frequency:      {freq} MHz")
+                    print(f"  Antenna Length: {res['quarter_wave_antenna_length_mm']} mm (Quarter-Wave Monopole)")
+                    print(f"  Matching Net:   {res['recommended_matching_network']}\n")
+                elif cmd == "/harness":
+                    amps = float(parts[1]) if len(parts) > 1 else 5.0
+                    length = float(parts[2]) if len(parts) > 2 else 2.0
+                    res = calculate_wire_harness(amps, length)
+                    print(f"{Colors.CYAN}--- WIRE HARNESS & AWG SIZING ---{Colors.RESET}")
+                    print(f"  Load Current: {amps} A  |  Cable Length: {length} m")
+                    print(f"  Wire Gauge:   {res['recommended_wire_gauge']} ({res['compliance_status']})")
+                    print(f"  Voltage Drop: {res['voltage_drop_volts']} V ({res['voltage_drop_percentage']}%)\n")
+                elif cmd == "/ota":
+                    ver = parts[1] if len(parts) > 1 else "v1.2.0"
+                    res = generate_ota_update_manifest(version_tag=ver)
+                    print(f"{Colors.CYAN}--- FIRMWARE OTA MANIFEST ---{Colors.RESET}")
+                    print(f"  Version:        {res['firmware_version']}")
+                    print(f"  SHA-256 Hash:   {res['sha256_checksum']}")
+                    print(f"  Download URL:   {res['download_url']}\n")
+                elif cmd == "/gantt":
+                    res = generate_project_gantt_chart()
+                    print(f"{Colors.CYAN}--- MULTIDISCIPLINARY PROJECT GANTT TIMELINE ---{Colors.RESET}")
+                    print(f"{Colors.GREEN}{res['gantt_chart_mermaid']}{Colors.RESET}")
+                    print(f"  Total Days: {res['total_estimated_days']}  |  Critical Path: {res['critical_path']}\n")
+                elif cmd == "/emc":
+                    res = audit_emc_fcc_compliance()
+                    print(f"{Colors.CYAN}--- EMC / FCC COMPLIANCE PRE-CHECK ---{Colors.RESET}")
+                    print(f"  Status: {res['emc_compliance_result']}")
+                    for item in res['audit_checklist']:
+                        print(f"  {item}")
+                    print(f"  Recommendation: {res['recommendation']}\n")
                 # --- Component & Datasheet Tools ---
                 elif cmd == "/datasheet":
                     if len(parts) > 1:
