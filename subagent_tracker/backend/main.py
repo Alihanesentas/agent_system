@@ -279,13 +279,25 @@ class TaskPayload(BaseModel):
     prompt: str
     agent_name: Optional[str] = "orchestrator"
     model_name: Optional[str] = "gpt-4o"
+    use_mcp: Optional[bool] = False
 
 @app.post("/api/v1/agent/run")
 def api_run_agent(payload: TaskPayload):
     """Triggers an agent task remotely via REST API."""
-    from core.runner import run_agent_task
-    output = run_agent_task(agent_name=payload.agent_name or "orchestrator", user_prompt=payload.prompt, model_name=payload.model_name or "gpt-4o")
-    return {"status": "success", "agent": payload.agent_name, "model": payload.model_name, "output": output}
+    from core.mcp_client import dispatch_task
+    res = dispatch_task(
+        user_prompt=payload.prompt,
+        agent_name=payload.agent_name or "orchestrator",
+        model_name=payload.model_name or "gpt-4o",
+        force_mcp=payload.use_mcp
+    )
+    return {
+        "status": "success",
+        "agent": payload.agent_name,
+        "model": payload.model_name,
+        "execution_mode": res.get("execution_mode"),
+        "output": res.get("output")
+    }
 
 @app.post("/api/v1/consensus")
 def api_consensus(payload: TaskPayload):

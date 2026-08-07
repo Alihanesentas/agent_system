@@ -162,6 +162,20 @@ def render_docs_ui(category: Optional[str] = None):
         "test": (
             "🧪 Agent Unit Testing & Quality Assurance",
             "• `/test`: Run automated test suite asserting keyword presence, valid JSON, and syntax error checks."
+        ),
+        "sota": (
+            "🚀 SOTA Donanım & Üretim Araçları",
+            "• `/heal <file.c>`: Autonomous self-healing compilation error recovery loop.\n"
+            "• `/spice <r> <c>`: Simulate RC circuit frequency response & step voltage.\n"
+            "• `/pinout <sda> <scl> <out>`: Check GPIO pin conflicts & ESP32 strapping hazards.\n"
+            "• `/flash <file.bin>`: Flash firmware binary to MCU via USB/TTY (esptool/st-flash).\n"
+            "• `/serial [port]`: Read live UART serial console logs.\n"
+            "• `/gerber <folder>`: Analyze PCB Gerber layers & 3D enclosure bounds."
+        ),
+        "mcp": (
+            "🔌 Model Context Protocol (MCP) Mode & Server",
+            "• `/mcp-mode <on|off>`: Toggle between Direct Native Execution (fastest, 0% token overhead) and MCP Stdio Protocol.\n"
+            "• `/mcp`: Display MCP Server configuration guide for Claude Desktop & Cursor."
         )
     }
 

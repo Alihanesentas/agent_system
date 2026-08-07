@@ -4,7 +4,7 @@ exports.deactivate = exports.activate = void 0;
 const vscode = require("vscode");
 const http = require("http");
 function activate(context) {
-    console.log('🤖 Agent System VSCode Extension is now active!');
+    console.log('🤖 Agent System VSCode Extension v1.1.0 active!');
     // Register Webview Sidebar View Provider
     const provider = new AgentSidebarWebviewProvider(context.extensionUri);
     context.subscriptions.push(vscode.window.registerWebviewViewProvider(AgentSidebarWebviewProvider.viewType, provider));
@@ -62,7 +62,49 @@ function activate(context) {
             vscode.window.showErrorMessage(`Pinout check failed: ${err.message}`);
         }
     });
-    // Command 4: Show Live Stats
+    // Command 4: Toggle MCP Mode
+    let disposableToggleMcp = vscode.commands.registerCommand('agentSystem.toggleMcpMode', async () => {
+        const config = vscode.workspace.getConfiguration('agentSystem');
+        const currentMcp = config.get('useMcpMode') || false;
+        const newMcp = !currentMcp;
+        await config.update('useMcpMode', newMcp, vscode.ConfigurationTarget.Global);
+        const statusMsg = newMcp ? '🔌 MCP JSON-RPC Mode ENABLED' : '⚡ Direct Native Mode ENABLED (Zero Overhead)';
+        vscode.window.showInformationMessage(`Agent System: ${statusMsg}`);
+    });
+    // Command 5: Open Help & Documentation
+    let disposableOpenDocs = vscode.commands.registerCommand('agentSystem.openDocs', () => {
+        const panel = vscode.window.createWebviewPanel('agentDocs', '📖 Agent System Interactive Documentation', vscode.ViewColumn.One, {});
+        panel.webview.html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Agent System Manual</title>
+    <style>
+        body { font-family: var(--vscode-font-family); padding: 20px; color: var(--vscode-foreground); line-height: 1.6; }
+        h1, h2, h3 { color: var(--vscode-symbolIcon-keywordForeground); }
+        code { background: var(--vscode-textCodeBlock-background); padding: 2px 6px; border-radius: 4px; }
+        .card { background: var(--vscode-sideBar-background); border: 1px solid var(--vscode-panel-border); padding: 16px; margin-bottom: 16px; border-radius: 8px; }
+    </style>
+</head>
+<body>
+    <h1>🤖 Autonomous Agent OS — VSCode Manual</h1>
+    <div class="card">
+        <h2>⚡ Core Slash Commands (30+ Tools)</h2>
+        <ul>
+            <li><code>Cmd+Alt+A</code>: Run agent task on highlighted code.</li>
+            <li><code>Agent System: Multi-Model Consensus</code>: Query OpenAI, Claude & Gemini.</li>
+            <li><code>Agent System: Audit Pinout Conflicts</code>: Check GPIO collisions.</li>
+            <li><code>Agent System: Toggle MCP Mode</code>: Switch between Native (0% token overhead) and MCP Stdio.</li>
+        </ul>
+    </div>
+    <div class="card">
+        <h2>🔌 MCP Protocol & Model Execution</h2>
+        <p>Your local API Gateway runs at <code>http://127.0.0.1:8000</code>. MCP Mode routes requests via JSON-RPC Stdio while Native Mode uses high-speed direct execution.</p>
+    </div>
+</body>
+</html>`;
+    });
+    // Command 6: Show Live Stats
     let disposableStats = vscode.commands.registerCommand('agentSystem.showStats', async () => {
         const config = vscode.workspace.getConfiguration('agentSystem');
         const apiUrl = config.get('apiUrl') || 'http://127.0.0.1:8000';
@@ -74,7 +116,7 @@ function activate(context) {
             vscode.window.showErrorMessage(`Failed to fetch stats: ${err.message}`);
         }
     });
-    context.subscriptions.push(disposableRunTask, disposableConsensus, disposablePinout, disposableStats);
+    context.subscriptions.push(disposableRunTask, disposableConsensus, disposablePinout, disposableToggleMcp, disposableOpenDocs, disposableStats);
 }
 exports.activate = activate;
 function deactivate() { }
@@ -100,10 +142,18 @@ class AgentSidebarWebviewProvider {
                 case 'runConsensus':
                     runConsensusApi(data.prompt);
                     break;
+                case 'toggleMcp':
+                    vscode.commands.executeCommand('agentSystem.toggleMcpMode');
+                    break;
+                case 'openHelp':
+                    vscode.commands.executeCommand('agentSystem.openDocs');
+                    break;
             }
         });
     }
     _getHtmlForWebview(webview) {
+        const config = vscode.workspace.getConfiguration('agentSystem');
+        const isMcp = config.get('useMcpMode') || false;
         return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -116,6 +166,7 @@ class AgentSidebarWebviewProvider {
         h3 { margin-top: 0; color: var(--vscode-symbolIcon-keywordForeground); }
         button { background: var(--vscode-button-background); color: var(--vscode-button-foreground); border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; width: 100%; margin-top: 6px; font-weight: bold; }
         button:hover { background: var(--vscode-button-hoverBackground); }
+        button.secondary { background: var(--vscode-button-secondaryBackground); color: var(--vscode-button-secondaryForeground); }
         textarea { width: 100%; height: 60px; background: var(--vscode-input-background); color: var(--vscode-input-foreground); border: 1px solid var(--vscode-input-border); border-radius: 4px; padding: 6px; box-sizing: border-box; }
         .badge { display: inline-block; padding: 2px 6px; background: var(--vscode-badge-background); color: var(--vscode-badge-foreground); border-radius: 4px; font-size: 11px; font-weight: bold; }
     </style>
@@ -124,19 +175,20 @@ class AgentSidebarWebviewProvider {
     <div class="card">
         <h3>🤖 Autonomous Agent OS</h3>
         <p>Active Agent: <span class="badge">ORCHESTRATOR</span></p>
-        <p>Model: <span class="badge">OpenAI gpt-4o</span></p>
-        <p>Backend: <span class="badge" style="background: green; color: white;">Port 8000 (Active)</span></p>
+        <p>Execution Mode: <span class="badge" style="background: ${isMcp ? 'purple' : 'green'}; color: white;">${isMcp ? 'MCP Stdio Protocol' : 'Direct Native (Fast)'}</span></p>
+        <button class="secondary" onclick="toggleMcp()">🔌 Toggle MCP Mode (${isMcp ? 'ON' : 'OFF'})</button>
     </div>
 
     <div class="card">
-        <h3>⚡ Quick Prompt Execution</h3>
+        <h3>⚡ Quick Task Execution</h3>
         <textarea id="promptInput" placeholder="Enter instructions for Agent System..."></textarea>
         <button onclick="runTask()">🚀 Run Task</button>
     </div>
 
     <div class="card">
-        <h3>🗳️ Consensus Voting</h3>
+        <h3>🗳️ Consensus & Docs</h3>
         <button onclick="runConsensus()">Run Multi-Model Consensus</button>
+        <button class="secondary" onclick="openHelp()">📖 Open Interactive Manual</button>
     </div>
 
     <script>
@@ -150,6 +202,12 @@ class AgentSidebarWebviewProvider {
         function runConsensus() {
             const prompt = document.getElementById('promptInput').value || 'Compare ESP32 vs STM32';
             vscode.postMessage({ type: 'runConsensus', prompt: prompt });
+        }
+        function toggleMcp() {
+            vscode.postMessage({ type: 'toggleMcp' });
+        }
+        function openHelp() {
+            vscode.postMessage({ type: 'openHelp' });
         }
     </script>
 </body>
@@ -165,6 +223,7 @@ async function runTaskApi(promptInput, codeContext) {
     const apiUrl = config.get('apiUrl') || 'http://127.0.0.1:8000';
     const agentName = config.get('defaultAgent') || 'orchestrator';
     const modelName = config.get('defaultModel') || 'gpt-4o';
+    const useMcp = config.get('useMcpMode') || false;
     vscode.window.withProgress({
         location: vscode.ProgressLocation.Notification,
         title: `🤖 Agent System [${agentName.toUpperCase()}] processing task...`,
@@ -175,10 +234,11 @@ async function runTaskApi(promptInput, codeContext) {
             const result = await postJson(`${apiUrl}/api/v1/agent/run`, {
                 prompt: fullPrompt,
                 agent_name: agentName,
-                model_name: modelName
+                model_name: modelName,
+                use_mcp: useMcp
             });
             const outputChannel = vscode.window.createOutputChannel('Agent System Output');
-            outputChannel.appendLine(`=== AGENT RESPONSE [${agentName.toUpperCase()}] ===`);
+            outputChannel.appendLine(`=== AGENT RESPONSE [${agentName.toUpperCase()}] (Mode: ${result.execution_mode || 'Native'}) ===`);
             outputChannel.appendLine(result.output);
             outputChannel.show();
             vscode.window.showInformationMessage('✅ Agent task completed successfully!');

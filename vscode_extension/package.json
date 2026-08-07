@@ -1,8 +1,8 @@
 {
   "name": "agent-system-vscode",
   "displayName": "Autonomous Agent System for VSCode & Cursor",
-  "description": "Integrated SOTA Multi-Agent Assistant with Real-time Token Tracking, Hardware Pinout Audit, and Consensus Voting.",
-  "version": "1.0.0",
+  "description": "Integrated SOTA Multi-Agent Assistant with Real-time Token Tracking, Hardware Pinout Audit, Consensus Voting, and MCP Mode Switcher.",
+  "version": "1.1.0",
   "publisher": "Alihanesentas",
   "engines": {
     "vscode": "^1.75.0"
@@ -17,7 +17,9 @@
     "onCommand:agentSystem.runTask",
     "onCommand:agentSystem.runConsensus",
     "onCommand:agentSystem.checkPinout",
-    "onCommand:agentSystem.showStats"
+    "onCommand:agentSystem.showStats",
+    "onCommand:agentSystem.openDocs",
+    "onCommand:agentSystem.toggleMcpMode"
   ],
   "main": "./out/extension.js",
   "contributes": {
@@ -59,6 +61,16 @@
         "command": "agentSystem.showStats",
         "title": "Agent System: Show Live Token & Cost Stats",
         "category": "Agent System"
+      },
+      {
+        "command": "agentSystem.openDocs",
+        "title": "Agent System: Open Documentation & Help Manual",
+        "category": "Agent System"
+      },
+      {
+        "command": "agentSystem.toggleMcpMode",
+        "title": "Agent System: Toggle MCP Mode (ON/OFF)",
+        "category": "Agent System"
       }
     ],
     "keybindings": [
@@ -75,6 +87,11 @@
           "type": "string",
           "default": "http://127.0.0.1:8000",
           "description": "FastAPI Agent System Backend API Base URL"
+        },
+        "agentSystem.useMcpMode": {
+          "type": "boolean",
+          "default": false,
+          "description": "Toggle between Direct Native Execution (false) and MCP JSON-RPC Stdio Protocol (true)"
         },
         "agentSystem.defaultAgent": {
           "type": "string",
