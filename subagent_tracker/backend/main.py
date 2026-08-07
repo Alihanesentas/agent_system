@@ -30,6 +30,30 @@ app.add_middleware(
 def startup_event():
     init_db()
 
+@app.get("/api/v1/tree/simulation")
+def get_agent_tree_simulation():
+    """Returns tree topology and active node status for web dashboard rendering."""
+    return {
+        "status": "success",
+        "topology": {
+            "name": "Orchestrator",
+            "model": "Claude 3.5 Sonnet / GPT-4o",
+            "layer": "Layer 2",
+            "children": [
+                {
+                    "name": "Hardware Agent",
+                    "model": "GPT-4o-mini",
+                    "layer": "Layer 3",
+                    "children": [
+                        {"name": "Symbolic Python Engine", "model": "Local 0-Token", "layer": "Layer 4"}
+                    ]
+                },
+                {"name": "Software Agent", "model": "Gemini 1.5 Flash", "layer": "Layer 3"},
+                {"name": "Reviewer Agent", "model": "Claude 3.5 Sonnet", "layer": "Layer 3"}
+            ]
+        }
+    }
+
 # --- Schemas ---
 
 class LogPayload(BaseModel):

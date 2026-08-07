@@ -60,6 +60,7 @@ from core.gantt_planner import generate_project_gantt_chart
 from core.emc_compliance import audit_emc_fcc_compliance
 from core.autonomous_agent import execute_autonomous_goal
 from core.layered_architecture import run_layered_pipeline
+from core.agent_tree_sim import run_agent_tree_simulation
 
 class Colors:
     CYAN = '\033[96m'
@@ -180,9 +181,10 @@ def print_help():
   {Colors.GREEN}/ota [version]{Colors.RESET}               -> Generate OTA firmware update manifest & SHA-256
   {Colors.GREEN}/gantt{Colors.RESET}                       -> Generate multidisciplinary Mermaid Gantt timeline
   {Colors.GREEN}/emc{Colors.RESET}                        -> Audit PCB for FCC Class B & CE EMC compliance
-{Colors.BOLD}{Colors.YELLOW}  ── True Autonomy Goal Loop ──{Colors.RESET}
+{Colors.BOLD}{Colors.YELLOW}  ── True Autonomy Goal Loop & Tree Simulation ──{Colors.RESET}
   {Colors.GREEN}/auto <goal_description>{Colors.RESET}     -> Fully autonomous goal execution (Auto-Plan->HW->SW->Thermal->CAD->Build)
   {Colors.GREEN}/layers <goal_description>{Colors.RESET}   -> Execute task via explicit 5-Layer Architecture Engine
+  {Colors.GREEN}/tree <goal_description>{Colors.RESET}     -> Live visual Agent Tree Simulation & real-time model runtime monitor
 {Colors.BOLD}{Colors.YELLOW}  ── System ──{Colors.RESET}
   {Colors.GREEN}/agent <name>{Colors.RESET}               -> Switch sub-agent (orchestrator, planner, software, electronics, reviewer)
   {Colors.GREEN}/model <name>{Colors.RESET}               -> Switch model (gpt-4o, gpt-4o-mini, claude-3-5-sonnet, gemini-1.5-flash)
@@ -745,6 +747,12 @@ def start_interactive_shell(default_agent: str = "orchestrator", default_model: 
                         print(f"  Layer 4 Symbolic Checks: {res['layer_4_symbolic']}\n")
                     else:
                         print("Usage: /layers <goal_description>")
+                elif cmd == "/tree":
+                    if len(parts) > 1:
+                        t_txt = " ".join(parts[1:])
+                        run_agent_tree_simulation(t_txt)
+                    else:
+                        print("Usage: /tree <goal_description>")
                 # --- Component & Datasheet Tools ---
                 elif cmd == "/datasheet":
                     if len(parts) > 1:
