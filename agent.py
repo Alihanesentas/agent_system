@@ -45,6 +45,10 @@ from core.mcp_client import MCPExecutionMode, dispatch_task
 from core.edge_ai import generate_esp_dl_model_wrapper, estimate_edge_ai_memory
 from core.profile import load_user_profile, build_personalized_system_prompt
 from core.project_gen import create_multidisciplinary_project
+from core.finetune import estimate_lora_vram, export_finetuning_dataset
+from core.pcb_drc import calculate_trace_impedance, audit_pcb_drc_rules
+from core.cart_builder import build_distributor_cart_payload
+from core.arena import run_agent_arena
 
 class Colors:
     CYAN = '\033[96m'
@@ -149,6 +153,11 @@ def print_help():
   {Colors.GREEN}/edge-ai <params>{Colors.RESET}           -> Estimate TinyML peak SRAM/Flash & MCU suitability
   {Colors.GREEN}/profile{Colors.RESET}                     -> View personalized engineer profile preferences
   {Colors.GREEN}/create-project <name>{Colors.RESET}     -> Generate unified project workspace (firmware+hw+cad+ai)
+{Colors.BOLD}{Colors.YELLOW}  ── Advanced Engineering Roadmap Tools ──{Colors.RESET}
+  {Colors.GREEN}/finetune{Colors.RESET}                    -> Estimate LoRA VRAM & export JSONL fine-tuning dataset
+  {Colors.GREEN}/drc <width_mm>{Colors.RESET}              -> Audit PCB manufacturing rules & calculate 50Ω impedance
+  {Colors.GREEN}/cart [bom.csv]{Colors.RESET}              -> Generate Mouser/LCSC 1-click shopping cart payload
+  {Colors.GREEN}/arena <prompt>{Colors.RESET}              -> Run head-to-head model benchmark arena (gpt-4o vs mini)
 {Colors.BOLD}{Colors.YELLOW}  ── System ──{Colors.RESET}
   {Colors.GREEN}/agent <name>{Colors.RESET}               -> Switch sub-agent (orchestrator, planner, software, electronics, reviewer)
   {Colors.GREEN}/model <name>{Colors.RESET}               -> Switch model (gpt-4o, gpt-4o-mini, claude-3-5-sonnet, gemini-1.5-flash)
@@ -589,6 +598,35 @@ def start_interactive_shell(default_agent: str = "orchestrator", default_model: 
                         print(f"  Structure: firmware/, hardware/, mechanical/, edge_ai/, docs/\n")
                     else:
                         print("Usage: /create-project <project_name>")
+                # --- Advanced Engineering Roadmap Tools ---
+                elif cmd == "/finetune":
+                    res = estimate_lora_vram(8.0)
+                    ds = export_finetuning_dataset()
+                    print(f"{Colors.CYAN}--- LORA FINE-TUNING & DATASET ESTIMATOR ---{Colors.RESET}")
+                    print(f"  Model Size:  {res['model_size']} ({res['quantization']})")
+                    print(f"  VRAM Needed: {res['estimated_vram_gb']} GB")
+                    print(f"  Dataset:     Exported to {ds['dataset_file']} ({ds['sample_entries']} entries)\n")
+                elif cmd == "/drc":
+                    w_val = float(parts[1]) if len(parts) > 1 else 0.3
+                    z_res = calculate_trace_impedance(w_val)
+                    drc_res = audit_pcb_drc_rules(min_trace_width_mm=w_val)
+                    print(f"{Colors.CYAN}--- PCB DRC & IMPEDANCE AUDIT ---{Colors.RESET}")
+                    print(f"  Trace Width: {w_val} mm  => Calculated Z0: {z_res['calculated_z0_ohms']} Ω ({z_res['match_status']})")
+                    print(f"  Factory Status: {drc_res['factory_compatibility']}\n")
+                elif cmd == "/cart":
+                    bom_file = parts[1] if len(parts) > 1 else "bom.csv"
+                    res = build_distributor_cart_payload(bom_file)
+                    print(f"{Colors.CYAN}--- MOUSER / LCSC AUTOMATED SHOPPING CART ---{Colors.RESET}")
+                    print(f"  Line Items: {res['total_line_items']}")
+                    print(f"  Mouser Quick Paste Format:\n{res['mouser_cart_import_format']}\n")
+                elif cmd == "/arena":
+                    if len(parts) > 1:
+                        p_txt = " ".join(parts[1:])
+                        print(f"{Colors.CYAN}🥊 Running Sub-Agent Benchmark Arena (gpt-4o vs gpt-4o-mini)...{Colors.RESET}")
+                        res = run_agent_arena(p_txt)
+                        print(f"{Colors.GREEN}🏆 Speed Winner: {res['speed_winner']} (Difference: {res['latency_difference_ms']}ms){Colors.RESET}\n")
+                    else:
+                        print("Usage: /arena <prompt_text>")
                 # --- Component & Datasheet Tools ---
                 elif cmd == "/datasheet":
                     if len(parts) > 1:
