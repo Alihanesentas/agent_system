@@ -2,7 +2,7 @@
   "name": "agent-system-vscode",
   "displayName": "Autonomous Agent System for VSCode & Cursor",
   "description": "Integrated SOTA Multi-Agent Assistant with Real-time Token Tracking, Hardware Pinout Audit, Consensus Voting, and MCP Mode Switcher.",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "publisher": "Alihanesentas",
   "engines": {
     "vscode": "^1.75.0"
@@ -19,7 +19,10 @@
     "onCommand:agentSystem.checkPinout",
     "onCommand:agentSystem.showStats",
     "onCommand:agentSystem.openDocs",
-    "onCommand:agentSystem.toggleMcpMode"
+    "onCommand:agentSystem.toggleMcpMode",
+    "onCommand:agentSystem.openTreeSimulation",
+    "onCommand:agentSystem.runAutonomousGoal",
+    "onCommand:agentSystem.runLayeredPipeline"
   ],
   "main": "./out/extension.js",
   "contributes": {
@@ -70,6 +73,21 @@
       {
         "command": "agentSystem.toggleMcpMode",
         "title": "Agent System: Toggle MCP Mode (ON/OFF)",
+        "category": "Agent System"
+      },
+      {
+        "command": "agentSystem.openTreeSimulation",
+        "title": "Agent System: Open Visual Agent Tree Simulation",
+        "category": "Agent System"
+      },
+      {
+        "command": "agentSystem.runAutonomousGoal",
+        "title": "Agent System: Run Autonomous Goal (/auto)",
+        "category": "Agent System"
+      },
+      {
+        "command": "agentSystem.runLayeredPipeline",
+        "title": "Agent System: Execute 5-Layer Architecture Pipeline",
         "category": "Agent System"
       }
     ],

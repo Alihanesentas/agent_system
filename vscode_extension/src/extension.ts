@@ -134,7 +134,88 @@ export function activate(context: vscode.ExtensionContext) {
         }
     });
 
-    context.subscriptions.push(disposableRunTask, disposableConsensus, disposablePinout, disposableToggleMcp, disposableOpenDocs, disposableStats);
+    // Command 6: Open Agent Tree Simulation Panel
+    let disposableTreeSim = vscode.commands.registerCommand('agentSystem.openTreeSimulation', () => {
+        const panel = vscode.window.createWebviewPanel(
+            'agentTreeSim',
+            '🌲 Agent Tree Topology & Real-Time Monitor',
+            vscode.ViewColumn.One,
+            {}
+        );
+
+        panel.webview.html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Agent Tree Topology</title>
+    <style>
+        body { font-family: var(--vscode-font-family); padding: 20px; color: var(--vscode-foreground); background: var(--vscode-editor-background); line-height: 1.6; }
+        h1, h2 { color: #4ec9b0; }
+        .node { background: var(--vscode-sideBar-background); border: 1px solid #007acc; padding: 12px; margin: 8px 0 8px 20px; border-radius: 6px; }
+        .badge { background: #007acc; color: white; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: bold; }
+        .model-badge { background: #ce9178; color: white; padding: 2px 8px; border-radius: 4px; font-size: 11px; margin-left: 6px; }
+    </style>
+</head>
+<body>
+    <h1>🌲 5-Layer Hierarchical Agent Tree Blueprint</h1>
+    <div class="node" style="margin-left: 0;">
+        <span class="badge">LAYER 2</span> <strong>Orchestrator</strong> <span class="model-badge">Claude 3.5 Sonnet / GPT-4o</span>
+        <p style="margin: 4px 0 0 0; color: #888;">System Strategy Decomposition & Sub-Task Delegation</p>
+
+        <div class="node">
+            <span class="badge">LAYER 3</span> <strong>Hardware Agent</strong> <span class="model-badge">GPT-4o-mini</span>
+            <p style="margin: 4px 0 0 0; color: #888;">KiCad Schematic Parsing & Pinout Hazard Audit</p>
+            <div class="node">
+                <span class="badge">LAYER 4</span> <strong>Symbolic Python Engine</strong> <span class="model-badge">Local 0-Token</span>
+                <p style="margin: 4px 0 0 0; color: #888;">SPICE / DRC / Thermal / RF / Harness Calculations</p>
+            </div>
+        </div>
+        <div class="node">
+            <span class="badge">LAYER 3</span> <strong>Software Agent</strong> <span class="model-badge">Gemini 1.5 Flash</span>
+            <p style="margin: 4px 0 0 0; color: #888;">C++ PlatformIO Firmware Synthesis & Self-Healing Loop</p>
+        </div>
+        <div class="node">
+            <span class="badge">LAYER 3</span> <strong>Reviewer Agent</strong> <span class="model-badge">Claude 3.5 Sonnet</span>
+            <p style="margin: 4px 0 0 0; color: #888;">Syntax Validation & EMC/FCC Regulatory Pre-Check</p>
+        </div>
+    </div>
+</body>
+</html>`;
+    });
+
+    // Command 7: Run Autonomous Goal (/auto)
+    let disposableAutoGoal = vscode.commands.registerCommand('agentSystem.runAutonomousGoal', async () => {
+        const goal = await vscode.window.showInputBox({
+            prompt: 'Enter High-Level Goal for Autonomous Execution Loop (/auto)',
+            placeHolder: 'e.g. Build an ESP32-S3 IoT Weather Station with 3D Enclosure'
+        });
+
+        if (!goal) { return; }
+        runTaskApi(`/auto ${goal}`, '');
+    });
+
+    // Command 8: Run Layered Pipeline (/layers)
+    let disposableLayers = vscode.commands.registerCommand('agentSystem.runLayeredPipeline', async () => {
+        const goal = await vscode.window.showInputBox({
+            prompt: 'Enter Goal for 5-Layer Architecture Pipeline (/layers)',
+            placeHolder: 'e.g. Design a LiPo Battery Charger with ESP32-S3'
+        });
+
+        if (!goal) { return; }
+        runTaskApi(`/layers ${goal}`, '');
+    });
+
+    context.subscriptions.push(
+        disposableRunTask,
+        disposableConsensus,
+        disposablePinout,
+        disposableToggleMcp,
+        disposableOpenDocs,
+        disposableStats,
+        disposableTreeSim,
+        disposableAutoGoal,
+        disposableLayers
+    );
 }
 
 export function deactivate() {}
