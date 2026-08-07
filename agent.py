@@ -64,6 +64,7 @@ from core.engine.agent_tree_sim import run_agent_tree_simulation, print_static_t
 from core.infra.worker_queue import global_worker_queue
 from core.infra.rate_limiter import global_rate_limiter
 from core.infra.checkpoint import create_system_checkpoint, restore_system_checkpoint
+from core.infra.service import ensure_services_running
 from core.software.hil_testing import run_hil_hardware_test
 from core.infra.voice_agent import process_voice_command
 from core.hardware.autorouter import auto_route_pcb_netlist
@@ -216,8 +217,6 @@ def print_help():
 
 def print_banner():
     print_cli_banner()
-
-    from core.infra.service import ensure_services_running
 
 def start_interactive_shell(default_agent: str = "orchestrator", default_model: str = "gpt-4o"):
     ensure_services_running(verbose=True)
