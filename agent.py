@@ -176,165 +176,138 @@ class AgentFileSystemTools:
             return [f"Error listing directory: {str(e)}"]
 
 def print_help():
-    help_text = f"""
-{Colors.BOLD}{Colors.CYAN}🤖 MULTI-AGENT INTERACTIVE SHELL COMMANDS:{Colors.RESET}
-  {Colors.GREEN}/read <path>{Colors.RESET}                 -> Reads a file in your project directory
-  {Colors.GREEN}/write <path> <text>{Colors.RESET}         -> Writes content to a file in your project directory
-  {Colors.GREEN}/kicad <file.kicad_sch>{Colors.RESET}       -> Parse KiCad schematic components & net labels
-  {Colors.GREEN}/kicad-set <file> <ref> <val>{Colors.RESET} -> Update component value (e.g., /kicad-set demo.kicad_sch R1 1k)
-  {Colors.GREEN}/bom <file.csv>{Colors.RESET}             -> Parse PCB Bill of Materials CSV
-  {Colors.GREEN}/vision <image_path>{Colors.RESET}          -> Encode image schematic to Base64 for Vision LLMs
-  {Colors.GREEN}/index <path>{Colors.RESET}                -> Index file or directory into RAG vector store
-  {Colors.GREEN}/search <query>{Colors.RESET}              -> Semantic search across indexed documents (RAG)
-  {Colors.GREEN}/rag-stats{Colors.RESET}                   -> View RAG index statistics
-{Colors.BOLD}{Colors.YELLOW}  ── Component & Datasheet Tools ──{Colors.RESET}
-  {Colors.GREEN}/datasheet <pdf_path>{Colors.RESET}        -> Extract & summarize datasheet PDF pin tables & specs
-  {Colors.GREEN}/part <part_number>{Colors.RESET}          -> Search component stock, pricing, specs & datasheet
-  {Colors.GREEN}/alt <part_number>{Colors.RESET}           -> Find in-stock & drop-in alternative components
-  {Colors.GREEN}/compare <part1> <part2>{Colors.RESET}    -> Side-by-side parametric component comparison
-{Colors.BOLD}{Colors.YELLOW}  ── Build & Execute ──{Colors.RESET}
-  {Colors.GREEN}/run <command>{Colors.RESET}               -> Execute a shell command (gcc, make, platformio, etc.)
-  {Colors.GREEN}/gcc <file.c>{Colors.RESET}                -> Compile a C source file with gcc
-  {Colors.GREEN}/make [target]{Colors.RESET}               -> Run make with optional target
-{Colors.BOLD}{Colors.YELLOW}  ── Long-Term Memory ──{Colors.RESET}
-  {Colors.GREEN}/remember <cat> <key> <val>{Colors.RESET}  -> Store a long-term memory (decision, component, pinout)
-  {Colors.GREEN}/recall [category]{Colors.RESET}           -> Recall stored memories
-  {Colors.GREEN}/forget <cat> <key>{Colors.RESET}          -> Delete a specific memory
-{Colors.BOLD}{Colors.YELLOW}  ── Pipeline & Automation ──{Colors.RESET}
-  {Colors.GREEN}/pipeline <task>{Colors.RESET}             -> Run embedded dev pipeline (planner→hw+sw→reviewer)
-  {Colors.GREEN}/notify <message>{Colors.RESET}            -> Send notification to Slack/Discord/Telegram
-  {Colors.GREEN}/git-status{Colors.RESET}                  -> Show git status
-  {Colors.GREEN}/git-commit <msg>{Colors.RESET}            -> Auto stage & commit all changes
-  {Colors.GREEN}/plugins{Colors.RESET}                     -> List registered plugins
-  {Colors.GREEN}/extensions{Colors.RESET}                  -> Interactive Extensions & Plugins Management UI
-  {Colors.GREEN}/docs [category]{Colors.RESET}             -> Interactive CLI documentation manual (rag, electronics, pipeline)
-  {Colors.GREEN}/parallel <task>{Colors.RESET}             -> Run parallel multi-agent task with split terminal views
-  {Colors.GREEN}/test{Colors.RESET}                        -> Run automated agent unit test suite
-{Colors.BOLD}{Colors.YELLOW}  ── SOTA Hardware & Autonomous Tools ──{Colors.RESET}
-  {Colors.GREEN}/heal <file.c>{Colors.RESET}               -> Autonomous self-healing compilation error recovery loop
-  {Colors.GREEN}/spice <r_ohms> <c_farads>{Colors.RESET}   -> Simulate RC circuit frequency response & step voltage
-  {Colors.GREEN}/pinout <sda> <scl> <out>{Colors.RESET}    -> Check GPIO pin conflicts & ESP32 strapping hazards
-  {Colors.GREEN}/consensus <prompt>{Colors.RESET}          -> Multi-model consensus voting (OpenAI + Claude + Gemini)
-  {Colors.GREEN}/pr <branch> <title>{Colors.RESET}         -> Auto create git branch, commit & submit GitHub PR
-  {Colors.GREEN}/tui{Colors.RESET}                         -> Display interactive TUI system status dashboard
-{Colors.BOLD}{Colors.YELLOW}  ── Production & Flashing Tools ──{Colors.RESET}
-  {Colors.GREEN}/flash <file.bin>{Colors.RESET}            -> Flash firmware binary to MCU via USB/TTY (esptool/st-flash)
-  {Colors.GREEN}/serial [port]{Colors.RESET}              -> Read live UART serial console logs
-  {Colors.GREEN}/gerber <folder>{Colors.RESET}             -> Analyze PCB Gerber layers & 3D enclosure bounds
-  {Colors.GREEN}/datasheet-compare <p1> <p2>{Colors.RESET} -> Comparative specification matrix for 2 PDF datasheets
-  {Colors.GREEN}/improve <agent> <reason>{Colors.RESET}    -> Auto-refine agent prompt spec based on error patterns
-{Colors.BOLD}{Colors.YELLOW}  ── Multidisciplinary CAD & R&D Tools ──{Colors.RESET}
-  {Colors.GREEN}/cad <l> <w> <h>{Colors.RESET}             -> Generate OpenSCAD 3D parametric enclosure script
-  {Colors.GREEN}/slicer <material>{Colors.RESET}          -> Recommend 3D printing slicer settings (PLA/ABS/PETG/TPU)
-  {Colors.GREEN}/arxiv <query>{Colors.RESET}              -> Search arXiv scientific preprints for R&D literature
-  {Colors.GREEN}/patent <invention>{Colors.RESET}          -> Generate patent prior art search queries & CPC codes
-  {Colors.GREEN}/mcp{Colors.RESET}                         -> Display Model Context Protocol (MCP) server guide
-  {Colors.GREEN}/mcp-mode [on|off]{Colors.RESET}           -> Toggle between Direct Native Execution & MCP Stdio Protocol
-{Colors.BOLD}{Colors.YELLOW}  ── Edge AI & Personalization Tools ──{Colors.RESET}
-  {Colors.GREEN}/edge-ai <params>{Colors.RESET}           -> Estimate TinyML peak SRAM/Flash & MCU suitability
-  {Colors.GREEN}/profile{Colors.RESET}                     -> View personalized engineer profile preferences
-  {Colors.GREEN}/create-project <name>{Colors.RESET}     -> Generate unified project workspace (firmware+hw+cad+ai)
-{Colors.BOLD}{Colors.YELLOW}  ── Advanced Engineering Roadmap Tools ──{Colors.RESET}
-  {Colors.GREEN}/finetune{Colors.RESET}                    -> Estimate LoRA VRAM & export JSONL fine-tuning dataset
-  {Colors.GREEN}/drc <width_mm>{Colors.RESET}              -> Audit PCB manufacturing rules & calculate 50Ω impedance
-  {Colors.GREEN}/cart [bom.csv]{Colors.RESET}              -> Generate Mouser/LCSC 1-click shopping cart payload
-  {Colors.GREEN}/arena <prompt>{Colors.RESET}              -> Run head-to-head model benchmark arena (gpt-4o vs mini)
-{Colors.BOLD}{Colors.YELLOW}  ── Frontier Thermal, Battery & Production Tools ──{Colors.RESET}
-  {Colors.GREEN}/thermal <vin> <vout> <amps>{Colors.RESET} -> Thermal dissipation & heatsink sizing calculator
-  {Colors.GREEN}/battery <mah> <active_ma>{Colors.RESET}   -> Battery lifespan & solar panel wattage calculator
-  {Colors.GREEN}/unittest-gen <mod> <funcs>{Colors.RESET}  -> Generate Unity C embedded unit test runner code
-  {Colors.GREEN}/bom-opt{Colors.RESET}                     -> Analyze BOM cost drivers & production quantity tiers
-{Colors.BOLD}{Colors.YELLOW}  ── Next-Gen RF, Harness, OTA & EMC Tools ──{Colors.RESET}
-  {Colors.GREEN}/rf [freq_mhz]{Colors.RESET}              -> Calculate PCB antenna dimensions & 50Ω matching
-  {Colors.GREEN}/harness <amps> <length>{Colors.RESET}     -> Calculate wire AWG gauge & voltage drop
-  {Colors.GREEN}/ota [version]{Colors.RESET}               -> Generate OTA firmware update manifest & SHA-256
-  {Colors.GREEN}/gantt{Colors.RESET}                       -> Generate multidisciplinary Mermaid Gantt timeline
-  {Colors.GREEN}/emc{Colors.RESET}                        -> Audit PCB for FCC Class B & CE EMC compliance
-{Colors.BOLD}{Colors.YELLOW}  ── True Autonomy Goal Loop & Tree Simulation ──{Colors.RESET}
-  {Colors.GREEN}/auto <goal_description>{Colors.RESET}     -> Fully autonomous goal execution (Auto-Plan->HW->SW->Thermal->CAD->Build)
-  {Colors.GREEN}/layers <goal_description>{Colors.RESET}   -> Execute task via explicit 5-Layer Architecture Engine
-  {Colors.GREEN}/tree [goal_description]{Colors.RESET}     -> Live visual Agent Tree Simulation & real-time model runtime monitor
-{Colors.BOLD}{Colors.YELLOW}  ── Backend Infrastructure & Reliability Tools ──{Colors.RESET}
-  {Colors.GREEN}/worker{Colors.RESET}                      -> Check async background worker queue status
-  {Colors.GREEN}/ratelimit{Colors.RESET}                   -> View LLM API Token Bucket rate limiter status
-  {Colors.GREEN}/checkpoint{Colors.RESET}                  -> Create snapshot checkpoint of system state
-  {Colors.GREEN}/restore{Colors.RESET}                     -> Restore system state from snapshot checkpoint
-{Colors.BOLD}{Colors.YELLOW}  ── Frontier Hardware-in-Loop, Voice, Router & Graph ──{Colors.RESET}
-  {Colors.GREEN}/hil <file.bin>{Colors.RESET}               -> Run Hardware-in-the-Loop physical board test
-  {Colors.GREEN}/voice <prompt>{Colors.RESET}              -> Voice Assistant hands-free workbench command
-  {Colors.GREEN}/autoroute{Colors.RESET}                   -> Auto-route PCB netlist traces
-  {Colors.GREEN}/graph <query>{Colors.RESET}                 -> Query Hardware Knowledge Graph for MCU/Sensors
-{Colors.BOLD}{Colors.YELLOW}  ── SOTA Architectural Reliability & Guardrails ──{Colors.RESET}
-  {Colors.GREEN}/reflect <task>{Colors.RESET}               -> Run task with self-reflective failure critique loop
-  {Colors.GREEN}/cost <prompt>{Colors.RESET}                -> Multi-model dynamic cost-optimizer router check
-  {Colors.GREEN}/guard <code>{Colors.RESET}                -> Real-time output guardrail & syntax filter
-  {Colors.GREEN}/reload-plugins{Colors.RESET}             -> Hot-reload custom Python plugins from plugins/
-  {Colors.GREEN}/mcu <req>{Colors.RESET}                   -> Multi-MCU selector & spec recommender engine
-  {Colors.GREEN}/lint <code>{Colors.RESET}                -> Auto-format & lint C++/Python code snippet
-  {Colors.GREEN}/theme <name>{Colors.RESET}               -> Switch CLI color palette (cyberpunk, matrix, dracula)
-  {Colors.GREEN}/stackup [layers]{Colors.RESET}          -> PCB dielectric layer stackup & USB 2.0 trace specs
-  {Colors.GREEN}/slides{Colors.RESET}                      -> Export HTML presentation slide deck
-  {Colors.GREEN}/consensus-matrix{Colors.RESET}         -> Multi-model consensus confidence matrix breakdown
-  {Colors.GREEN}/3d-clearance{Colors.RESET}               -> KiCad 3D STEP component height clearance audit
-  {Colors.GREEN}/power <code>{Colors.RESET}                -> Firmware energy consumption & battery life profiler
-  {Colors.GREEN}/pareto{Colors.RESET}                      -> Multi-model token cost vs latency Pareto frontier plotter
-  {Colors.GREEN}/spice-transpile{Colors.RESET}             -> Transpile KiCad schematic netlist into raw SPICE .cir
-  {Colors.GREEN}/security <code>{Colors.RESET}             -> Firmware static security & memory leak audit scanner
-  {Colors.GREEN}/fea [force_N]{Colors.RESET}               -> 3D mechanical FEA stress & deformation simulator
-  {Colors.GREEN}/supply-risk{Colors.RESET}                 -> Multi-vendor BOM stock availability & EOL risk alert
-  {Colors.GREEN}/prune <text>{Colors.RESET}                 -> LLM prompt compression & context pruning engine
-  {Colors.GREEN}/drc-rules{Colors.RESET}                   -> Export custom KiCad 7/8 DRC design rules (.kicad_dru)
-  {Colors.GREEN}/partition [mb]{Colors.RESET}             -> Flash partition layout & SRAM static allocation visualizer
-  {Colors.GREEN}/fasteners [type]{Colors.RESET}           -> 3D enclosure metric screw boss thread sizer (M2-M4)
-  {Colors.GREEN}/circuit-breaker{Colors.RESET}           -> Multi-model API failure fallback & circuit breaker status
-  {Colors.GREEN}/budget{Colors.RESET}                      -> Token expenditure dollar budget tracker & alert monitor
-  {Colors.GREEN}/ota-verify{Colors.RESET}                  -> Cryptographic OTA binary SHA-256 integrity verifier
-  {Colors.GREEN}/airflow{Colors.RESET}                     -> 3D enclosure thermal ventilation slot & CFM airflow calculator
-  {Colors.GREEN}/ensemble{Colors.RESET}                    -> Multi-model dynamic response ensemble aggregator
-  {Colors.GREEN}/bom-sensitivity{Colors.RESET}             -> Monte Carlo BOM component cost sensitivity & inflation analyzer
-  {Colors.GREEN}/compact-memory{Colors.RESET}             -> Compact SQLite long-term logs & vector database storage
-  {Colors.GREEN}/watchdog{Colors.RESET}                   -> Firmware CPU panic crash dump & watchdog reset cause analyzer
-  {Colors.GREEN}/snap-fit{Colors.RESET}                   -> 3D enclosure cantilever snap-fit joint & latch strain calculator
-  {Colors.GREEN}/agent-telemetry{Colors.RESET}           -> Multi-agent step-by-step latency Gantt profiler
-  {Colors.GREEN}/footprint-check{Colors.RESET}          -> Cross-check KiCad schematic symbol pins vs footprint pads
-  {Colors.GREEN}/backoff{Colors.RESET}                    -> API rate limit exponential backoff jitter delay calculator
-  {Colors.GREEN}/coverage{Colors.RESET}                   -> C++ unit test line & branch LCOV coverage report generator
-  {Colors.GREEN}/flexure{Colors.RESET}                    -> 3D enclosure living hinge strain & bending radius calculator
-  {Colors.GREEN}/critical-path{Colors.RESET}              -> Multi-agent task dependency critical path bottleneck profiler
-  {Colors.GREEN}/trace-matching{Colors.RESET}             -> PCB high-speed differential pair trace length matching & skew tuning
-  {Colors.GREEN}/prompt-builder{Colors.RESET}             -> LLM system prompt context personalization builder
-  {Colors.GREEN}/subsheets{Colors.RESET}                  -> Generate multi-sheet hierarchical KiCad schematics
-  {Colors.GREEN}/stack-guard{Colors.RESET}                -> FreeRTOS task C++ call graph stack overflow guard calculator
-  {Colors.GREEN}/gasket{Colors.RESET}                     -> 3D enclosure IP67 waterproof rubber O-ring gasket gland sizer
-  {Colors.GREEN}/dlq{Colors.RESET}                        -> Multi-agent dead letter queue failed task status & retry
-  {Colors.GREEN}/cost-forecast{Colors.RESET}             -> Forecast daily/monthly LLM API token expenditure burn rate ($)
-  {Colors.GREEN}/stencil{Colors.RESET}                   -> PCB SMT solder paste stencil foil thickness & volume calculator
-  {Colors.GREEN}/bootloader-check{Colors.RESET}          -> Firmware bootloader flash offset & vector table auditor
-  {Colors.GREEN}/cable-gland{Colors.RESET}                -> 3D printed enclosure waterproof cable gland & strain relief sizer
-  {Colors.GREEN}/agent-health{Colors.RESET}               -> Multi-agent system sub-package real-time health monitor
-  {Colors.GREEN}/token-count <text>{Colors.RESET}          -> Count BPE tokens and estimate prompt costs per model tier
-  {Colors.GREEN}/dspy{Colors.RESET}                       -> DSPy-style automatic prompt optimizer & few-shot bootstrapper
-  {Colors.GREEN}/fsm{Colors.RESET}                        -> Sub-agent finite state machine (FSM) status & rollback
-  {Colors.GREEN}/genetic-hw{Colors.RESET}                 -> Multi-objective Pareto genetic hardware & PCB evolutionary optimizer
-  {Colors.GREEN}/web-stack [name]{Colors.RESET}            -> Full-stack FastAPI / Express REST API architecture generator
-  {Colors.GREEN}/docker-gen [service]{Colors.RESET}         -> Automated Dockerfile & Kubernetes deployment manifest generator
-  {Colors.GREEN}/uml [system]{Colors.RESET}                -> Software UML sequence & class diagram generator (Mermaid)
-  {Colors.GREEN}/db-schema [table]{Colors.RESET}           -> Database PostgreSQL DDL schema & migration generator
-  {Colors.GREEN}/devops [project]{Colors.RESET}            -> Cloud AWS Terraform HCL infrastructure & CI/CD generator
-  {Colors.GREEN}/proto [service]{Colors.RESET}             -> Microservices gRPC protobuf3 & event bus schema generator
-  {Colors.GREEN}/react [component]{Colors.RESET}           -> Modern React Vite / Next.js TSX component boilerplate generator
-  {Colors.GREEN}/complexity <code>{Colors.RESET}          -> AST cyclomatic code complexity & maintainability index auditor
-{Colors.BOLD}{Colors.YELLOW}  ── System ──{Colors.RESET}
-  {Colors.GREEN}/agent <name>{Colors.RESET}               -> Switch sub-agent (orchestrator, planner, software, electronics, reviewer)
-  {Colors.GREEN}/model <name>{Colors.RESET}               -> Switch model (gpt-4o, gpt-4o-mini, claude-3-5-sonnet, gemini-1.5-flash)
-  {Colors.GREEN}/memory{Colors.RESET}                     -> View sliding window context memory status
-  {Colors.GREEN}/stats{Colors.RESET}                      -> View live token, cost, and latency statistics
-  {Colors.GREEN}/logs{Colors.RESET}                       -> View recent activity trace logs
-  {Colors.GREEN}/clear{Colors.RESET}                      -> Clear terminal screen and memory
-  {Colors.GREEN}/help{Colors.RESET}                       -> Show this help menu
-  {Colors.GREEN}/exit{Colors.RESET}                       -> Exit interactive shell
-"""
-    print(help_text)
+    print(f"""
+{Colors.BOLD}{Colors.CYAN}🤖 NEURO-SYMBOLIC MULTI-AGENT SYSTEM — SYSTEM HELP & GUIDE{Colors.RESET}
+
+{Colors.BOLD}{Colors.YELLOW}🌟 How the System Works (0-Token Autonomous Execution):{Colors.RESET}
+  You do NOT need to type manual slash commands for routine tasks!
+  Simply type your engineering request in natural language (English/Turkish), e.g.:
+    {Colors.GREEN}"ESP32 IoT akıllı ev kartı tasarla, pilini hesapla ve C++ kodunu hazırla"{Colors.RESET}
+  The Orchestrator LLM parses your intent and automatically offloads all calculations,
+  PCB DRC checks, 3D CAD modeling, and static security scans to {Colors.BOLD}0-Token Local Python Engines ($0.00 cost){Colors.RESET}!
+
+{Colors.BOLD}{Colors.YELLOW}📂 Categorized Tool Commands (/commands):{Colors.RESET}
+  To inspect manual CLI script commands, use the {Colors.GREEN}/commands{Colors.RESET} menu:
+    {Colors.GREEN}/commands{Colors.RESET}            -> Display 6 Sub-Package Category Menu
+    {Colors.GREEN}/commands engine{Colors.RESET}     -> Workflow, DAG, Tree Simulation & FSM Commands
+    {Colors.GREEN}/commands hardware{Colors.RESET}   -> KiCad, DRC, SPICE, Pinout, Stackup & Antennas
+    {Colors.GREEN}/commands software{Colors.RESET}   -> Firmware, Self-Heal, HIL, Stack Guard & Bootloader
+    {Colors.GREEN}/commands computer{Colors.RESET}   -> Full-Stack Web, gRPC Proto, React & AST Complexity
+    {Colors.GREEN}/commands production{Colors.RESET} -> OpenSCAD 3D CAD, Vidalar, IP67 Conta & FEA Stress
+    {Colors.GREEN}/commands infra{Colors.RESET}      -> RAG, DSPy Optimizer, DLQ, Voice & Health Monitor
+    {Colors.GREEN}/commands all{Colors.RESET}        -> Display complete 60+ commands master catalog
+
+{Colors.BOLD}{Colors.YELLOW}⚙️ Core System Controls:{Colors.RESET}
+  {Colors.GREEN}/agent <name>{Colors.RESET}       -> Switch agent (orchestrator, planner, software, electronics, reviewer)
+  {Colors.GREEN}/model <name>{Colors.RESET}       -> Switch model (gpt-4o, gpt-4o-mini, claude-3-5-sonnet, gemini-1.5-flash)
+  {Colors.GREEN}/theme <palette>{Colors.RESET}    -> Switch CLI color palette (cyberpunk, matrix, dracula, default)
+  {Colors.GREEN}/clear{Colors.RESET}              -> Clear terminal screen & conversation history
+  {Colors.GREEN}/quit{Colors.RESET}               -> Exit agent REPL shell
+""")
+
+def print_commands(category: str = None):
+    cat = category.lower().strip() if category else None
+    
+    if not cat:
+        print(f"""
+{Colors.BOLD}{Colors.CYAN}📂 COMMAND CATEGORIES MENU (Sub-Packages):{Colors.RESET}
+  {Colors.GREEN}/commands engine{Colors.RESET}     -> 🤖 Workflow, DAG, Tree Simulation & FSM Engines
+  {Colors.GREEN}/commands hardware{Colors.RESET}   -> 🔌 KiCad PCB, DRC, SPICE, Pinout, Stackup & Antennas
+  {Colors.GREEN}/commands software{Colors.RESET}   -> 💻 C++ Firmware, Self-Healing, HIL, Stack Guard & Bootloader
+  {Colors.GREEN}/commands computer{Colors.RESET}   -> 🌐 Full-Stack Web, gRPC Proto, React & AST Complexity
+  {Colors.GREEN}/commands production{Colors.RESET} -> 📐 OpenSCAD 3D CAD, Vidalar, IP67 Conta & FEA Stress
+  {Colors.GREEN}/commands infra{Colors.RESET}      -> 🛡️ RAG, DSPy Optimizer, DLQ, Voice & Health Monitor
+  {Colors.GREEN}/commands all{Colors.RESET}        -> 📜 Display complete master commands list
+""")
+        return
+
+    if cat in ["engine", "all"]:
+        print(f"{Colors.BOLD}{Colors.YELLOW}🤖 [core.engine] Workflow, DAG & Tree Simulation Commands:{Colors.RESET}")
+        print(f"  {Colors.GREEN}/auto <goal>{Colors.RESET}                 -> Fully autonomous goal execution loop")
+        print(f"  {Colors.GREEN}/layers <goal>{Colors.RESET}               -> Execute task via explicit 5-Layer Architecture Engine")
+        print(f"  {Colors.GREEN}/tree [goal]{Colors.RESET}                 -> Live visual Agent Tree Simulation & runtime monitor")
+        print(f"  {Colors.GREEN}/fsm{Colors.RESET}                        -> Sub-agent finite state machine status & rollback")
+        print(f"  {Colors.GREEN}/critical-path{Colors.RESET}              -> Multi-agent task dependency critical path bottleneck profiler")
+        print(f"  {Colors.GREEN}/agent-telemetry{Colors.RESET}           -> Multi-agent step-by-step latency Gantt profiler\n")
+
+    if cat in ["hardware", "all"]:
+        print(f"{Colors.BOLD}{Colors.YELLOW}🔌 [core.hardware] KiCad PCB, DRC, SPICE & Antennas:{Colors.RESET}")
+        print(f"  {Colors.GREEN}/kicad <file.kicad_sch>{Colors.RESET}       -> Parse KiCad schematic components & net labels")
+        print(f"  {Colors.GREEN}/drc <width_mm>{Colors.RESET}              -> Audit PCB manufacturing rules & 50Ω trace impedance")
+        print(f"  {Colors.GREEN}/autoroute{Colors.RESET}                   -> Auto-route PCB netlist traces using A* algorithm")
+        print(f"  {Colors.GREEN}/spice <r> <c>{Colors.RESET}               -> Simulate RC circuit frequency response")
+        print(f"  {Colors.GREEN}/spice-transpile{Colors.RESET}             -> Transpile KiCad schematic netlist into raw SPICE .cir")
+        print(f"  {Colors.GREEN}/pinout <sda> <scl> <out>{Colors.RESET}    -> Check GPIO pin conflicts & ESP32 strapping hazards")
+        print(f"  {Colors.GREEN}/thermal <vin> <vout> <amps>{Colors.RESET} -> Thermal dissipation & heatsink sizing calculator")
+        print(f"  {Colors.GREEN}/mcu <req>{Colors.RESET}                   -> Multi-MCU selector & spec recommender engine")
+        print(f"  {Colors.GREEN}/stackup [layers]{Colors.RESET}          -> PCB dielectric layer stackup & USB 2.0 trace specs")
+        print(f"  {Colors.GREEN}/3d-clearance{Colors.RESET}               -> KiCad 3D STEP component height clearance audit")
+        print(f"  {Colors.GREEN}/footprint-check{Colors.RESET}          -> Cross-check KiCad schematic symbol pins vs footprint pads")
+        print(f"  {Colors.GREEN}/trace-matching{Colors.RESET}             -> PCB high-speed differential pair length matching")
+        print(f"  {Colors.GREEN}/subsheets{Colors.RESET}                  -> Generate multi-sheet hierarchical KiCad schematics")
+        print(f"  {Colors.GREEN}/stencil{Colors.RESET}                   -> PCB SMT solder paste stencil foil thickness & volume calculator")
+        print(f"  {Colors.GREEN}/rf [freq_mhz]{Colors.RESET}              -> Calculate PCB antenna dimensions & 50Ω matching")
+        print(f"  {Colors.GREEN}/genetic-hw{Colors.RESET}                 -> Multi-objective Pareto genetic hardware optimizer\n")
+
+    if cat in ["software", "all"]:
+        print(f"{Colors.BOLD}{Colors.YELLOW}💻 [core.software] Firmware, Self-Healing & HIL Testing:{Colors.RESET}")
+        print(f"  {Colors.GREEN}/heal <file.c>{Colors.RESET}               -> Autonomous self-healing compilation error recovery loop")
+        print(f"  {Colors.GREEN}/hil <file.bin>{Colors.RESET}               -> Run Hardware-in-the-Loop physical board test")
+        print(f"  {Colors.GREEN}/unittest-gen <mod>{Colors.RESET}          -> Generate Unity C embedded unit test runner code")
+        print(f"  {Colors.GREEN}/edge-ai <params>{Colors.RESET}           -> Estimate TinyML peak SRAM/Flash & MCU suitability")
+        print(f"  {Colors.GREEN}/ota [version]{Colors.RESET}               -> Generate OTA firmware update manifest & SHA-256")
+        print(f"  {Colors.GREEN}/ota-verify{Colors.RESET}                  -> Cryptographic OTA binary SHA-256 integrity verifier")
+        print(f"  {Colors.GREEN}/security <code>{Colors.RESET}             -> Firmware static security & memory leak audit scanner")
+        print(f"  {Colors.GREEN}/coverage{Colors.RESET}                   -> C++ unit test line & branch LCOV coverage report generator")
+        print(f"  {Colors.GREEN}/stack-guard{Colors.RESET}                -> FreeRTOS task C++ call graph stack overflow guard calculator")
+        print(f"  {Colors.GREEN}/bootloader-check{Colors.RESET}          -> Firmware bootloader flash offset & vector table auditor")
+        print(f"  {Colors.GREEN}/watchdog{Colors.RESET}                   -> Firmware CPU panic crash dump & watchdog reset analyzer")
+        print(f"  {Colors.GREEN}/power <code>{Colors.RESET}                -> Firmware energy consumption & battery life profiler\n")
+
+    if cat in ["computer", "all"]:
+        print(f"{Colors.BOLD}{Colors.YELLOW}🌐 [core.computer] Full-Stack Web, gRPC, React & DevOps:{Colors.RESET}")
+        print(f"  {Colors.GREEN}/web-stack [name]{Colors.RESET}            -> Full-stack FastAPI / Express REST API generator")
+        print(f"  {Colors.GREEN}/proto [service]{Colors.RESET}             -> Microservices gRPC protobuf3 & event bus schema generator")
+        print(f"  {Colors.GREEN}/react [component]{Colors.RESET}           -> Modern React Vite / Next.js TSX component boilerplate")
+        print(f"  {Colors.GREEN}/complexity <code>{Colors.RESET}          -> AST cyclomatic code complexity & maintainability index auditor")
+        print(f"  {Colors.GREEN}/docker-gen [service]{Colors.RESET}         -> Automated Dockerfile & Kubernetes deployment manifest generator")
+        print(f"  {Colors.GREEN}/uml [system]{Colors.RESET}                -> Software UML sequence & class diagram generator (Mermaid)")
+        print(f"  {Colors.GREEN}/db-schema [table]{Colors.RESET}           -> Database PostgreSQL DDL schema & migration generator")
+        print(f"  {Colors.GREEN}/devops [project]{Colors.RESET}            -> Cloud AWS Terraform HCL infrastructure & CI/CD generator\n")
+
+    if cat in ["production", "all"]:
+        print(f"{Colors.BOLD}{Colors.YELLOW}📐 [core.production] 3D CAD, Fasteners, Gaskets & FEA Stress:{Colors.RESET}")
+        print(f"  {Colors.GREEN}/cad <l> <w> <h>{Colors.RESET}             -> Generate OpenSCAD 3D parametric enclosure script")
+        print(f"  {Colors.GREEN}/fasteners [type]{Colors.RESET}           -> 3D enclosure metric screw boss thread sizer (M2-M4)")
+        print(f"  {Colors.GREEN}/snap-fit{Colors.RESET}                   -> 3D enclosure cantilever snap-fit joint strain calculator")
+        print(f"  {Colors.GREEN}/flexure{Colors.RESET}                    -> 3D enclosure living hinge strain & bending radius calculator")
+        print(f"  {Colors.GREEN}/gasket{Colors.RESET}                     -> 3D enclosure IP67 waterproof rubber O-ring gasket gland sizer")
+        print(f"  {Colors.GREEN}/cable-gland{Colors.RESET}                -> 3D printed enclosure waterproof cable gland sizer")
+        print(f"  {Colors.GREEN}/airflow{Colors.RESET}                     -> 3D enclosure thermal ventilation slot & CFM airflow calculator")
+        print(f"  {Colors.GREEN}/fea [force_N]{Colors.RESET}               -> 3D mechanical FEA stress & deformation simulator")
+        print(f"  {Colors.GREEN}/slicer <material>{Colors.RESET}          -> Recommend 3D printing slicer settings (PLA/ABS/PETG/TPU)")
+        print(f"  {Colors.GREEN}/bom-opt{Colors.RESET}                     -> Analyze BOM cost drivers & production quantity tiers")
+        print(f"  {Colors.GREEN}/supply-risk{Colors.RESET}                 -> Multi-vendor BOM stock availability & EOL risk alert")
+        print(f"  {Colors.GREEN}/bom-sensitivity{Colors.RESET}             -> Monte Carlo BOM component cost sensitivity analyzer")
+        print(f"  {Colors.GREEN}/report{Colors.RESET}                      -> Generate complete multidisciplinary project Markdown report")
+        print(f"  {Colors.GREEN}/slides{Colors.RESET}                      -> Export HTML presentation slide deck\n")
+
+    if cat in ["infra", "all"]:
+        print(f"{Colors.BOLD}{Colors.YELLOW}🛡️ [core.infra] RAG, DSPy Optimizer, DLQ, Voice & Telemetry:{Colors.RESET}")
+        print(f"  {Colors.GREEN}/voice <prompt>{Colors.RESET}              -> Voice Assistant hands-free workbench command")
+        print(f"  {Colors.GREEN}/graph <query>{Colors.RESET}                 -> Query Hardware Knowledge Graph for MCU/Sensors")
+        print(f"  {Colors.GREEN}/reflect <task>{Colors.RESET}               -> Run task with self-reflective failure critique loop")
+        print(f"  {Colors.GREEN}/cost <prompt>{Colors.RESET}                -> Multi-model dynamic cost-optimizer router check")
+        print(f"  {Colors.GREEN}/guard <code>{Colors.RESET}                -> Real-time output guardrail & syntax filter")
+        print(f"  {Colors.GREEN}/budget{Colors.RESET}                      -> Token expenditure dollar budget tracker & alert monitor")
+        print(f"  {Colors.GREEN}/cost-forecast{Colors.RESET}             -> Forecast daily/monthly LLM API token expenditure burn rate ($)")
+        print(f"  {Colors.GREEN}/dspy{Colors.RESET}                       -> DSPy-style automatic prompt optimizer & few-shot bootstrapper")
+        print(f"  {Colors.GREEN}/dlq{Colors.RESET}                        -> Multi-agent dead letter queue failed task status & retry")
+        print(f"  {Colors.GREEN}/ensemble{Colors.RESET}                    -> Multi-model dynamic response ensemble aggregator")
+        print(f"  {Colors.GREEN}/prune <text>{Colors.RESET}                 -> LLM prompt compression & context pruning engine")
+        print(f"  {Colors.GREEN}/compact-memory{Colors.RESET}             -> Compact SQLite long-term logs & vector database storage")
+        print(f"  {Colors.GREEN}/agent-health{Colors.RESET}               -> Multi-agent system sub-package real-time health monitor")
+        print(f"  {Colors.GREEN}/token-count <text>{Colors.RESET}          -> Count BPE tokens and estimate prompt costs per model tier\n")
 
 def print_banner():
     print_cli_banner()
@@ -367,6 +340,9 @@ def start_interactive_shell(default_agent: str = "orchestrator", default_model: 
                     break
                 elif cmd == "/help":
                     print_help()
+                elif cmd == "/commands":
+                    cat_arg = parts[1] if len(parts) > 1 else None
+                    print_commands(cat_arg)
                 elif cmd == "/clear":
                     memory.clear()
                     os.system("cls" if os.name == "nt" else "clear")
