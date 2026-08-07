@@ -42,6 +42,9 @@ from core.self_improve import analyze_and_refine_agent_prompt
 from core.mechanical import generate_openscad_enclosure, recommend_slicer_settings
 from core.research import search_arxiv_papers, generate_patent_prior_art_query
 from core.mcp_client import MCPExecutionMode, dispatch_task
+from core.edge_ai import generate_esp_dl_model_wrapper, estimate_edge_ai_memory
+from core.profile import load_user_profile, build_personalized_system_prompt
+from core.project_gen import create_multidisciplinary_project
 
 class Colors:
     CYAN = '\033[96m'
@@ -142,6 +145,10 @@ def print_help():
   {Colors.GREEN}/patent <invention>{Colors.RESET}          -> Generate patent prior art search queries & CPC codes
   {Colors.GREEN}/mcp{Colors.RESET}                         -> Display Model Context Protocol (MCP) server guide
   {Colors.GREEN}/mcp-mode [on|off]{Colors.RESET}           -> Toggle between Direct Native Execution & MCP Stdio Protocol
+{Colors.BOLD}{Colors.YELLOW}  ── Edge AI & Personalization Tools ──{Colors.RESET}
+  {Colors.GREEN}/edge-ai <params>{Colors.RESET}           -> Estimate TinyML peak SRAM/Flash & MCU suitability
+  {Colors.GREEN}/profile{Colors.RESET}                     -> View personalized engineer profile preferences
+  {Colors.GREEN}/create-project <name>{Colors.RESET}     -> Generate unified project workspace (firmware+hw+cad+ai)
 {Colors.BOLD}{Colors.YELLOW}  ── System ──{Colors.RESET}
   {Colors.GREEN}/agent <name>{Colors.RESET}               -> Switch sub-agent (orchestrator, planner, software, electronics, reviewer)
   {Colors.GREEN}/model <name>{Colors.RESET}               -> Switch model (gpt-4o, gpt-4o-mini, claude-3-5-sonnet, gemini-1.5-flash)
@@ -558,6 +565,30 @@ def start_interactive_shell(default_agent: str = "orchestrator", default_model: 
                     else:
                         status = "ENABLED (MCP JSON-RPC Protocol)" if MCPExecutionMode.is_enabled() else "DISABLED (Direct Native Execution)"
                         print(f"MCP Mode Status: {Colors.CYAN}{status}{Colors.RESET}. Usage: /mcp-mode <on|off>")
+                # --- Edge AI & Personalization Tools ---
+                elif cmd == "/edge-ai":
+                    params = int(parts[1]) if len(parts) > 1 else 100000
+                    res = estimate_edge_ai_memory(params, [1, 28, 28], quantization="int8")
+                    print(f"{Colors.CYAN}--- EDGE AI & TINYML MEMORY ESTIMATION ---{Colors.RESET}")
+                    print(f"  Model Parameters: {res['num_parameters']:,}")
+                    print(f"  Flash Footprint:  {res['flash_footprint_kb']} KB")
+                    print(f"  SRAM Tensor Arena:{res['sram_tensor_arena_kb']} KB")
+                    print(f"  Recommended MCUs: {', '.join(res['recommended_mcus'])}\n")
+                elif cmd == "/profile":
+                    prof = load_user_profile()
+                    print(f"{Colors.CYAN}--- PERSONALIZED ENGINEER PROFILE ({prof['user_name']}) ---{Colors.RESET}")
+                    print(f"  Disciplines:   {', '.join(prof['primary_disciplines'])}")
+                    print(f"  Preferred MCU: {prof['preferred_mcu']} | CAD: {prof['preferred_cad_tool']}")
+                    print(f"  Custom Rules:  {prof['custom_engineering_rules']}\n")
+                elif cmd == "/create-project":
+                    if len(parts) > 1:
+                        p_name = parts[1]
+                        print(f"{Colors.CYAN}🏗️ Generating Multidisciplinary Repository Workspace for '{p_name}'...{Colors.RESET}")
+                        res = create_multidisciplinary_project(p_name)
+                        print(f"{Colors.GREEN}✅ Project created at: {res['root_directory']}{Colors.RESET}")
+                        print(f"  Structure: firmware/, hardware/, mechanical/, edge_ai/, docs/\n")
+                    else:
+                        print("Usage: /create-project <project_name>")
                 # --- Component & Datasheet Tools ---
                 elif cmd == "/datasheet":
                     if len(parts) > 1:

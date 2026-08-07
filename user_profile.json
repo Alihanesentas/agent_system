@@ -1,0 +1,20 @@
+{
+  "user_name": "Alihan",
+  "primary_disciplines": [
+    "Embedded Systems",
+    "Electronics",
+    "Mechanical CAD",
+    "Edge AI"
+  ],
+  "preferred_mcu": "ESP32-S3",
+  "preferred_cad_tool": "OpenSCAD",
+  "preferred_language": "C++ / Python",
+  "default_i2c_sda": "GPIO21",
+  "default_i2c_scl": "GPIO22",
+  "default_baudrate": 115200,
+  "custom_engineering_rules": [
+    "Always use 4.7k pull-up resistors on I2C bus lines.",
+    "Add 100nF ceramic decoupling capacitor next to VCC pins.",
+    "Enforce strict INT8 quantization for Edge AI models on ESP32-S3."
+  ]
+}
