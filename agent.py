@@ -61,6 +61,9 @@ from core.emc_compliance import audit_emc_fcc_compliance
 from core.autonomous_agent import execute_autonomous_goal
 from core.layered_architecture import run_layered_pipeline
 from core.agent_tree_sim import run_agent_tree_simulation, print_static_tree_topology
+from core.worker_queue import global_worker_queue
+from core.rate_limiter import global_rate_limiter
+from core.checkpoint import create_system_checkpoint, restore_system_checkpoint
 
 class Colors:
     CYAN = '\033[96m'
@@ -184,7 +187,12 @@ def print_help():
 {Colors.BOLD}{Colors.YELLOW}  ── True Autonomy Goal Loop & Tree Simulation ──{Colors.RESET}
   {Colors.GREEN}/auto <goal_description>{Colors.RESET}     -> Fully autonomous goal execution (Auto-Plan->HW->SW->Thermal->CAD->Build)
   {Colors.GREEN}/layers <goal_description>{Colors.RESET}   -> Execute task via explicit 5-Layer Architecture Engine
-  {Colors.GREEN}/tree <goal_description>{Colors.RESET}     -> Live visual Agent Tree Simulation & real-time model runtime monitor
+  {Colors.GREEN}/tree [goal_description]{Colors.RESET}     -> Live visual Agent Tree Simulation & real-time model runtime monitor
+{Colors.BOLD}{Colors.YELLOW}  ── Backend Infrastructure & Reliability Tools ──{Colors.RESET}
+  {Colors.GREEN}/worker{Colors.RESET}                      -> Check async background worker queue status
+  {Colors.GREEN}/ratelimit{Colors.RESET}                   -> View LLM API Token Bucket rate limiter status
+  {Colors.GREEN}/checkpoint{Colors.RESET}                  -> Create snapshot checkpoint of system state
+  {Colors.GREEN}/restore{Colors.RESET}                     -> Restore system state from snapshot checkpoint
 {Colors.BOLD}{Colors.YELLOW}  ── System ──{Colors.RESET}
   {Colors.GREEN}/agent <name>{Colors.RESET}               -> Switch sub-agent (orchestrator, planner, software, electronics, reviewer)
   {Colors.GREEN}/model <name>{Colors.RESET}               -> Switch model (gpt-4o, gpt-4o-mini, claude-3-5-sonnet, gemini-1.5-flash)
@@ -753,6 +761,27 @@ def start_interactive_shell(default_agent: str = "orchestrator", default_model: 
                         run_agent_tree_simulation(t_txt)
                     else:
                         print_static_tree_topology()
+                # --- Backend Infrastructure & Reliability Tools ---
+                elif cmd == "/worker":
+                    print(f"{Colors.CYAN}--- ASYNC WORKER QUEUE STATUS ---{Colors.RESET}")
+                    print(f"  Active Workers: {global_worker_queue.num_workers}")
+                    print(f"  Pending Jobs:   {global_worker_queue.job_queue.qsize()}")
+                    print(f"  Completed Jobs: {len(global_worker_queue.results)}\n")
+                elif cmd == "/ratelimit":
+                    print(f"{Colors.CYAN}--- LLM API TOKEN BUCKET RATE LIMITER ---{Colors.RESET}")
+                    print(f"  Refill Rate: {global_rate_limiter.rate} tokens/sec")
+                    print(f"  Capacity:    {global_rate_limiter.capacity} tokens")
+                    print(f"  Available:   {round(global_rate_limiter.tokens, 2)} tokens\n")
+                elif cmd == "/checkpoint":
+                    res = create_system_checkpoint()
+                    print(f"{Colors.CYAN}--- SNAPSHOT CHECKPOINT SAVED ---{Colors.RESET}")
+                    print(f"  File: {res['checkpoint_file']}")
+                    print(f"  Time: {res['snapshot']['date_str']}\n")
+                elif cmd == "/restore":
+                    res = restore_system_checkpoint()
+                    print(f"{Colors.CYAN}--- SNAPSHOT CHECKPOINT RESTORED ---{Colors.RESET}")
+                    print(f"  Status: {res['status']}")
+                    print(f"  Time:   {res['date_str']}\n")
                 # --- Component & Datasheet Tools ---
                 elif cmd == "/datasheet":
                     if len(parts) > 1:

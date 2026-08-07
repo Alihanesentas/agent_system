@@ -82,6 +82,12 @@ def get_layered_health():
         }
     }
 
+@app.get("/metrics")
+def get_prometheus_metrics():
+    """Exposes Prometheus scraping metrics endpoint."""
+    from core.telemetry import global_telemetry
+    return Response(content=global_telemetry.generate_prometheus_metrics(), media_type="text/plain")
+
 # --- Schemas ---
 
 class LogPayload(BaseModel):
