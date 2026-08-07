@@ -1,11 +1,11 @@
 """
 Core Architectural Package Entrypoint.
 Provides backward-compatible re-exports for all sub-packages:
-- core.engine: Multi-Agent Pipeline, DAG Parallel Executor, Cost Router & Agent Telemetry
-- core.hardware: KiCad, SPICE, Pinout, Thermal, DRC, RF, Auto-Router, MCU Selector, Layer Stackup, KiCad 3D Models, SPICE Transpiler, DRC Rules, BOM Sensitivity & Footprint Crosscheck
-- core.software: Firmware, Unity Tests, Self-Healing, Edge AI, HIL Testing, Linter, Power Profiler, Static Security Scanner, Flash Partitions, OTA Verifier & Watchdog Analyzer
-- core.production: Mechanical CAD, BOM Optimizer, Harness Sizer, Report Generator, Presentation Exporter, FEA Simulation, BOM Stock Tracker, Screw Boss Fasteners, Airflow Calculator & Snap-Fit Joints
-- core.infra: RAG, Memory, Cache, Telemetry, Voice, Knowledge Graph, Guardrails, Plugins, Theme Manager, Autocomplete, Consensus Matrix, Pareto Frontier, Context Pruner, Circuit Breaker, Token Budget, Ensemble Aggregator, Memory Compactor & Adaptive Backoff
+- core.engine: Multi-Agent Pipeline, DAG Parallel Executor, Cost Router, Agent Telemetry & Critical Path
+- core.hardware: KiCad, SPICE, Pinout, Thermal, DRC, RF, Auto-Router, MCU Selector, Layer Stackup, KiCad 3D Models, SPICE Transpiler, DRC Rules, BOM Sensitivity, Footprint Crosscheck & Trace Length Matching
+- core.software: Firmware, Unity Tests, Self-Healing, Edge AI, HIL Testing, Linter, Power Profiler, Static Security Scanner, Flash Partitions, OTA Verifier, Watchdog Analyzer & Test Coverage
+- core.production: Mechanical CAD, BOM Optimizer, Harness Sizer, Report Generator, Presentation Exporter, FEA Simulation, BOM Stock Tracker, Screw Boss Fasteners, Airflow Calculator, Snap-Fit Joints & Flexure Hinges
+- core.infra: RAG, Memory, Cache, Telemetry, Voice, Knowledge Graph, Guardrails, Plugins, Theme Manager, Autocomplete, Consensus Matrix, Pareto Frontier, Context Pruner, Circuit Breaker, Token Budget, Ensemble Aggregator, Memory Compactor, Adaptive Backoff & System Prompt Builder
 """
 
 from core.engine.runner import run_agent_task
@@ -17,6 +17,7 @@ from core.engine.arena import run_agent_arena
 from core.engine.dag_executor import global_dag_executor
 from core.engine.cost_router import route_task_to_optimal_model
 from core.engine.agent_telemetry import global_agent_telemetry
+from core.engine.critical_path import calculate_critical_path
 
 from core.hardware.schematics import parse_kicad_schematic, update_kicad_component_value
 from core.hardware.datasheet import extract_datasheet
@@ -37,6 +38,7 @@ from core.hardware.spice_transpiler import transpile_kicad_to_spice
 from core.hardware.kicad_drc_rules import generate_kicad_dru_file
 from core.hardware.bom_sensitivity import analyze_bom_cost_sensitivity
 from core.hardware.footprint_crosscheck import crosscheck_footprint_pinout
+from core.hardware.trace_length_matching import calculate_length_matching
 
 from core.software.executor import execute_command, compile_c, compile_cpp
 from core.software.self_heal import auto_compile_and_fix
@@ -51,6 +53,7 @@ from core.software.static_analyzer import audit_firmware_security
 from core.software.flash_partition import calculate_flash_partitions
 from core.software.ota_verifier import verify_firmware_binary
 from core.software.watchdog_analyzer import analyze_crash_dump
+from core.software.test_coverage import generate_lcov_coverage_report
 
 from core.production.mechanical import generate_openscad_enclosure, recommend_slicer_settings
 from core.production.battery import calculate_battery_lifespan
@@ -66,6 +69,7 @@ from core.production.bom_stock_tracker import check_bom_supply_chain_risks
 from core.production.fasteners import calculate_screw_boss_dimensions
 from core.production.airflow_calculator import calculate_enclosure_ventilation
 from core.production.snap_fit import calculate_snap_fit_joint
+from core.production.flexure_hinge import calculate_flexure_hinge
 
 from core.infra.profile import load_user_profile, save_user_profile, build_personalized_system_prompt
 from core.infra.cache import get_cache_metrics
@@ -87,3 +91,4 @@ from core.infra.token_budget import global_token_budget
 from core.infra.ensemble_aggregator import aggregate_ensemble_responses
 from core.infra.memory_compactor import compact_agent_memory
 from core.infra.adaptive_backoff import calculate_adaptive_backoff_delay
+from core.infra.system_prompt_builder import build_personalized_engineer_prompt

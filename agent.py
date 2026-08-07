@@ -103,6 +103,11 @@ from core.production.snap_fit import calculate_snap_fit_joint
 from core.engine.agent_telemetry import global_agent_telemetry
 from core.hardware.footprint_crosscheck import crosscheck_footprint_pinout
 from core.infra.adaptive_backoff import calculate_adaptive_backoff_delay
+from core.software.test_coverage import generate_lcov_coverage_report
+from core.production.flexure_hinge import calculate_flexure_hinge
+from core.engine.critical_path import calculate_critical_path
+from core.hardware.trace_length_matching import calculate_length_matching
+from core.infra.system_prompt_builder import build_personalized_engineer_prompt
 
 class Colors:
     CYAN = '\033[96m'
@@ -271,6 +276,11 @@ def print_help():
   {Colors.GREEN}/agent-telemetry{Colors.RESET}           -> Multi-agent step-by-step latency Gantt profiler
   {Colors.GREEN}/footprint-check{Colors.RESET}          -> Cross-check KiCad schematic symbol pins vs footprint pads
   {Colors.GREEN}/backoff{Colors.RESET}                    -> API rate limit exponential backoff jitter delay calculator
+  {Colors.GREEN}/coverage{Colors.RESET}                   -> C++ unit test line & branch LCOV coverage report generator
+  {Colors.GREEN}/flexure{Colors.RESET}                    -> 3D enclosure living hinge strain & bending radius calculator
+  {Colors.GREEN}/critical-path{Colors.RESET}              -> Multi-agent task dependency critical path bottleneck profiler
+  {Colors.GREEN}/trace-matching{Colors.RESET}             -> PCB high-speed differential pair trace length matching & skew tuning
+  {Colors.GREEN}/prompt-builder{Colors.RESET}             -> LLM system prompt context personalization builder
 {Colors.BOLD}{Colors.YELLOW}  ── System ──{Colors.RESET}
   {Colors.GREEN}/agent <name>{Colors.RESET}               -> Switch sub-agent (orchestrator, planner, software, electronics, reviewer)
   {Colors.GREEN}/model <name>{Colors.RESET}               -> Switch model (gpt-4o, gpt-4o-mini, claude-3-5-sonnet, gemini-1.5-flash)
@@ -1034,6 +1044,26 @@ def start_interactive_shell(default_agent: str = "orchestrator", default_model: 
                     res = calculate_adaptive_backoff_delay()
                     print(f"{Colors.CYAN}--- ADAPTIVE EXPONENTIAL BACKOFF CALCULATOR ---{Colors.RESET}")
                     print(f"  Calculated Jitter Delay: {res['calculated_jitter_delay_ms']} ms\n")
+                elif cmd == "/coverage":
+                    res = generate_lcov_coverage_report()
+                    print(f"{Colors.CYAN}--- C++ TEST LCOV COVERAGE REPORT ---{Colors.RESET}")
+                    print(f"  Line Coverage: {res['line_coverage_pct']}% | Gate: {res['quality_gate']}\n")
+                elif cmd == "/flexure":
+                    res = calculate_flexure_hinge()
+                    print(f"{Colors.CYAN}--- 3D FLEXURE HINGE STRESS CALCULATOR ---{Colors.RESET}")
+                    print(f"  Fatigue Life Rating: {res['fatigue_life_rating']}\n")
+                elif cmd == "/critical-path":
+                    res = calculate_critical_path()
+                    print(f"{Colors.CYAN}--- MULTI-AGENT CRITICAL PATH PROFILER ---{Colors.RESET}")
+                    print(f"  Critical Duration: {res['critical_path_duration_ms']} ms | Path: {' -> '.join(res['critical_path_nodes'])}\n")
+                elif cmd == "/trace-matching":
+                    res = calculate_length_matching()
+                    print(f"{Colors.CYAN}--- PCB TRACE LENGTH MATCHING CALCULATOR ---{Colors.RESET}")
+                    print(f"  Mismatch: {res['mismatch_mm']} mm | Status: {res['length_matching_status']}\n")
+                elif cmd == "/prompt-builder":
+                    res = build_personalized_engineer_prompt()
+                    print(f"{Colors.CYAN}--- SYSTEM PROMPT PERSONALIZATION BUILDER ---{Colors.RESET}")
+                    print(f"  Role: {res['agent_role']} | Target MCU: {res['target_mcu']}\n")
                 # --- Component & Datasheet Tools ---
                 elif cmd == "/datasheet":
                     if len(parts) > 1:

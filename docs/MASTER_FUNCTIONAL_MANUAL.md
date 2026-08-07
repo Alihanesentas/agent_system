@@ -144,6 +144,11 @@ Katman 5 (Persistence & Infrastructure): ChromaDB RAG Engine, SQLite Proje Hafı
 - **`/agent-telemetry`**: Alt agent'ların adım adım çalışma sürelerini (ms) ve gecikme profilini raporlar.
 - **`/footprint-check`**: KiCad şematik sembol pinleri ile PCB footprint pad düzenini çapraz denetler.
 - **`/backoff`**: LLM API 429 Rate Limit durumlarında üssel geri çekilme (jitter delay) süresini hesaplar.
+- **`/coverage`**: C++ birim test satır ve dallanma LCOV kapsama oranını (%) raporlar.
+- **`/flexure`**: 3D kutu bükülebilir mafsal (flexure living hinge) gerilim ve bükülme yarıçapı sınırını hesaplar.
+- **`/critical-path`**: Alt agent görev bağımlılık grafiğinde en uzun kritik yolu (bottleneck) analiz eder.
+- **`/trace-matching`**: PCB yüksek hızlı diferansiyel yol uzunluk eşlemesini (length matching) ve faz kayması dalga sayısını hesaplar.
+- **`/prompt-builder`**: Agent'lar için özelleştirilmiş sistem istemi (system prompt) bağlamını dinamik oluşturur.
 - **`/report`**: Tüm projenin eksiksiz PDF/Markdown mühendislik raporunu çıkarır.
 
 ### 🛡️ Mimari Dayanıklılık, Güvenlik & Altyapı Komutları
