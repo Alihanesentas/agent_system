@@ -16,6 +16,12 @@ from core.memory import SlidingWindowMemory
 from core.schematics import parse_kicad_schematic, update_kicad_component_value, parse_bom_csv
 from core.vision import encode_image_to_base64
 from core.rag import index_file, index_directory, search as rag_search, get_index_stats
+from core.executor import execute_command, compile_c, compile_cpp, run_make
+from core.longmem import remember, recall, forget, get_memory_stats, recall_for_prompt
+from core.pipeline import AgentPipeline, embedded_dev_pipeline
+from core.notify import notify_all
+from core.git_ops import git_status, git_diff, git_log, git_auto_commit
+from core.plugins import list_plugins, execute_plugin, load_plugins_from_dir
 
 class Colors:
     CYAN = '\033[96m'
@@ -73,7 +79,22 @@ def print_help():
   {Colors.GREEN}/index <path>{Colors.RESET}                -> Index file or directory into RAG vector store
   {Colors.GREEN}/search <query>{Colors.RESET}              -> Semantic search across indexed documents (RAG)
   {Colors.GREEN}/rag-stats{Colors.RESET}                   -> View RAG index statistics
-  {Colors.GREEN}/agent <name>{Colors.RESET}               -> Switch sub-agent (orchestrator, planner, software, electronics, reviewer, tutor)
+{Colors.BOLD}{Colors.YELLOW}  ── Build & Execute ──{Colors.RESET}
+  {Colors.GREEN}/run <command>{Colors.RESET}               -> Execute a shell command (gcc, make, platformio, etc.)
+  {Colors.GREEN}/gcc <file.c>{Colors.RESET}                -> Compile a C source file with gcc
+  {Colors.GREEN}/make [target]{Colors.RESET}               -> Run make with optional target
+{Colors.BOLD}{Colors.YELLOW}  ── Long-Term Memory ──{Colors.RESET}
+  {Colors.GREEN}/remember <cat> <key> <val>{Colors.RESET}  -> Store a long-term memory (decision, component, pinout)
+  {Colors.GREEN}/recall [category]{Colors.RESET}           -> Recall stored memories
+  {Colors.GREEN}/forget <cat> <key>{Colors.RESET}          -> Delete a specific memory
+{Colors.BOLD}{Colors.YELLOW}  ── Pipeline & Automation ──{Colors.RESET}
+  {Colors.GREEN}/pipeline <task>{Colors.RESET}             -> Run embedded dev pipeline (planner→hw+sw→reviewer)
+  {Colors.GREEN}/notify <message>{Colors.RESET}            -> Send notification to Slack/Discord/Telegram
+  {Colors.GREEN}/git-status{Colors.RESET}                  -> Show git status
+  {Colors.GREEN}/git-commit <msg>{Colors.RESET}            -> Auto stage & commit all changes
+  {Colors.GREEN}/plugins{Colors.RESET}                     -> List registered plugins
+{Colors.BOLD}{Colors.YELLOW}  ── System ──{Colors.RESET}
+  {Colors.GREEN}/agent <name>{Colors.RESET}               -> Switch sub-agent (orchestrator, planner, software, electronics, reviewer)
   {Colors.GREEN}/model <name>{Colors.RESET}               -> Switch model (gpt-4o, gpt-4o-mini, claude-3-5-sonnet, gemini-1.5-flash)
   {Colors.GREEN}/memory{Colors.RESET}                     -> View sliding window context memory status
   {Colors.GREEN}/stats{Colors.RESET}                      -> View live token, cost, and latency statistics
@@ -237,8 +258,96 @@ def start_interactive_shell(default_agent: str = "orchestrator", default_model: 
                         limit = 5
                         agent = None
                     cli.cmd_logs(DummyArgs())
+                # --- Build & Execute ---
+                elif cmd == "/run":
+                    if len(parts) > 1:
+                        shell_cmd = user_input[5:].strip()
+                        print(f"{Colors.DIM}Executing: {shell_cmd}{Colors.RESET}")
+                        res = execute_command(shell_cmd)
+                        print(f"Return Code: {res['return_code']} | Time: {res.get('execution_time_ms', 0)}ms")
+                        if res.get("stdout"):
+                            print(res["stdout"][-2000:])
+                        if res.get("stderr"):
+                            print(f"{Colors.RED}{res['stderr'][-1000:]}{Colors.RESET}")
+                    else:
+                        print("Usage: /run <shell_command>")
+                elif cmd == "/gcc":
+                    if len(parts) > 1:
+                        res = compile_c(parts[1])
+                        print(f"{Colors.GREEN if res['status']=='success' else Colors.RED}{res}{Colors.RESET}")
+                    else:
+                        print("Usage: /gcc <source.c>")
+                elif cmd == "/make":
+                    target = parts[1] if len(parts) > 1 else ""
+                    res = run_make(target)
+                    print(f"{Colors.GREEN if res['status']=='success' else Colors.RED}{res.get('stdout','')}{res.get('stderr','')}{Colors.RESET}")
+                # --- Long-Term Memory ---
+                elif cmd == "/remember":
+                    if len(parts) > 3:
+                        cat, key, val = parts[1], parts[2], " ".join(parts[3:])
+                        res = remember(cat, key, val, agent_name=active_agent)
+                        print(f"{Colors.GREEN}✅ Stored: [{cat}] {key} = {val}{Colors.RESET}")
+                    else:
+                        print("Usage: /remember <category> <key> <value>  (categories: decision, component, pinout, design, config, note)")
+                elif cmd == "/recall":
+                    cat = parts[1] if len(parts) > 1 else None
+                    memories = recall(category=cat)
+                    print(f"{Colors.CYAN}--- LONG-TERM MEMORY ({len(memories)} entries) ---{Colors.RESET}")
+                    for m in memories[:15]:
+                        print(f"  [{m['category'].upper()}] {m['key']}: {m['value']}")
+                    print()
+                elif cmd == "/forget":
+                    if len(parts) > 2:
+                        res = forget(parts[1], parts[2])
+                        print(f"{Colors.GREEN}✅ {res}{Colors.RESET}")
+                    else:
+                        print("Usage: /forget <category> <key>")
+                # --- Pipeline & Automation ---
+                elif cmd == "/pipeline":
+                    if len(parts) > 1:
+                        task = " ".join(parts[1:])
+                        print(f"{Colors.CYAN}🔀 Running Embedded Dev Pipeline: Planner → [HW + SW] → Reviewer{Colors.RESET}")
+                        pipeline = embedded_dev_pipeline()
+                        result = pipeline.execute(task)
+                        print(f"{Colors.GREEN}✅ Pipeline completed in {result['total_elapsed_ms']}ms ({result['layers_executed']} layers){Colors.RESET}")
+                        for name, info in result["node_results"].items():
+                            emoji = "✅" if info["status"] == "success" else "❌"
+                            print(f"  {emoji} {name.upper()} [{info['agent']}] ({info['elapsed_ms']}ms)")
+                            print(f"     {Colors.DIM}{info['output'][:150]}...{Colors.RESET}")
+                        print()
+                    else:
+                        print("Usage: /pipeline <task description>")
+                elif cmd == "/notify":
+                    if len(parts) > 1:
+                        msg = " ".join(parts[1:])
+                        res = notify_all(msg)
+                        print(f"{Colors.GREEN}📨 Notification results: {res}{Colors.RESET}")
+                    else:
+                        print("Usage: /notify <message>")
+                elif cmd == "/git-status":
+                    res = git_status()
+                    print(f"{Colors.CYAN}--- GIT STATUS ---{Colors.RESET}")
+                    print(res.get("stdout", "Clean working tree"))
+                elif cmd == "/git-commit":
+                    if len(parts) > 1:
+                        msg = " ".join(parts[1:])
+                        res = git_auto_commit(msg)
+                        print(f"{Colors.GREEN}✅ {res.get('stdout', '')}{Colors.RESET}")
+                    else:
+                        print("Usage: /git-commit <commit message>")
+                elif cmd == "/plugins":
+                    load_plugins_from_dir()
+                    plugins = list_plugins()
+                    print(f"{Colors.CYAN}--- REGISTERED PLUGINS ({len(plugins)}) ---{Colors.RESET}")
+                    for p in plugins:
+                        print(f"  • {p['name']} [{p['category']}]: {p['description']}")
+                    if not plugins:
+                        print(f"  {Colors.DIM}No plugins loaded. Add .py files to plugins/ directory.{Colors.RESET}")
+                    print()
                 else:
                     print(f"{Colors.RED}Unknown command '{cmd}'. Type /help for available commands.{Colors.RESET}")
+            # --- NEW COMMAND HANDLERS (inserted before general prompt) ---
+            # This block is reached only for non-slash inputs (regular prompts)
             else:
                 memory.add_message("user", user_input)
                 pruned_prompt, mem_metrics = memory.get_pruned_context(system_prompt=f"Role: {active_agent}", model_name=active_model)

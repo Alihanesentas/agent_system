@@ -13,6 +13,7 @@ subagent_tracker/backend/tracker.db
 subagent_tracker/logs/
 subagent_tracker/backend/logs/
 rag_store/
+memory_store.db
 
 # Frontend dependencies & build output
 node_modules/
