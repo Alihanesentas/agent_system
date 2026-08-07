@@ -118,6 +118,9 @@ from core.software.bootloader_checker import audit_bootloader_config
 from core.production.cable_gland import calculate_cable_gland_dimensions
 from core.infra.agent_health import get_system_subpackage_health
 from core.infra.token_minimizer import count_and_estimate_tokens
+from core.infra.dspy_optimizer import global_dspy_optimizer
+from core.engine.state_machine import global_agent_fsm
+from core.hardware.genetic_optimizer import run_genetic_hardware_optimization
 
 class Colors:
     CYAN = '\033[96m'
@@ -301,6 +304,9 @@ def print_help():
   {Colors.GREEN}/cable-gland{Colors.RESET}                -> 3D printed enclosure waterproof cable gland & strain relief sizer
   {Colors.GREEN}/agent-health{Colors.RESET}               -> Multi-agent system sub-package real-time health monitor
   {Colors.GREEN}/token-count <text>{Colors.RESET}          -> Count BPE tokens and estimate prompt costs per model tier
+  {Colors.GREEN}/dspy{Colors.RESET}                       -> DSPy-style automatic prompt optimizer & few-shot bootstrapper
+  {Colors.GREEN}/fsm{Colors.RESET}                        -> Sub-agent finite state machine (FSM) status & rollback
+  {Colors.GREEN}/genetic-hw{Colors.RESET}                 -> Multi-objective Pareto genetic hardware & PCB evolutionary optimizer
 {Colors.BOLD}{Colors.YELLOW}  ── System ──{Colors.RESET}
   {Colors.GREEN}/agent <name>{Colors.RESET}               -> Switch sub-agent (orchestrator, planner, software, electronics, reviewer)
   {Colors.GREEN}/model <name>{Colors.RESET}               -> Switch model (gpt-4o, gpt-4o-mini, claude-3-5-sonnet, gemini-1.5-flash)
@@ -1125,6 +1131,18 @@ def start_interactive_shell(default_agent: str = "orchestrator", default_model: 
                     res = count_and_estimate_tokens(t_in)
                     print(f"{Colors.CYAN}--- LLM PROMPT TOKEN COUNTER ---{Colors.RESET}")
                     print(f"  Chars: {res['char_length']} | Est. BPE Tokens: {res['estimated_bpe_tokens']} | GPT-4o Cost: ${res['estimated_costs_usd']['gpt-4o']}\n")
+                elif cmd == "/dspy":
+                    res = global_dspy_optimizer.compile_optimized_prompt("Design ESP32-S3 Board")
+                    print(f"{Colors.CYAN}--- DSPY PROMPT OPTIMIZER & FEW-SHOT BOOTSTRAPPER ---{Colors.RESET}")
+                    print(f"  Exemplars Bootstrapped: {res['bootstrapped_exemplars_count']} | Status: SUCCESS\n")
+                elif cmd == "/fsm":
+                    res = global_agent_fsm.transition_to("EXECUTING")
+                    print(f"{Colors.CYAN}--- SUB-AGENT FINITE STATE MACHINE (FSM) ---{Colors.RESET}")
+                    print(f"  Current State: {res['current_state']} | State History: {' -> '.join(res['history'])}\n")
+                elif cmd == "/genetic-hw":
+                    res = run_genetic_hardware_optimization()
+                    print(f"{Colors.CYAN}--- GENETIC HARDWARE PARETO OPTIMIZER ---{Colors.RESET}")
+                    print(f"  Generations: {res['generations_run']} | Fitness Score: {res['best_pareto_candidate']['fitness_score']}\n")
                 # --- Component & Datasheet Tools ---
                 elif cmd == "/datasheet":
                     if len(parts) > 1:

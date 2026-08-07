@@ -159,6 +159,9 @@ Katman 5 (Persistence & Infrastructure): ChromaDB RAG Engine, SQLite Proje Hafı
 - **`/cable-gland`**: 3D kutu harici kablo çıkışları için PG7/PG9/M12 su geçirmez rekor montaj delik çaplarını hesaplar.
 - **`/agent-health`**: Tüm 5 alt paketin ve 60+ modülün anlık sağlık durumunu ve icra başarım skorunu izler.
 - **`/token-count <text>`**: İstem metnindeki BPE token sayısını hesaplar ve model katmanlarına göre maliyeti tahmin eder.
+- **`/dspy`**: DSPy tarzı otonom prompt iyileştirici ve few-shot başarım örnek seti derleyicisi.
+- **`/fsm`**: Alt agent sonlu durum makinesi (FSM) durum takibi ve hata anında otonom durum geri alma (rollback).
+- **`/genetic-hw`**: Donanım, PCB yol uzunluğu, termal ısınma ve BOM maliyetini 50 jenerasyonda optimize eden genetik algoritma.
 - **`/report`**: Tüm projenin eksiksiz PDF/Markdown mühendislik raporunu çıkarır.
 
 ### 🛡️ Mimari Dayanıklılık, Güvenlik & Altyapı Komutları

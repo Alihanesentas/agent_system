@@ -1,11 +1,11 @@
 """
 Core Architectural Package Entrypoint.
 Provides backward-compatible re-exports for all sub-packages:
-- core.engine: Multi-Agent Pipeline, DAG Parallel Executor, Cost Router, Agent Telemetry & Critical Path
-- core.hardware: KiCad, SPICE, Pinout, Thermal, DRC, RF, Auto-Router, MCU Selector, Layer Stackup, KiCad 3D Models, SPICE Transpiler, DRC Rules, BOM Sensitivity, Footprint Crosscheck, Trace Length Matching, KiCad Subsheets & Solder Stencil
+- core.engine: Multi-Agent Pipeline, DAG Parallel Executor, Cost Router, Agent Telemetry, Critical Path & State Machine
+- core.hardware: KiCad, SPICE, Pinout, Thermal, DRC, RF, Auto-Router, MCU Selector, Layer Stackup, KiCad 3D Models, SPICE Transpiler, DRC Rules, BOM Sensitivity, Footprint Crosscheck, Trace Length Matching, KiCad Subsheets, Solder Stencil & Genetic Optimizer
 - core.software: Firmware, Unity Tests, Self-Healing, Edge AI, HIL Testing, Linter, Power Profiler, Static Security Scanner, Flash Partitions, OTA Verifier, Watchdog Analyzer, Test Coverage, Stack Guard & Bootloader Checker
 - core.production: Mechanical CAD, BOM Optimizer, Harness Sizer, Report Generator, Presentation Exporter, FEA Simulation, BOM Stock Tracker, Screw Boss Fasteners, Airflow Calculator, Snap-Fit Joints, Flexure Hinges, Gasket Sizer & Cable Glands
-- core.infra: RAG, Memory, Cache, Telemetry, Voice, Knowledge Graph, Guardrails, Plugins, Theme Manager, Autocomplete, Consensus Matrix, Pareto Frontier, Context Pruner, Circuit Breaker, Token Budget, Ensemble Aggregator, Memory Compactor, Adaptive Backoff, System Prompt Builder, Dead Letter Queue, Cost Forecast, Agent Health & Token Minimizer
+- core.infra: RAG, Memory, Cache, Telemetry, Voice, Knowledge Graph, Guardrails, Plugins, Theme Manager, Autocomplete, Consensus Matrix, Pareto Frontier, Context Pruner, Circuit Breaker, Token Budget, Ensemble Aggregator, Memory Compactor, Adaptive Backoff, System Prompt Builder, Dead Letter Queue, Cost Forecast, Agent Health, Token Minimizer & DSPy Optimizer
 """
 
 from core.engine.runner import run_agent_task
@@ -18,6 +18,7 @@ from core.engine.dag_executor import global_dag_executor
 from core.engine.cost_router import route_task_to_optimal_model
 from core.engine.agent_telemetry import global_agent_telemetry
 from core.engine.critical_path import calculate_critical_path
+from core.engine.state_machine import global_agent_fsm
 
 from core.hardware.schematics import parse_kicad_schematic, update_kicad_component_value
 from core.hardware.datasheet import extract_datasheet
@@ -41,6 +42,7 @@ from core.hardware.footprint_crosscheck import crosscheck_footprint_pinout
 from core.hardware.trace_length_matching import calculate_length_matching
 from core.hardware.kicad_subsheets import generate_hierarchical_subsheets
 from core.hardware.solder_stencil import calculate_solder_stencil_specs
+from core.hardware.genetic_optimizer import run_genetic_hardware_optimization
 
 from core.software.executor import execute_command, compile_c, compile_cpp
 from core.software.self_heal import auto_compile_and_fix
@@ -102,3 +104,4 @@ from core.infra.dead_letter_queue import global_dlq
 from core.infra.cost_forecast import forecast_token_costs
 from core.infra.agent_health import get_system_subpackage_health
 from core.infra.token_minimizer import count_and_estimate_tokens
+from core.infra.dspy_optimizer import global_dspy_optimizer
