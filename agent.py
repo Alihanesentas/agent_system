@@ -80,6 +80,9 @@ from core.infra.theme_manager import set_cli_theme
 from core.hardware.layer_stackup import calculate_pcb_stackup
 from core.production.presentation_exporter import export_project_presentation
 from core.infra.consensus_matrix import calculate_consensus_matrix
+from core.hardware.kicad_3d_models import analyze_3d_component_clearance
+from core.software.power_profiler import profile_firmware_power
+from core.infra.pareto_frontier import calculate_pareto_frontier
 
 class Colors:
     CYAN = '\033[96m'
@@ -225,6 +228,9 @@ def print_help():
   {Colors.GREEN}/stackup [layers]{Colors.RESET}          -> PCB dielectric layer stackup & USB 2.0 trace specs
   {Colors.GREEN}/slides{Colors.RESET}                      -> Export HTML presentation slide deck
   {Colors.GREEN}/consensus-matrix{Colors.RESET}         -> Multi-model consensus confidence matrix breakdown
+  {Colors.GREEN}/3d-clearance{Colors.RESET}               -> KiCad 3D STEP component height clearance audit
+  {Colors.GREEN}/power <code>{Colors.RESET}                -> Firmware energy consumption & battery life profiler
+  {Colors.GREEN}/pareto{Colors.RESET}                      -> Multi-model token cost vs latency Pareto frontier plotter
 {Colors.BOLD}{Colors.YELLOW}  ── System ──{Colors.RESET}
   {Colors.GREEN}/agent <name>{Colors.RESET}               -> Switch sub-agent (orchestrator, planner, software, electronics, reviewer)
   {Colors.GREEN}/model <name>{Colors.RESET}               -> Switch model (gpt-4o, gpt-4o-mini, claude-3-5-sonnet, gemini-1.5-flash)
@@ -888,6 +894,21 @@ def start_interactive_shell(default_agent: str = "orchestrator", default_model: 
                     res = calculate_consensus_matrix(c_prompt)
                     print(f"{Colors.CYAN}--- CONSENSUS CONFIDENCE MATRIX ---{Colors.RESET}")
                     print(f"  Agreement Rate: {res['consensus_agreement_rate']} | Models Voted: {res['total_models_voted']}\n")
+                elif cmd == "/3d-clearance":
+                    fps = ["QFN-56", "0805", "SOT-223"]
+                    res = analyze_3d_component_clearance(fps)
+                    print(f"{Colors.CYAN}--- KICAD 3D COMPONENT CLEARANCE AUDIT ---{Colors.RESET}")
+                    print(f"  Tallest Component: {res['tallest_component']} ({res['max_component_height_mm']}mm)")
+                    print(f"  Remaining Clearance: {res['remaining_clearance_mm']}mm ({res['clearance_safety']})\n")
+                elif cmd == "/power":
+                    c_in = " ".join(parts[1:]) if len(parts) > 1 else "void setup() { WiFi.begin(); esp_deep_sleep_start(); }"
+                    res = profile_firmware_power(c_in)
+                    print(f"{Colors.CYAN}--- FIRMWARE POWER & ENERGY PROFILER ---{Colors.RESET}")
+                    print(f"  Average Current: {res['average_current_ma']} mA | Est. Battery Life: {res['estimated_battery_days']} Days\n")
+                elif cmd == "/pareto":
+                    res = calculate_pareto_frontier()
+                    print(f"{Colors.CYAN}--- PARETO FRONTIER MODEL OPTIMIZER ---{Colors.RESET}")
+                    print(f"  Optimal Value Model: {res['optimal_value_model']} (Optimal Pareto Tradeoff)\n")
                 # --- Component & Datasheet Tools ---
                 elif cmd == "/datasheet":
                     if len(parts) > 1:

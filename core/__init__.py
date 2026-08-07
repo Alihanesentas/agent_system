@@ -2,10 +2,10 @@
 Core Architectural Package Entrypoint.
 Provides backward-compatible re-exports for all sub-packages:
 - core.engine: Multi-Agent Pipeline, DAG Parallel Executor & Cost Router
-- core.hardware: KiCad, SPICE, Pinout, Thermal, DRC, RF, Auto-Router, MCU Selector & Layer Stackup
-- core.software: Firmware, Unity Tests, Self-Healing, Edge AI, HIL Testing & Linter
+- core.hardware: KiCad, SPICE, Pinout, Thermal, DRC, RF, Auto-Router, MCU Selector, Layer Stackup & KiCad 3D Models
+- core.software: Firmware, Unity Tests, Self-Healing, Edge AI, HIL Testing, Linter & Power Profiler
 - core.production: Mechanical CAD, BOM Optimizer, Harness Sizer, Report Generator & Presentation Exporter
-- core.infra: RAG, Memory, Cache, Telemetry, Voice, Knowledge Graph, Guardrails, Plugins, Theme Manager, Autocomplete & Consensus Matrix
+- core.infra: RAG, Memory, Cache, Telemetry, Voice, Knowledge Graph, Guardrails, Plugins, Theme Manager, Autocomplete, Consensus Matrix & Pareto Frontier
 """
 
 from core.engine.runner import run_agent_task
@@ -31,6 +31,7 @@ from core.hardware.vision import encode_image_to_base64
 from core.hardware.autorouter import auto_route_pcb_netlist
 from core.hardware.mcu_selector import recommend_mcu_for_project
 from core.hardware.layer_stackup import calculate_pcb_stackup
+from core.hardware.kicad_3d_models import analyze_3d_component_clearance
 
 from core.software.executor import execute_command, compile_c, compile_cpp
 from core.software.self_heal import auto_compile_and_fix
@@ -40,6 +41,7 @@ from core.software.ota_builder import generate_ota_update_manifest
 from core.software.embedded_test_gen import generate_unity_c_test
 from core.software.hil_testing import run_hil_hardware_test
 from core.software.linter import format_code_snippet
+from core.software.power_profiler import profile_firmware_power
 
 from core.production.mechanical import generate_openscad_enclosure, recommend_slicer_settings
 from core.production.battery import calculate_battery_lifespan
@@ -64,3 +66,4 @@ from core.infra.guardrails import sanitize_and_verify_code
 from core.infra.plugin_loader import discover_and_reload_plugins
 from core.infra.theme_manager import set_cli_theme
 from core.infra.consensus_matrix import calculate_consensus_matrix
+from core.infra.pareto_frontier import calculate_pareto_frontier

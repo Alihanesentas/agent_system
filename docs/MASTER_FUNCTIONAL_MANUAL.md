@@ -121,6 +121,9 @@ Katman 5 (Persistence & Infrastructure): ChromaDB RAG Engine, SQLite Proje Hafı
 - **`/stackup [layers]`**: 2, 4, 6, ve 8 katmanlı PCB katman dizilimi (dielectric stackup) ve USB 2.0 90Ω diferansiyel yol genişliğini hesaplar.
 - **`/slides`**: Proje dokümantasyonunu ve Gantt grafiklerini koyu temalı interaktif HTML sunum slaytına dönüştürür.
 - **`/consensus-matrix`**: Çoklu model güven skorları ve oy dağılımı matris analizi sunar.
+- **`/3d-clearance`**: KiCad 3D STEP bileşen yüksekliklerini analiz eder ve kutu kapağı çakışma kontrolü yapar.
+- **`/power <code>`**: Firmware C++ kodunun ortalama akım çekimini (mA) ve pil çalışma süresini hesaplar.
+- **`/pareto`**: Modellere ait gecikme (ms), maliyet ($) ve doğruluk skoru Pareto optimal eğri analizini sunar.
 - **`/report`**: Tüm projenin eksiksiz PDF/Markdown mühendislik raporunu çıkarır.
 
 ### 🛡️ Mimari Dayanıklılık, Güvenlik & Altyapı Komutları
