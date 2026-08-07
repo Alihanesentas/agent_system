@@ -134,6 +134,11 @@ Katman 5 (Persistence & Infrastructure): ChromaDB RAG Engine, SQLite Proje Hafı
 - **`/fasteners [type]`**: 3D kutu vida yuvası (screw boss M2-M4) kılavuz delik çapı ve duvar kalınlığını hesaplar.
 - **`/circuit-breaker`**: LLM API bağlantı kopmalarında otomatik alternatif modele geçen devre kesici durumunu gösterir.
 - **`/budget`**: Aylık/günlük LLM token harcama tutarını ($) ve bütçe uyarı sınırını takip eder.
+- **`/ota-verify`**: Firmware binary dosyasının SHA-256 kriptografik imzasını ve magic başlığını doğrular.
+- **`/airflow`**: 3D kutunun pasif havalandırma ızgara alanını (mm²) ve gerekli CFM fan hava akışını hesaplar.
+- **`/ensemble`**: Paralel koşan modellerin yanıtlarını çoğunluk konsensüs oylaması ile birleştirir.
+- **`/bom-sensitivity`**: Enflasyon ve tedarik krizlerinde BOM maliyet salınımlarını Monte Carlo simülasyonu ile analiz eder.
+- **`/compact-memory`**: SQLite uzun vadeli hafıza kayıtlarını ve ChromaDB vektör veri tabanını sıkıştırarak disk alanını boşaltır.
 - **`/report`**: Tüm projenin eksiksiz PDF/Markdown mühendislik raporunu çıkarır.
 
 ### 🛡️ Mimari Dayanıklılık, Güvenlik & Altyapı Komutları

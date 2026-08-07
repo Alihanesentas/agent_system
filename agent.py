@@ -93,6 +93,11 @@ from core.software.flash_partition import calculate_flash_partitions
 from core.production.fasteners import calculate_screw_boss_dimensions
 from core.infra.circuit_breaker import global_circuit_breaker
 from core.infra.token_budget import global_token_budget
+from core.software.ota_verifier import verify_firmware_binary
+from core.production.airflow_calculator import calculate_enclosure_ventilation
+from core.infra.ensemble_aggregator import aggregate_ensemble_responses
+from core.hardware.bom_sensitivity import analyze_bom_cost_sensitivity
+from core.infra.memory_compactor import compact_agent_memory
 
 class Colors:
     CYAN = '\033[96m'
@@ -251,6 +256,11 @@ def print_help():
   {Colors.GREEN}/fasteners [type]{Colors.RESET}           -> 3D enclosure metric screw boss thread sizer (M2-M4)
   {Colors.GREEN}/circuit-breaker{Colors.RESET}           -> Multi-model API failure fallback & circuit breaker status
   {Colors.GREEN}/budget{Colors.RESET}                      -> Token expenditure dollar budget tracker & alert monitor
+  {Colors.GREEN}/ota-verify{Colors.RESET}                  -> Cryptographic OTA binary SHA-256 integrity verifier
+  {Colors.GREEN}/airflow{Colors.RESET}                     -> 3D enclosure thermal ventilation slot & CFM airflow calculator
+  {Colors.GREEN}/ensemble{Colors.RESET}                    -> Multi-model dynamic response ensemble aggregator
+  {Colors.GREEN}/bom-sensitivity{Colors.RESET}             -> Monte Carlo BOM component cost sensitivity & inflation analyzer
+  {Colors.GREEN}/compact-memory{Colors.RESET}             -> Compact SQLite long-term logs & vector database storage
 {Colors.BOLD}{Colors.YELLOW}  ── System ──{Colors.RESET}
   {Colors.GREEN}/agent <name>{Colors.RESET}               -> Switch sub-agent (orchestrator, planner, software, electronics, reviewer)
   {Colors.GREEN}/model <name>{Colors.RESET}               -> Switch model (gpt-4o, gpt-4o-mini, claude-3-5-sonnet, gemini-1.5-flash)
@@ -974,6 +984,26 @@ def start_interactive_shell(default_agent: str = "orchestrator", default_model: 
                     res = global_token_budget.add_cost(0.005)
                     print(f"{Colors.CYAN}--- TOKEN COST BUDGET TRACKER ---{Colors.RESET}")
                     print(f"  Spent: ${res['current_spent_usd']} / ${res['monthly_cap_usd']} ({res['budget_used_pct']}% Used)\n")
+                elif cmd == "/ota-verify":
+                    res = verify_firmware_binary()
+                    print(f"{Colors.CYAN}--- OTA BINARY INTEGRITY VERIFIER ---{Colors.RESET}")
+                    print(f"  Result: {res['verification_result']} | SHA256: {res['sha256'][:16]}...\n")
+                elif cmd == "/airflow":
+                    res = calculate_enclosure_ventilation()
+                    print(f"{Colors.CYAN}--- 3D ENCLOSURE AIRFLOW CALCULATOR ---{Colors.RESET}")
+                    print(f"  Airflow CFM: {res['required_airflow_cfm']} | Cooling: {res['cooling_type']}\n")
+                elif cmd == "/ensemble":
+                    res = aggregate_ensemble_responses([{"answer": "PASS"}, {"answer": "PASS"}, {"answer": "PASS"}])
+                    print(f"{Colors.CYAN}--- MULTI-MODEL ENSEMBLE AGGREGATOR ---{Colors.RESET}")
+                    print(f"  Winner: {res['winning_answer']} | Agreement Rate: {res['agreement_rate_pct']}%\n")
+                elif cmd == "/bom-sensitivity":
+                    res = analyze_bom_cost_sensitivity()
+                    print(f"{Colors.CYAN}--- BOM COST SENSITIVITY ANALYZER ---{Colors.RESET}")
+                    print(f"  Base Cost: ${res['base_unit_cost_usd']} | Simulated Range: ${res['simulated_min_cost_usd']} - ${res['simulated_max_cost_usd']}\n")
+                elif cmd == "/compact-memory":
+                    res = compact_agent_memory()
+                    print(f"{Colors.CYAN}--- AGENT MEMORY COMPACTOR ---{Colors.RESET}")
+                    print(f"  Space Freed: {res['disk_space_freed_mb']} MB ({res['memory_compacted_pct']}% Compacted)\n")
                 # --- Component & Datasheet Tools ---
                 elif cmd == "/datasheet":
                     if len(parts) > 1:
