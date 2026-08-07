@@ -126,6 +126,10 @@ from core.software.docker_k8s import generate_docker_k8s_manifests
 from core.software.uml_generator import generate_uml_architecture_diagram
 from core.software.db_migration import generate_db_schema_and_migrations
 from core.software.cloud_devops import generate_devops_terraform_config
+from core.computer.web_stack import generate_web_api_architecture
+from core.computer.microservices import generate_microservice_proto
+from core.computer.frontend_gen import generate_react_component
+from core.computer.code_complexity import audit_code_complexity
 
 class Colors:
     CYAN = '\033[96m'
@@ -317,6 +321,9 @@ def print_help():
   {Colors.GREEN}/uml [system]{Colors.RESET}                -> Software UML sequence & class diagram generator (Mermaid)
   {Colors.GREEN}/db-schema [table]{Colors.RESET}           -> Database PostgreSQL DDL schema & migration generator
   {Colors.GREEN}/devops [project]{Colors.RESET}            -> Cloud AWS Terraform HCL infrastructure & CI/CD generator
+  {Colors.GREEN}/proto [service]{Colors.RESET}             -> Microservices gRPC protobuf3 & event bus schema generator
+  {Colors.GREEN}/react [component]{Colors.RESET}           -> Modern React Vite / Next.js TSX component boilerplate generator
+  {Colors.GREEN}/complexity <code>{Colors.RESET}          -> AST cyclomatic code complexity & maintainability index auditor
 {Colors.BOLD}{Colors.YELLOW}  ── System ──{Colors.RESET}
   {Colors.GREEN}/agent <name>{Colors.RESET}               -> Switch sub-agent (orchestrator, planner, software, electronics, reviewer)
   {Colors.GREEN}/model <name>{Colors.RESET}               -> Switch model (gpt-4o, gpt-4o-mini, claude-3-5-sonnet, gemini-1.5-flash)
@@ -1178,6 +1185,21 @@ def start_interactive_shell(default_agent: str = "orchestrator", default_model: 
                     res = generate_devops_terraform_config(proj)
                     print(f"{Colors.CYAN}--- CLOUD TERRAFORM & DEVOPS GENERATOR ---{Colors.RESET}")
                     print(f"  Project: {res['project_name']} | Resources: {res['resources_created']}\n")
+                elif cmd == "/proto":
+                    svc = parts[1] if len(parts) > 1 else "UserService"
+                    res = generate_microservice_proto(svc)
+                    print(f"{Colors.CYAN}--- GRPC PROTOBUF MICROSERVICE GENERATOR ---{Colors.RESET}")
+                    print(f"  Service: {res['service_name']} | Status: gRPC Proto3 Definition Generated\n")
+                elif cmd == "/react":
+                    comp = parts[1] if len(parts) > 1 else "UserProfileCard"
+                    res = generate_react_component(comp)
+                    print(f"{Colors.CYAN}--- REACT TSX COMPONENT BOILERPLATE GENERATOR ---{Colors.RESET}")
+                    print(f"  Component: {res['component_name']} | Status: React TSX Generated\n")
+                elif cmd == "/complexity":
+                    c_in = " ".join(parts[1:]) if len(parts) > 1 else "def foo(x):\n  if x > 0:\n    return True\n  return False"
+                    res = audit_code_complexity(c_in)
+                    print(f"{Colors.CYAN}--- AST CODE COMPLEXITY AUDITOR ---{Colors.RESET}")
+                    print(f"  Cyclomatic Score: {res['cyclomatic_complexity']} | Grade: {res['maintainability_grade']}\n")
                 # --- Component & Datasheet Tools ---
                 elif cmd == "/datasheet":
                     if len(parts) > 1:

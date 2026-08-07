@@ -49,19 +49,17 @@ Layer 5 (Persistence & Infrastructure): ChromaDB RAG Engine, SQLite Long-Term Me
   - `footprint_crosscheck.py`: `/footprint-check` Symbol vs Footprint Pad Cross-Checker
   - `trace_length_matching.py`: `/trace-matching` Differential Pair Length Matching
   - `genetic_optimizer.py`: `/genetic-hw` Multi-Objective Genetic Hardware Optimizer
-- **`core/software/`**: Firmware, Testing & AI Engines
+- **`core/computer/`**: Full-Stack Web, Microservices, Frontend & Computer Science Engines
+  - `web_stack.py`: `/web-stack` Full-Stack FastAPI / Express REST API Generator
+  - `microservices.py`: `/proto` gRPC Protobuf3 & Message Queue Bus Generator
+  - `frontend_gen.py`: `/react` React Vite / Next.js TSX Component Scaffolding
+  - `code_complexity.py`: `/complexity` AST Cyclomatic Code Complexity Auditor
+- **`core/software/`**: Firmware, Testing, DevOps & Container Engines
   - `executor.py`: Shell Runner for gcc / make / platformio
-  - `self_heal.py`: `/heal` Self-Healing Build Repair Loop
-  - `hil_testing.py`: `/hil` Hardware-in-the-Loop Physical Board Test Engine
-  - `embedded_test_gen.py`: `/unittest-gen` Unity C Unit Test Generator
-  - `edge_ai.py`: `/edge-ai` TinyML SRAM Calculator & ESP-DL Wrapper
-  - `ota_builder.py`: `/ota` Firmware OTA Update Manifest Generator
-  - `ota_verifier.py`: `/ota-verify` SHA-256 Binary Integrity Verifier
-  - `watchdog_analyzer.py`: `/watchdog` CPU Panic Crash Dump & Watchdog Analyzer
-  - `static_analyzer.py`: `/security` Static C++ Security & Memory Leak Scanner
-  - `test_coverage.py`: `/coverage` C++ Unit Test LCOV Coverage Report Generator
-  - `stack_guard.py`: `/stack-guard` FreeRTOS Task Stack Overflow Guard
-  - `bootloader_checker.py`: `/bootloader-check` Firmware Bootloader Offset Auditor
+  - `docker_k8s.py`: `/docker-gen` Dockerfile & Kubernetes Deployment Manifest Generator
+  - `cloud_devops.py`: `/devops` AWS Terraform HCL & GitHub Actions CI/CD Pipeline
+  - `uml_generator.py`: `/uml` Mermaid UML Sequence Diagram Generator
+  - `db_migration.py`: `/db-schema` PostgreSQL DDL Schema & SQL Migration Generator
 - **`core/production/`**: CAD, Mechanical & Production Planning Tools
   - `mechanical.py`: `/cad` OpenSCAD 3D Enclosure Generator & Slicer Recommender
   - `fasteners.py`: `/fasteners` 3D Printed Screw Boss Thread Sizer (M2-M4)
