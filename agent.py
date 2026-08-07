@@ -83,6 +83,11 @@ from core.infra.consensus_matrix import calculate_consensus_matrix
 from core.hardware.kicad_3d_models import analyze_3d_component_clearance
 from core.software.power_profiler import profile_firmware_power
 from core.infra.pareto_frontier import calculate_pareto_frontier
+from core.hardware.spice_transpiler import transpile_kicad_to_spice
+from core.software.static_analyzer import audit_firmware_security
+from core.production.fea_simulation import run_mechanical_fea_simulation
+from core.production.bom_stock_tracker import check_bom_supply_chain_risks
+from core.infra.context_pruner import compress_prompt_context
 
 class Colors:
     CYAN = '\033[96m'
@@ -231,6 +236,11 @@ def print_help():
   {Colors.GREEN}/3d-clearance{Colors.RESET}               -> KiCad 3D STEP component height clearance audit
   {Colors.GREEN}/power <code>{Colors.RESET}                -> Firmware energy consumption & battery life profiler
   {Colors.GREEN}/pareto{Colors.RESET}                      -> Multi-model token cost vs latency Pareto frontier plotter
+  {Colors.GREEN}/spice-transpile{Colors.RESET}             -> Transpile KiCad schematic netlist into raw SPICE .cir
+  {Colors.GREEN}/security <code>{Colors.RESET}             -> Firmware static security & memory leak audit scanner
+  {Colors.GREEN}/fea [force_N]{Colors.RESET}               -> 3D mechanical FEA stress & deformation simulator
+  {Colors.GREEN}/supply-risk{Colors.RESET}                 -> Multi-vendor BOM stock availability & EOL risk alert
+  {Colors.GREEN}/prune <text>{Colors.RESET}                 -> LLM prompt compression & context pruning engine
 {Colors.BOLD}{Colors.YELLOW}  ── System ──{Colors.RESET}
   {Colors.GREEN}/agent <name>{Colors.RESET}               -> Switch sub-agent (orchestrator, planner, software, electronics, reviewer)
   {Colors.GREEN}/model <name>{Colors.RESET}               -> Switch model (gpt-4o, gpt-4o-mini, claude-3-5-sonnet, gemini-1.5-flash)
@@ -909,6 +919,29 @@ def start_interactive_shell(default_agent: str = "orchestrator", default_model: 
                     res = calculate_pareto_frontier()
                     print(f"{Colors.CYAN}--- PARETO FRONTIER MODEL OPTIMIZER ---{Colors.RESET}")
                     print(f"  Optimal Value Model: {res['optimal_value_model']} (Optimal Pareto Tradeoff)\n")
+                elif cmd == "/spice-transpile":
+                    res = transpile_kicad_to_spice([{"ref": "R1", "val": "10k", "n1": "IN", "n2": "OUT"}])
+                    print(f"{Colors.CYAN}--- KICAD TO SPICE NETLIST TRANSPILER ---{Colors.RESET}")
+                    print(f"  Netlist Generated for: {res['circuit_name']} ({res['components_count']} components)\n")
+                elif cmd == "/security":
+                    c_in = " ".join(parts[1:]) if len(parts) > 1 else "strcpy(buf, input); malloc(100);"
+                    res = audit_firmware_security(c_in)
+                    print(f"{Colors.CYAN}--- FIRMWARE STATIC SECURITY AUDIT ---{Colors.RESET}")
+                    print(f"  Status: {res['status'].upper()} | Total Findings: {res['total_findings']}\n")
+                elif cmd == "/fea":
+                    f_in = float(parts[1]) if len(parts) > 1 and parts[1].replace('.','',1).isdigit() else 50.0
+                    res = run_mechanical_fea_simulation(force_newtons=f_in)
+                    print(f"{Colors.CYAN}--- 3D MECHANICAL FEA STRESS SIMULATOR ---{Colors.RESET}")
+                    print(f"  Peak Stress: {res['peak_von_mises_stress_mpa']} MPa | Safety Factor: {res['safety_factor']} ({res['structural_status']})\n")
+                elif cmd == "/supply-risk":
+                    res = check_bom_supply_chain_risks(["ESP32-S3", "AMS1117-3.3", "EOL_OLD_CHIP"])
+                    print(f"{Colors.CYAN}--- MULTI-VENDOR BOM SUPPLY RISK ALERT ---{Colors.RESET}")
+                    print(f"  Supply Health: {res['supply_chain_health']} | High Risk Parts: {res['high_risk_parts_count']}\n")
+                elif cmd == "/prune":
+                    t_in = " ".join(parts[1:]) if len(parts) > 1 else "# comment\nvoid setup() { Serial.begin(115200); }"
+                    res = compress_prompt_context(t_in)
+                    print(f"{Colors.CYAN}--- LLM CONTEXT PRUNING ENGINE ---{Colors.RESET}")
+                    print(f"  Original: {res['original_char_length']} chars | Savings: {res['token_savings_pct']}%\n")
                 # --- Component & Datasheet Tools ---
                 elif cmd == "/datasheet":
                     if len(parts) > 1:

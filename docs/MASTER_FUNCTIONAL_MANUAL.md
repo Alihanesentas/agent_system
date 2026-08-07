@@ -124,6 +124,11 @@ Katman 5 (Persistence & Infrastructure): ChromaDB RAG Engine, SQLite Proje Hafı
 - **`/3d-clearance`**: KiCad 3D STEP bileşen yüksekliklerini analiz eder ve kutu kapağı çakışma kontrolü yapar.
 - **`/power <code>`**: Firmware C++ kodunun ortalama akım çekimini (mA) ve pil çalışma süresini hesaplar.
 - **`/pareto`**: Modellere ait gecikme (ms), maliyet ($) ve doğruluk skoru Pareto optimal eğri analizini sunar.
+- **`/spice-transpile`**: KiCad şematik netlist verisini doğrudan SPICE `.cir` simülasyon dosyasına dönüştürür.
+- **`/security <code>`**: C++ firmware kodundaki bellek sızıntılarını ve güvensiz fonksiyonları statik tarar.
+- **`/fea [force_N]`**: 3D basılı kutunun mekanik gerilim (FEA Stress) ve deformasyon simülasyonunu yapar.
+- **`/supply-risk`**: BOM parçalarının küresel tedarik zinciri stok durumunu ve EOL (üretim sonu) risklerini tarar.
+- **`/prune <text>`**: LLM prompt bağlamını %60 oranında sıkıştırarak token maliyetini düşürür.
 - **`/report`**: Tüm projenin eksiksiz PDF/Markdown mühendislik raporunu çıkarır.
 
 ### 🛡️ Mimari Dayanıklılık, Güvenlik & Altyapı Komutları
