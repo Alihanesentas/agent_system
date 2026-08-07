@@ -32,6 +32,7 @@ Layer 5 (Persistence & Infrastructure): ChromaDB RAG Engine, SQLite Long-Term Me
   - `state_machine.py`: `/fsm` Finite State Machine & Rollback Engine
   - `critical_path.py`: `/critical-path` Critical Bottleneck Path Profiler
   - `agent_telemetry.py`: `/agent-telemetry` Sub-Agent Latency Profiler
+  - `llm_fallback.py`: `/smart` LLM Fallback Smart Dispatch Engine — ENGINE_REGISTRY'de eşleşme bulunamazsa LLM'in kendi Python scripti üretip sandbox'ta çalıştırmasını sağlar. 50+ kayıtlı 0-token engine ve fallback code generation.
 - **`core/hardware/`**: KiCad, PCB, SPICE & Hardware Tools
   - `schematics.py`: KiCad Schematic & Netlist S-Expression Parser
   - `spice.py`: `/spice` RC Filter Simulator
@@ -179,3 +180,7 @@ Layer 5 (Persistence & Infrastructure): ChromaDB RAG Engine, SQLite Long-Term Me
 - **`/agent-health`**: Displays real-time health scores for all 5 sub-packages.
 - **`/token-count <text>`**: Counts BPE tokens and estimates prompt cost.
 - **`/theme <name>`**: Switches CLI color palette (cyberpunk, matrix, dracula).
+- **`/smart <task>`**: LLM Smart Dispatch — ENGINE_REGISTRY'den 0-token engine arar, bulamazsa LLM fallback ile script üretir.
+- **`/engines`**: Kayıtlı 50+ adet 0-token engine'in tam listesini gösterir.
+- **`/generated`**: LLM'in daha önce üretip cache'lediği script'lerin listesini gösterir.
+- **`/fallback-test <task>`**: Verilen görev için engine registry eşleşme testini çalıştırır.

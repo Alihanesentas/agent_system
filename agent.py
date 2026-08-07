@@ -130,6 +130,11 @@ from core.computer.web_stack import generate_web_api_architecture
 from core.computer.microservices import generate_microservice_proto
 from core.computer.frontend_gen import generate_react_component
 from core.computer.code_complexity import audit_code_complexity
+from core.engine.llm_fallback import (
+    smart_dispatch, search_engine_registry, list_all_engines,
+    get_generated_scripts_list, generate_fallback_script, execute_generated_script,
+    ENGINE_REGISTRY
+)
 
 class Colors:
     CYAN = '\033[96m'
@@ -1176,6 +1181,48 @@ def start_interactive_shell(default_agent: str = "orchestrator", default_model: 
                     res = audit_code_complexity(c_in)
                     print(f"{Colors.CYAN}--- AST CODE COMPLEXITY AUDITOR ---{Colors.RESET}")
                     print(f"  Cyclomatic Score: {res['cyclomatic_complexity']} | Grade: {res['maintainability_grade']}\n")
+                # ─── LLM SMART DISPATCH & FALLBACK ───
+                elif cmd == "/smart":
+                    task = " ".join(parts[1:]) if len(parts) > 1 else "voltaj bölücü hesapla"
+                    print(f"{Colors.CYAN}🧠 Smart Dispatch: '{task}'...{Colors.RESET}")
+                    res = smart_dispatch(task)
+                    source = res.get('_dispatch', {}).get('source', 'unknown')
+                    if source == 'engine_registry':
+                        engine = res['_dispatch']['engine']
+                        latency = res['_dispatch']['latency_ms']
+                        print(f"{Colors.GREEN}  ✅ 0-Token Engine HIT: {engine}{Colors.RESET}")
+                        print(f"  Latency: {latency}ms | Cost: $0.00")
+                    else:
+                        print(f"{Colors.YELLOW}  ⚠️  No engine found → LLM Fallback triggered{Colors.RESET}")
+                        print(f"  Status: {res.get('status', 'N/A')}")
+                    print(f"  Result: {json.dumps(res, indent=2, default=str)[:500]}\n")
+                elif cmd == "/engines":
+                    res = list_all_engines()
+                    print(f"{Colors.CYAN}--- REGISTERED 0-TOKEN ENGINES ({res['total_engines']}) ---{Colors.RESET}")
+                    for key, info in res['engines'].items():
+                        print(f"  {Colors.GREEN}{key:20s}{Colors.RESET} → {info['description']}")
+                    print(f"\n  {Colors.YELLOW}Fallback: {res['fallback']}{Colors.RESET}\n")
+                elif cmd == "/generated":
+                    res = get_generated_scripts_list()
+                    print(f"{Colors.CYAN}--- CACHED LLM-GENERATED SCRIPTS ({res['total_cached_scripts']}) ---{Colors.RESET}")
+                    if res['scripts']:
+                        for s in res['scripts']:
+                            print(f"  📄 {s['file']} → {s['task']}")
+                    else:
+                        print(f"  {Colors.DIM}No cached scripts yet. Use /smart with a new task.{Colors.RESET}")
+                    print(f"  Cache Dir: {res['cache_directory']}\n")
+                elif cmd == "/fallback-test":
+                    task = " ".join(parts[1:]) if len(parts) > 1 else "calculate spring constant for 2mm wire 10mm diameter 5 coils"
+                    match = search_engine_registry(task)
+                    if match:
+                        print(f"{Colors.GREEN}  ✅ Engine found: {match['matched_key']} → {match['description']}{Colors.RESET}")
+                    else:
+                        print(f"{Colors.YELLOW}  ⚠️  No engine match → LLM would generate script{Colors.RESET}")
+                        fb = generate_fallback_script(task)
+                        print(f"  Status: {fb.get('status', 'N/A')}")
+                        if fb.get('generation_prompt'):
+                            print(f"  Prompt Length: {len(fb['generation_prompt'])} chars")
+                    print()
                 # --- Component & Datasheet Tools ---
                 elif cmd == "/datasheet":
                     if len(parts) > 1:
