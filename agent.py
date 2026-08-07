@@ -11,59 +11,59 @@ import argparse
 from typing import Dict, Any, List, Optional
 
 # Import core tracer runner and modules
-from core.runner import run_agent_task, trace_agent, log_agent_activity
-from core.memory import SlidingWindowMemory
-from core.schematics import parse_kicad_schematic, update_kicad_component_value, parse_bom_csv
-from core.vision import encode_image_to_base64
-from core.rag import index_file, index_directory, search as rag_search, get_index_stats
-from core.executor import execute_command, compile_c, compile_cpp, run_make
-from core.longmem import remember, recall, forget, get_memory_stats, recall_for_prompt
-from core.pipeline import AgentPipeline, embedded_dev_pipeline
-from core.notify import notify_all
-from core.git_ops import git_status, git_diff, git_log, git_auto_commit
-from core.plugins import list_plugins, execute_plugin, load_plugins_from_dir
-from core.datasheet import summarize_datasheet, extract_datasheet
-from core.component_search import search_component, get_component_alternatives, compare_components
-from core.agent_test import create_system_test_suite
-from core.cli_ui import (
+# Import core tracer runner and sub-packages
+from core.engine.runner import run_agent_task, trace_agent, log_agent_activity
+from core.infra.cache import get_cache_metrics
+from core.hardware.schematics import parse_kicad_schematic, update_kicad_component_value, parse_bom_csv
+from core.hardware.vision import encode_image_to_base64
+from core.infra.rag import index_file, index_directory, search as rag_search, get_index_stats
+from core.software.executor import execute_command, compile_c, compile_cpp, run_make
+from core.infra.longmem import remember, recall, forget, get_memory_stats, recall_for_prompt
+from core.engine.pipeline import AgentPipeline, embedded_dev_pipeline
+from core.infra.notify import notify_all
+from core.infra.git_ops import git_status, git_diff, git_log, git_auto_commit
+from core.infra.plugins import list_plugins, execute_plugin, load_plugins_from_dir
+from core.hardware.datasheet import summarize_datasheet, extract_datasheet
+from core.hardware.component_search import search_component, get_component_alternatives, compare_components
+from core.infra.self_improve import analyze_and_refine_agent_prompt
+from core.infra.cli_ui import (
     print_cli_banner, print_agent_status_header, render_thinking_box, 
     render_extensions_ui, render_docs_ui, render_parallel_execution
 )
-from core.self_heal import auto_compile_and_fix
-from core.spice import simulate_rc_circuit, simulate_voltage_divider
-from core.pinout import check_pinout_conflicts
-from core.consensus import run_consensus
-from core.github_pr import create_feature_branch_and_pr
-from core.tui_dashboard import render_tui_dashboard
-from core.flasher import flash_firmware, read_serial_monitor
-from core.pcb_render import analyze_gerber_layers
-from core.datasheet_compare import compare_datasheets, format_comparison_markdown
-from core.self_improve import analyze_and_refine_agent_prompt
-from core.mechanical import generate_openscad_enclosure, recommend_slicer_settings
-from core.research import search_arxiv_papers, generate_patent_prior_art_query
-from core.mcp_client import MCPExecutionMode, dispatch_task
-from core.edge_ai import generate_esp_dl_model_wrapper, estimate_edge_ai_memory
-from core.profile import load_user_profile, build_personalized_system_prompt
-from core.project_gen import create_multidisciplinary_project
-from core.finetune import estimate_lora_vram, export_finetuning_dataset
-from core.pcb_drc import calculate_trace_impedance, audit_pcb_drc_rules
-from core.cart_builder import build_distributor_cart_payload
-from core.arena import run_agent_arena
-from core.thermal import analyze_thermal_dissipation
-from core.battery import calculate_battery_lifespan
-from core.embedded_test_gen import generate_unity_c_test
-from core.bom_optimizer import optimize_bom_cost
-from core.rf_antenna import calculate_rf_antenna_dimensions
-from core.harness import calculate_wire_harness
-from core.ota_builder import generate_ota_update_manifest
-from core.gantt_planner import generate_project_gantt_chart
-from core.emc_compliance import audit_emc_fcc_compliance
-from core.autonomous_agent import execute_autonomous_goal
-from core.layered_architecture import run_layered_pipeline
-from core.agent_tree_sim import run_agent_tree_simulation, print_static_tree_topology
-from core.worker_queue import global_worker_queue
-from core.rate_limiter import global_rate_limiter
-from core.checkpoint import create_system_checkpoint, restore_system_checkpoint
+from core.software.self_heal import auto_compile_and_fix
+from core.hardware.spice import simulate_rc_circuit, simulate_voltage_divider
+from core.hardware.pinout import check_pinout_conflicts
+from core.infra.consensus import run_consensus
+from core.infra.github_pr import create_feature_branch_and_pr
+from core.infra.tui_dashboard import render_tui_dashboard
+from core.hardware.flasher import flash_firmware, read_serial_monitor
+from core.hardware.pcb_render import analyze_gerber_layers
+from core.hardware.datasheet_compare import compare_datasheets, format_comparison_markdown
+from core.production.mechanical import generate_openscad_enclosure, recommend_slicer_settings
+from core.infra.research import search_arxiv_papers, generate_patent_prior_art_query
+from core.infra.mcp_client import MCPExecutionMode, dispatch_task
+from core.software.edge_ai import generate_esp_dl_model_wrapper, estimate_edge_ai_memory
+from core.infra.profile import load_user_profile, build_personalized_system_prompt
+from core.production.project_gen import create_multidisciplinary_project
+from core.software.finetune import estimate_lora_vram, export_finetuning_dataset
+from core.hardware.pcb_drc import calculate_trace_impedance, audit_pcb_drc_rules
+from core.production.cart_builder import build_distributor_cart_payload
+from core.engine.arena import run_agent_arena
+from core.hardware.thermal import analyze_thermal_dissipation
+from core.production.battery import calculate_battery_lifespan
+from core.software.embedded_test_gen import generate_unity_c_test
+from core.production.bom_optimizer import optimize_bom_cost
+from core.hardware.rf_antenna import calculate_rf_antenna_dimensions
+from core.production.harness import calculate_wire_harness
+from core.software.ota_builder import generate_ota_update_manifest
+from core.production.gantt_planner import generate_project_gantt_chart
+from core.hardware.emc_compliance import audit_emc_fcc_compliance
+from core.engine.autonomous_agent import execute_autonomous_goal
+from core.engine.layered_architecture import run_layered_pipeline
+from core.engine.agent_tree_sim import run_agent_tree_simulation, print_static_tree_topology
+from core.infra.worker_queue import global_worker_queue
+from core.infra.rate_limiter import global_rate_limiter
+from core.infra.checkpoint import create_system_checkpoint, restore_system_checkpoint
 
 class Colors:
     CYAN = '\033[96m'
@@ -208,7 +208,7 @@ def print_help():
 def print_banner():
     print_cli_banner()
 
-from core.service import ensure_services_running
+    from core.infra.service import ensure_services_running
 
 def start_interactive_shell(default_agent: str = "orchestrator", default_model: str = "gpt-4o"):
     ensure_services_running(verbose=True)

@@ -9,7 +9,7 @@ from datetime import datetime
 
 from subagent_tracker.backend.database import init_db, AgentLog, BenchmarkSession, db
 from subagent_tracker.backend.tracker import process_agent_activity, MODEL_PRICING
-from core.cache import get_cache_metrics
+from core.infra.cache import get_cache_metrics
 
 app = FastAPI(
     title="Subagent Token Tracer API",
@@ -85,7 +85,7 @@ def get_layered_health():
 @app.get("/metrics")
 def get_prometheus_metrics():
     """Exposes Prometheus scraping metrics endpoint."""
-    from core.telemetry import global_telemetry
+    from core.infra.telemetry import global_telemetry
     return Response(content=global_telemetry.generate_prometheus_metrics(), media_type="text/plain")
 
 # --- Schemas ---

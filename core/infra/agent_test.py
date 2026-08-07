@@ -8,7 +8,7 @@ import time
 import json
 import ast
 from typing import Dict, Any, List, Optional, Callable
-from core.runner import run_agent_task
+from core.engine.runner import run_agent_task
 
 class AgentTestCase:
     """Represents a single test case for an agent."""

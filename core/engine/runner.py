@@ -4,10 +4,9 @@ import requests
 import functools
 from typing import Dict, Any, Callable, Optional
 
-from core.optimizer import compress_prompt
-from core.cache import find_cached_response, store_in_cache
-from core.llm import call_llm
-from core.rag import build_rag_context
+from core.infra.cache import find_cached_response, store_in_cache
+from core.infra.llm import call_llm
+from core.infra.rag import build_rag_context
 
 TRACKER_API_URL = "http://127.0.0.1:8000/api/log"
 

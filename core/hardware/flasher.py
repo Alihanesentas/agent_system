@@ -8,7 +8,7 @@ and read live UART serial console logs for debugging.
 import os
 import time
 from typing import Dict, Any, Optional
-from core.executor import execute_command
+from core.software.executor import execute_command
 
 def flash_firmware(
     binary_path: str,

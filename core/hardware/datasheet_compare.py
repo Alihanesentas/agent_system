@@ -6,7 +6,7 @@ highlighting clock frequency, memory, operating voltage, supply current, package
 
 import os
 from typing import Dict, Any, List
-from core.datasheet import extract_datasheet
+from core.hardware.datasheet import extract_datasheet
 
 def compare_datasheets(datasheet1_path: str, datasheet2_path: str) -> Dict[str, Any]:
     """

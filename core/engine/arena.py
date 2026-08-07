@@ -6,7 +6,7 @@ comparing latency, token consumption, syntax pass rate, and score!
 
 import time
 from typing import Dict, Any, List
-from core.runner import run_agent_task
+from core.engine.runner import run_agent_task
 
 def run_agent_arena(
     user_prompt: str,

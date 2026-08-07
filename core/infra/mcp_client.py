@@ -7,7 +7,7 @@ and MCP Protocol Execution (standard JSON-RPC Stdio/HTTP client).
 import json
 from typing import Dict, Any, Optional
 from mcp_server import handle_mcp_request
-from core.runner import run_agent_task
+from core.engine.runner import run_agent_task
 
 class MCPExecutionMode:
     _enabled: bool = False

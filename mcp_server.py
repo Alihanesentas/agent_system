@@ -11,16 +11,15 @@ import os
 from typing import Dict, Any, List
 
 # Core tool handlers
-from core.runner import run_agent_task
-from core.rag import search as rag_search, index_file, get_index_stats
-from core.schematics import parse_kicad_schematic, parse_bom_csv
-from core.component_search import search_component, get_component_alternatives
-from core.pinout import check_pinout_conflicts
-from core.consensus import run_consensus
-from core.mechanical import generate_openscad_enclosure, recommend_slicer_settings
-from core.research import search_arxiv_papers, generate_patent_prior_art_query
-from core.agent_test import create_system_test_suite
-from core.executor import execute_command
+from core.engine.runner import run_agent_task
+from core.infra.rag import search as rag_search, index_file, get_index_stats
+from core.hardware.schematics import parse_kicad_schematic, parse_bom_csv
+from core.hardware.component_search import search_component, get_component_alternatives
+from core.hardware.pinout import check_pinout_conflicts
+from core.infra.consensus import run_consensus
+from core.production.mechanical import generate_openscad_enclosure, recommend_slicer_settings
+from core.infra.research import search_arxiv_papers, generate_patent_prior_art_query
+from core.software.executor import execute_command
 
 MCP_TOOLS = [
     {

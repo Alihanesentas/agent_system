@@ -9,12 +9,12 @@ Layer 5: Persistence & Infrastructure (ChromaDB RAG, SQLite Memory, Profile, Git
 """
 
 from typing import Dict, Any, List
-from core.profile import load_user_profile
-from core.runner import run_agent_task
-from core.pinout import check_pinout_conflicts
-from core.thermal import analyze_thermal_dissipation
-from core.pcb_drc import audit_pcb_drc_rules
-from core.mechanical import generate_openscad_enclosure
+from core.infra.profile import load_user_profile
+from core.engine.runner import run_agent_task
+from core.hardware.pinout import check_pinout_conflicts
+from core.hardware.thermal import analyze_thermal_dissipation
+from core.hardware.pcb_drc import audit_pcb_drc_rules
+from core.production.mechanical import generate_openscad_enclosure
 
 class Layer1Presentation:
     """Layer 1: User interaction routing."""

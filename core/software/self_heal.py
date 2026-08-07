@@ -8,8 +8,8 @@ auto-corrects the source code, and re-compiles until return_code == 0.
 import os
 import time
 from typing import Dict, Any, List, Optional
-from core.executor import compile_c, compile_cpp, execute_command
-from core.runner import run_agent_task
+from core.software.executor import compile_c, compile_cpp, execute_command
+from core.engine.runner import run_agent_task
 
 def auto_compile_and_fix(
     source_file: str,

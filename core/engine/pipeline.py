@@ -7,7 +7,7 @@ feed into the next, with parallel execution support.
 import time
 from typing import Dict, Any, List, Optional, Callable
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from core.runner import run_agent_task
+from core.engine.runner import run_agent_task
 
 class PipelineNode:
     """A single node in the agent pipeline DAG."""

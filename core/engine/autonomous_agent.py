@@ -7,12 +7,12 @@ self-corrects errors, and delivers the final production files WITHOUT manual use
 
 import time
 from typing import Dict, Any, List
-from core.runner import run_agent_task
-from core.pinout import check_pinout_conflicts
-from core.thermal import analyze_thermal_dissipation
-from core.pcb_drc import audit_pcb_drc_rules
-from core.mechanical import generate_openscad_enclosure
-from core.project_gen import create_multidisciplinary_project
+from core.engine.runner import run_agent_task
+from core.hardware.pinout import check_pinout_conflicts
+from core.hardware.thermal import analyze_thermal_dissipation
+from core.hardware.pcb_drc import audit_pcb_drc_rules
+from core.production.mechanical import generate_openscad_enclosure
+from core.production.project_gen import create_multidisciplinary_project
 
 def execute_autonomous_goal(goal_description: str) -> Dict[str, Any]:
     """

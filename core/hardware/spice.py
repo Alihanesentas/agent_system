@@ -7,7 +7,7 @@ and RC/RLC circuit frequency responses.
 import os
 import math
 from typing import Dict, Any, List, Optional
-from core.executor import execute_command
+from core.software.executor import execute_command
 
 def simulate_rc_circuit(r_ohms: float, c_farads: float, v_in: float = 3.3) -> Dict[str, Any]:
     """

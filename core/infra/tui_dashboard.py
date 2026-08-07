@@ -7,9 +7,9 @@ from typing import Dict, Any
 from rich.console import Console
 from rich.panel import Panel
 from rich.table import Table
-from core.longmem import get_memory_stats
-from core.rag import get_index_stats
-from core.service import is_port_open
+from core.infra.longmem import get_memory_stats
+from core.infra.rag import get_index_stats
+from core.infra.service import is_port_open
 
 console = Console()
 

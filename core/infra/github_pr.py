@@ -9,7 +9,7 @@ import json
 import urllib.request
 import urllib.error
 from typing import Dict, Any, Optional
-from core.git_ops import git_create_branch, git_auto_commit
+from core.infra.git_ops import git_create_branch, git_auto_commit
 
 def create_feature_branch_and_pr(
     branch_name: str,

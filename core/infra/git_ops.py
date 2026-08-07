@@ -5,7 +5,7 @@ Provides the agent with safe git operations for version control automation.
 
 import os
 from typing import Dict, Any, Optional, List
-from core.executor import execute_command
+from core.software.executor import execute_command
 
 def git_status(cwd: str = ".") -> Dict[str, Any]:
     """Returns current git status (staged, unstaged, untracked files)."""

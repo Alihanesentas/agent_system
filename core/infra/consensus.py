@@ -7,7 +7,7 @@ compares outputs, and synthesizes a high-confidence consensus response.
 import time
 from typing import Dict, Any, List, Optional
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from core.llm import call_llm
+from core.infra.llm import call_llm
 
 DEFAULT_CONSENSUS_MODELS = ["gpt-4o", "gpt-4o-mini", "gemini-1.5-flash"]
 
