@@ -1,166 +1,186 @@
-# ⚡ Multi-Agent Token Tracer & Autonomous System
+# 🤖 Autonomous Agent System — SOTA Multidisciplinary Engineering OS
 
-A powerful **Multi-Agent Framework** with an integrated **Real-Time Token Tracer System**, **Electronics & KiCad Schematic Tools**, **Vision Base64 Encoder**, **Prompt Optimizer**, **Semantic Cache Engine**, **Critic Sub-Agent**, **Model Cascading Router**, **Interactive Terminal CLI Shell**, and a **Modern Dark-Mode Web Dashboard**.
-
-Designed to measure, visualize, and benchmark LLM token usage, execution latency, and cost savings across agent developments and prompt iterations.
+> **v2.5 High-Efficiency Release**  
+> A State-of-the-Art Autonomous Engineering & R&D Workstation combining **Neuro-Symbolic AI**, **Multi-Agent DAG Orchestration**, **KiCad PCB Tools**, **Self-Healing Build Loops**, **Firmware Flashing**, **Mechanical CAD**, **Edge AI / TinyML**, and a standard **Model Context Protocol (MCP) Server**.
 
 ---
 
 ## 🏗️ System Architecture
 
-```
-                               ┌────────────────────────────────────────┐
-                               │  Interactive Agent CLI (agent.py)      │
-                               │  Terminal CLI (cli.py)                 │
-                               │  Pure Shell Utility (tracer.sh)        │
-                               └──────────────────┬─────────────────────┘
-                                                  │
-                                                  ▼
-┌─────────────────────────┐            ┌────────────────────────────────┐
-│ React + Vite Dashboard  │ ◄───────── │ FastAPI Backend (Port 8000)    │
-│ (subagent_tracker/      │  REST API  │ (subagent_tracker/backend/)   │
-│  frontend/)             │            └──────────────┬─────────────────┘
-└─────────────────────────┘                           │
-                                                      ▼
-                                       ┌────────────────────────────────┐
-                                       │ Peewee ORM + SQLite            │
-                                       │ (tracker.db + tiktoken engine) │
-                                       └────────────────────────────────┘
-```
+```mermaid
+graph TD
+    subgraph User Interfaces
+        CLI["Rich REPL CLI (agent.py)"]
+        VSC["VSCode / Cursor Extension (v1.1.0)"]
+        WEB["React Web Dashboard (Port 5173)"]
+    end
 
----
+    subgraph Hybrid Neuro-Symbolic Agent Engine
+        ORCH["🧠 Orchestrator Agent"]
+        PLAN["📋 Planner Agent"]
+        SW["💻 Software Agent"]
+        HW["⚡ Electronics Agent"]
+        REV["🧐 Reviewer Agent"]
+    end
 
-## ✨ Features & SOTA Multi-Agent Enhancements
+    subgraph Rule-Based Deterministic Execution Engine
+        RAG["📚 RAG Engine (ChromaDB)"]
+        KICAD["🔌 KiCad Parser & BOM"]
+        HEAL["🔄 Self-Healing Loop"]
+        SPICE["⚡ SPICE Circuit Simulator"]
+        PIN["📌 Pinout Conflict Checker"]
+        FLASH["🔌 Firmware Flasher & Serial"]
+        CAD["📐 OpenSCAD 3D & Slicer"]
+        EDGE["🧠 Edge AI & TinyML Memory"]
+        RES["📚 Ar-Ge & Patent Research"]
+        MCP["🔌 MCP Server (mcp_server.py)"]
+    end
 
-- **⚡ Real-time Token & Cost Tracking**: Calculates prompt and completion token counts using `tiktoken` (`cl100k_base`) with live model cost estimations (`gpt-4o`, `gpt-4o-mini`, `claude-3-5-sonnet`, `gemini-1.5-flash`).
-- **🔌 KiCad & PCB Electronics Tools (`core/schematics.py`)**: Parse KiCad `.kicad_sch` S-expressions, extract component references (R1, C1, U1), net labels (`I2C_SDA`, `SPI_CLK`), parse PCB BOM CSV files, and safely edit component values directly in schematic files.
-- **🖼️ Multimodal Vision Reader (`core/vision.py`)**: Encodes schematic images (PNG, JPG, WEBP) to Base64 data URLs for Multimodal Vision LLMs.
-- **🧠 Sliding Window Memory (`core/memory.py`)**: Summarizes older conversation turns in multi-turn dialogues, saving **%70-%80 of prompt tokens**.
-- **🎯 Semantic Cache Engine (`core/cache.py`)**: Stores previous prompt-response pairs using exact SHA-256 and fuzzy Jaccard similarity ($\ge \%88$) matching. Returns instant responses in **<1ms** with **0 new tokens**!
-- **🧐 Critic / Reviewer Sub-Agent (`agents/reviewer.md` & `core/reviewer.py`)**: Multi-agent cross-verification engine performing AST static code analysis to catch syntax bugs and auto-correct errors.
-- **🔀 Model Cascading Router (`core/router.py`)**: Analyzes task complexity (`low`, `medium`, `high`) and intelligently routes tasks to lightweight models (`gpt-4o-mini`, `gemini-1.5-flash`) for up to **%95 cost reduction**.
-- **📋 Structured JSON Output Enforcer (`core/schemas.py`)**: Formats agent outputs into compact JSON, eliminating conversational fluff and reducing completion tokens by **%45+**.
-- **🤖 Autonomous REPL Terminal Shell (`agent.py`)**: Gemini CLI & Claude CLI style terminal shell with interactive prompt routing, file read/write tools, KiCad schema tools, vision reader, model switching, and slash commands.
-- **💻 Cross-Platform Terminal CLI (`cli.py`)**: Works on Linux, macOS, and Windows. Commands for `stats`, `logs`, `watch` (live refresh), `export` (CSV), and `test`.
-- **📚 RAG Engine (`core/rag.py`)**: ChromaDB vector store with smart overlapping chunking, PDF table extraction (`pdfplumber`), and automatic context injection into LLM prompts for grounded answers.
-- **🛠️ Tool Executor (`core/executor.py`)**: Safe shell command runner with `gcc`, `g++`, `make`, `cmake`, and `platformio` build pipeline support. Includes command safety checks and timeout protection.
-- **💾 Persistent Long-Term Memory (`core/longmem.py`)**: SQLite-based cross-session memory for project decisions, component selections, pinout assignments, and design rationale that persists across agent restarts.
-- **🔀 Multi-Agent DAG Pipeline (`core/pipeline.py`)**: Directed Acyclic Graph orchestration with topological sort and parallel execution. Pre-built `embedded_dev_pipeline()` runs Planner → [Hardware + Software (parallel)] → Reviewer.
-- **📨 Webhook Notifications (`core/notify.py`)**: Slack, Discord, and Telegram alerts on task completion, errors, or build results via Incoming Webhooks.
-- **🔧 Git Automation (`core/git_ops.py`)**: Agent-driven git operations: status, diff, log, auto-commit, branch creation, and stash management.
-- **🔌 Plugin Architecture (`core/plugins.py`)**: Extensible tool registration system with auto-discovery from `plugins/` directory. Add custom tools (SPICE, CAD, slicer) as drop-in Python files.
+    CLI --> ORCH
+    VSC --> REST["REST API Gateway (Port 8000)"]
+    REST --> ORCH
+    ORCH --> PLAN
+    PLAN --> SW
+    PLAN --> HW
+    SW --> REV
+    HW --> REV
 
----
-
-## 🚀 Quick Start
-
-### 1. Installation & Environment Setup
-
-```bash
-# Clone the repository
-git clone https://github.com/Alihanesentas/agent_system.git
-cd agent_system
-
-# Create and activate virtual environment
-python3 -m venv .venv
-source .venv/bin/activate
-
-# Install dependencies and CLI package
-pip install -r requirments.txt
-pip install -e .
-```
-
-### 2. Single-Line Shell Aliases Setup
-
-Source the shell setup script to load global terminal commands (`agent`, `agent-stats`, `agent-logs`, `agent-watch`, `agent-export`):
-
-```bash
-source setup_shell.sh
+    SW --> HEAL
+    HW --> KICAD
+    HW --> PIN
+    HW --> SPICE
+    SW --> FLASH
+    REV --> RAG
+    ORCH --> CAD
+    ORCH --> EDGE
+    ORCH --> RES
+    ORCH --> MCP
 ```
 
 ---
 
-## 🖥️ Usage Guide
-
-### 1. Interactive Agent CLI Shell (`agent`)
-
-Launch the interactive REPL shell directly in your terminal:
-
-```bash
-$ agent
-```
-
-#### Slash Commands Reference:
-| Slash Command | Description |
-| :--- | :--- |
-| `/help` | Display available interactive commands |
-| `/read <path>` | Read contents of a file in your project directory |
-| `/write <path> <text>` | Write or update code in a file |
-| `/kicad <file.kicad_sch>` | Parse KiCad schematic components & net labels |
-| `/kicad-set <file> <ref> <val>` | Update component value (e.g. `/kicad-set demo.kicad_sch R1 1k`) |
-| `/bom <file.csv>` | Parse PCB Bill of Materials CSV |
-| `/vision <image_path>` | Encode image schematic to Base64 for Vision LLMs |
-| `/agent <name>` | Switch sub-agent (`orchestrator`, `planner`, `software`, `electronics`, `reviewer`, `tutor`) |
-| `/model <name>` | Switch model (`gpt-4o`, `gpt-4o-mini`, `claude-3-5-sonnet`, `gemini-1.5-flash`) |
-| `/memory` | View sliding window context memory status |
-| `/stats` | View live token, cost, and latency statistics |
-| `/logs` | View recent activity trace logs |
-| `/clear` | Clear terminal screen and memory |
-| `/exit` | Exit interactive shell |
-
----
-
-## 📁 Repository Structure
+## 📁 Repository Directory Structure
 
 ```
 agent_system/
-├── agent.py                      # Interactive Autonomous Agent REPL Shell
-├── cli.py                        # Cross-Platform Python Terminal CLI
-├── tracer.sh                     # Pure Shell Utility (sqlite3 queries)
-├── setup_shell.sh                # Zsh/Bash single-line aliases setup
-├── setup.py                      # Package installer & CLI entrypoints
-├── requirments.txt               # Python package dependencies
-├── agents/                       # Agent Prompt Specifications
+├── agent.py                       # Main REPL CLI with Rich UI, Badges & Slash Commands
+├── mcp_server.py                  # Standard MCP Stdio JSON-RPC 2.0 Server
+├── core/
+│   ├── agent_test.py              # Agent Unit Testing & Quality Assurance
+│   ├── cache.py                   # Semantic Cache Engine (%80 Token Savings)
+│   ├── cli_ui.py                  # Rich Terminal Engine (Badges, Thinking Box, TUI)
+│   ├── component_search.py        # Mouser/DigiKey/LCSC Component API Integration
+│   ├── consensus.py              # Multi-Model Consensus Voting (OpenAI+Claude+Gemini)
+│   ├── datasheet.py              # Datasheet PDF Extractor (Pin Tables, Electrical Specs)
+│   ├── datasheet_compare.py      # Comparative Datasheet Specification Matrix
+│   ├── edge_ai.py                 # TinyML Peak Memory Estimator & ESP-DL C++ Wrapper
+│   ├── executor.py               # Tool Executor (gcc, g++, make, platformio)
+│   ├── flasher.py                # USB Firmware Flasher (esptool/st-flash) & Serial Monitor
+│   ├── git_ops.py                # Automated Git Version Control
+│   ├── github_pr.py              # GitHub Branch & Pull Request Automation
+│   ├── llm.py                    # Multi-Provider Router (OpenAI, Anthropic, Gemini, Ollama)
+│   ├── longmem.py                # SQLite Persistent Long-Term Memory
+│   ├── mechanical.py             # OpenSCAD 3D Parametric CAD & Slicer Recommendations
+│   ├── mcp_client.py             # MCP Execution Mode Switcher (/mcp-mode)
+│   ├── notify.py                 # Webhook System (Slack, Discord, Telegram)
+│   ├── pinout.py                 # Pinout Conflict Checker (ESP32/STM32/RP2040)
+│   ├── pipeline.py               # Multi-Agent DAG Orchestration Engine
+│   ├── plugins.py                # Dynamic Plugin Architecture
+│   ├── profile.py                # Personalized Engineer Profile Manager
+│   ├── project_gen.py            # Multidisciplinary Project Repository Generator
+│   ├── rag.py                    # RAG Vector Store Engine (ChromaDB + pdfplumber)
+│   ├── research.py               # arXiv Academic Search & Patent Prior Art Generator
+│   ├── runner.py                 # Sub-Agent Prompt Router & Context Loader
+│   ├── schematics.py             # KiCad S-Expression Parser & CSV BOM Analyzer
+│   ├── self_heal.py              # Autonomous Self-Healing Compilation Repair Loop
+│   ├── self_improve.py           # Auto-Refine Agent Prompt Specs
+│   ├── service.py                # Daemon Service Manager (FastAPI + Vite)
+│   ├── spice.py                  # SPICE RC/RLC Circuit Simulator Engine
+│   ├── tui_dashboard.py          # Interactive Terminal TUI Dashboard Component
+│   └── vision.py                 # Base64 Image Encoder for Vision LLMs
+├── agents/                       # Sub-Agent Prompt Specifications
+│   ├── electronics.md
 │   ├── orchestrator.md
 │   ├── planner.md
+│   ├── reviewer.md
 │   ├── software.md
-│   ├── electronics.md
-│   └── reviewer.md
-├── core/                         # Agent Execution Core
-│   ├── runner.py                 # Runner & @trace_agent decorator
-│   ├── optimizer.py              # Automated Prompt Optimizer
-│   ├── cache.py                  # Semantic Cache Engine
-│   ├── rag.py                    # RAG Engine (ChromaDB + PDF)
-│   ├── executor.py               # Tool Executor & Build Pipeline
-│   ├── longmem.py                # Persistent Long-Term Memory
-│   ├── pipeline.py               # Multi-Agent DAG Pipeline
-│   ├── notify.py                 # Webhook Notifications (Slack/Discord/Telegram)
-│   ├── git_ops.py                # Git Automation
-│   ├── plugins.py                # Plugin Architecture
-│   ├── reviewer.py               # Critic/Reviewer Cross-Verification
-│   ├── router.py                 # Model Cascading Router
-│   ├── selector.py               # Dynamic Model Selector Algorithm
-│   ├── schemas.py                # Structured JSON Schema Enforcer
-│   ├── schematics.py             # KiCad Schematic & PCB BOM Tools
-│   ├── vision.py                 # Base64 Multimodal Vision Reader
-│   ├── memory.py                 # Sliding Window Context Memory
-│   ├── llm.py                    # Live LLM API Dispatcher
-│   └── service.py                # Autonomous Service Manager
-├── plugins/                      # Drop-in Plugin Directory
-│   └── example_plugin.py         # Plugin template
-└── subagent_tracker/             # Tracker Application
-    ├── backend/                  # FastAPI + Peewee SQLite Engine
-    │   ├── database.py
-    │   ├── tracker.py
-    │   └── main.py
-    └── frontend/                 # React 19 + Vite Dark-Mode Dashboard
-        ├── src/
-        │   ├── App.jsx
-        │   └── index.css
-        └── package.json
+│   └── tutor.md
+├── vscode_extension/             # VSCode & Cursor Extension (v1.1.0)
+│   ├── package.json              # Extension Manifest & Keybindings (Cmd+Alt+A)
+│   ├── src/extension.ts          # Extension Entrypoint & Webview Sidebar Provider
+│   └── agent-system-vscode-1.1.0.vsix # Compiled Production VSIX Package
+└── subagent_tracker/            # Real-Time Token & Cost Tracer
+    ├── backend/main.py           # FastAPI Backend & REST API Gateway
+    └── frontend/                 # React Web Analytics Dashboard
 ```
 
 ---
 
-## 📄 License
-MIT License. Built for multi-agent efficiency tracking and autonomous development.
+## ⚡ Slash Command Reference (35+ Tools)
+
+| Category | Command | Description |
+| :--- | :--- | :--- |
+| **Electronics & PCB** | `/kicad <file.kicad_sch>` | Parse KiCad schematic components & net labels |
+| | `/kicad-set <file> <ref> <val>` | Update component value directly in `.kicad_sch` file |
+| | `/bom <file.csv>` | Parse PCB Bill of Materials CSV line items |
+| | `/vision <image_path>` | Encode schematic diagram to Base64 for Vision LLMs |
+| | `/datasheet <pdf_path>` | Extract datasheet PDF pin tables, electrical specs & sections |
+| | `/part <part_number>` | Search Mouser/DigiKey/LCSC for stock, pricing & datasheet |
+| | `/alt <part_number>` | Find in-stock & drop-in alternative components |
+| | `/compare <p1> <p2>` | Side-by-side parametric component comparison |
+| | `/pinout <sda> <scl> <out>` | Audit GPIO pin collisions & ESP32 strapping hazards |
+| | `/spice <r_ohms> <c_farads>` | Simulate RC circuit frequency response & step voltage |
+| **Firmware & Production** | `/heal <file.c>` | Autonomous self-healing compilation error recovery loop |
+| | `/flash <file.bin>` | Flash firmware binary to MCU via USB/TTY (`esptool`/`st-flash`) |
+| | `/serial [port]` | Read live UART serial console logs (`/dev/ttyUSB0`) |
+| | `/gerber <folder>` | Analyze PCB Gerber layers & 3D enclosure bounds |
+| | `/datasheet-compare <p1> <p2>`| Comparative specification matrix for 2 PDF datasheets |
+| **Mechanical CAD & R&D** | `/cad <l> <w> <h>` | Generate OpenSCAD 3D parametric enclosure script |
+| | `/slicer <material>` | Recommend 3D printing slicer settings (PLA/ABS/PETG/TPU) |
+| | `/arxiv <query>` | Search arXiv scientific preprints for R&D literature |
+| | `/patent <invention>` | Generate patent prior art search queries & CPC codes |
+| **Edge AI & Personalization**| `/edge-ai <params>` | Estimate TinyML peak SRAM/Flash & MCU suitability |
+| | `/profile` | View personalized engineer profile preferences |
+| | `/create-project <name>` | Generate unified project workspace (firmware+hw+cad+ai) |
+| **Execution & Pipeline** | `/pipeline <task>` | Run DAG workflow (Planner → [Hardware + Software] → Reviewer) |
+| | `/consensus <prompt>` | Run parallel consensus voting across OpenAI, Claude & Gemini |
+| | `/run <command>` | Execute shell build command (`gcc`, `make`, `platformio`) |
+| | `/git-commit <msg>` | Auto stage & commit all workspace changes |
+| | `/pr <branch> <title>` | Create git branch, commit & submit GitHub Pull Request |
+| | `/test` | Run automated agent unit test suite |
+| | `/mcp-mode [on\|off]` | Toggle between Direct Native Execution & MCP Stdio Protocol |
+| | `/mcp` | Display Model Context Protocol (MCP) server guide |
+| | `/tui` | Display interactive TUI system status dashboard |
+
+---
+
+## 🔌 Model Context Protocol (MCP) Server Integration
+
+To connect this entire multidisciplinary system directly into **Claude Desktop**, **Cursor**, or **Antigravity**, add to `claude_desktop_config.json`:
+
+```json
+{
+  "mcpServers": {
+    "agent-system": {
+      "command": "python3",
+      "args": ["/Users/alihanesentas/Desktop/agent_system/mcp_server.py"]
+    }
+  }
+}
+```
+
+---
+
+## 💻 VSCode & Cursor Extension Installation
+
+The repository includes a compiled production package: **`vscode_extension/agent-system-vscode-1.1.0.vsix`**.
+
+### Installation Command:
+```bash
+code --install-extension vscode_extension/agent-system-vscode-1.1.0.vsix --force
+```
+
+### Features:
+- **Left Activity Bar Icon (`🤖 Agent System`)**: Opens interactive Webview Sidebar Panel.
+- **`Cmd+Alt+A` / `Ctrl+Alt+A`**: Runs sub-agent task on highlighted code block.
+- **MCP Mode Toggle Switch**: Switch between Direct Native Mode (0% token overhead) and MCP Protocol Mode.
