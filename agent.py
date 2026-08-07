@@ -29,6 +29,12 @@ from core.cli_ui import (
     print_cli_banner, print_agent_status_header, render_thinking_box, 
     render_extensions_ui, render_docs_ui, render_parallel_execution
 )
+from core.self_heal import auto_compile_and_fix
+from core.spice import simulate_rc_circuit, simulate_voltage_divider
+from core.pinout import check_pinout_conflicts
+from core.consensus import run_consensus
+from core.github_pr import create_feature_branch_and_pr
+from core.tui_dashboard import render_tui_dashboard
 
 class Colors:
     CYAN = '\033[96m'
@@ -109,6 +115,13 @@ def print_help():
   {Colors.GREEN}/docs [category]{Colors.RESET}             -> Interactive CLI documentation manual (rag, electronics, pipeline)
   {Colors.GREEN}/parallel <task>{Colors.RESET}             -> Run parallel multi-agent task with split terminal views
   {Colors.GREEN}/test{Colors.RESET}                        -> Run automated agent unit test suite
+{Colors.BOLD}{Colors.YELLOW}  ── SOTA Hardware & Autonomous Tools ──{Colors.RESET}
+  {Colors.GREEN}/heal <file.c>{Colors.RESET}               -> Autonomous self-healing compilation error recovery loop
+  {Colors.GREEN}/spice <r_ohms> <c_farads>{Colors.RESET}   -> Simulate RC circuit frequency response & step voltage
+  {Colors.GREEN}/pinout <sda> <scl> <out>{Colors.RESET}    -> Check GPIO pin conflicts & ESP32 strapping hazards
+  {Colors.GREEN}/consensus <prompt>{Colors.RESET}          -> Multi-model consensus voting (OpenAI + Claude + Gemini)
+  {Colors.GREEN}/pr <branch> <title>{Colors.RESET}         -> Auto create git branch, commit & submit GitHub PR
+  {Colors.GREEN}/tui{Colors.RESET}                         -> Display interactive TUI system status dashboard
 {Colors.BOLD}{Colors.YELLOW}  ── System ──{Colors.RESET}
   {Colors.GREEN}/agent <name>{Colors.RESET}               -> Switch sub-agent (orchestrator, planner, software, electronics, reviewer)
   {Colors.GREEN}/model <name>{Colors.RESET}               -> Switch model (gpt-4o, gpt-4o-mini, claude-3-5-sonnet, gemini-1.5-flash)
@@ -375,6 +388,58 @@ def start_interactive_shell(default_agent: str = "orchestrator", default_model: 
                         if r["failures"]:
                             print(f"     Failures: {r['failures']}")
                     print()
+                # --- SOTA Hardware & Autonomous Tools ---
+                elif cmd == "/heal":
+                    if len(parts) > 1:
+                        src = parts[1]
+                        print(f"{Colors.CYAN}🔄 Initiating Autonomous Self-Healing Build Loop for '{src}'...{Colors.RESET}")
+                        res = auto_compile_and_fix(src, model_name=active_model)
+                        print(f"{Colors.GREEN if res['status']=='success' else Colors.RED}✅ {res}{Colors.RESET}")
+                    else:
+                        print("Usage: /heal <source_file.c>")
+                elif cmd == "/spice":
+                    if len(parts) > 2:
+                        try:
+                            r_val, c_val = float(parts[1]), float(parts[2])
+                            res = simulate_rc_circuit(r_val, c_val)
+                            print(f"{Colors.CYAN}--- RC CIRCUIT SPICE SIMULATION ---{Colors.RESET}")
+                            print(f"  R = {r_val} Ω  |  C = {c_val} F")
+                            print(f"  Tau: {res['time_constant_tau_ms']} ms  |  Cutoff Frequency: {res['cutoff_frequency_hz']} Hz")
+                            print(f"  Step Response: {res['step_response']}\n")
+                        except ValueError:
+                            print("Error: R and C must be numeric values.")
+                    else:
+                        print("Usage: /spice <r_ohms> <c_farads>  (e.g., /spice 1000 0.000001)")
+                elif cmd == "/pinout":
+                    if len(parts) > 3:
+                        assigns = {"I2C_SDA": parts[1], "I2C_SCL": parts[2], "OUTPUT_PIN": parts[3]}
+                        res = check_pinout_conflicts(assigns, mcu_family="ESP32")
+                        print(f"{Colors.CYAN}--- PINOUT CONFLICT AUDIT (ESP32) ---{Colors.RESET}")
+                        print(f"  Status: {res['status']}")
+                        for c in res.get("conflicts", []):
+                            print(f"  {Colors.RED}{c}{Colors.RESET}")
+                        for w in res.get("warnings", []):
+                            print(f"  {Colors.YELLOW}{w}{Colors.RESET}")
+                        print()
+                    else:
+                        print("Usage: /pinout <sda_pin> <scl_pin> <output_pin> (e.g. /pinout GPIO21 GPIO22 GPIO34)")
+                elif cmd == "/consensus":
+                    if len(parts) > 1:
+                        prompt_txt = " ".join(parts[1:])
+                        print(f"{Colors.CYAN}🗳️ Running Multi-Model Consensus Voting (OpenAI + Claude + Gemini)...{Colors.RESET}")
+                        res = run_consensus(prompt_txt)
+                        print(f"{Colors.GREEN}{res['consensus_synthesis']}{Colors.RESET}\n")
+                    else:
+                        print("Usage: /consensus <prompt text>")
+                elif cmd == "/pr":
+                    if len(parts) > 2:
+                        b_name, title = parts[1], parts[2]
+                        res = create_feature_branch_and_pr(b_name, f"feat: {title}", title, "Automated PR created by Agent System.")
+                        print(f"{Colors.GREEN}✅ {res}{Colors.RESET}\n")
+                    else:
+                        print("Usage: /pr <branch_name> <pr_title>")
+                elif cmd == "/tui":
+                    render_tui_dashboard()
                 # --- Component & Datasheet Tools ---
                 elif cmd == "/datasheet":
                     if len(parts) > 1:
