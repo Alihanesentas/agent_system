@@ -2,10 +2,10 @@
 Core Architectural Package Entrypoint.
 Provides backward-compatible re-exports for all sub-packages:
 - core.engine: Multi-Agent Pipeline, DAG Parallel Executor & Cost Router
-- core.hardware: KiCad, SPICE, Pinout, Thermal, DRC, RF, Auto-Router & MCU Selector
+- core.hardware: KiCad, SPICE, Pinout, Thermal, DRC, RF, Auto-Router, MCU Selector & Layer Stackup
 - core.software: Firmware, Unity Tests, Self-Healing, Edge AI, HIL Testing & Linter
-- core.production: Mechanical CAD, BOM Optimizer, Harness Sizer & Report Generator
-- core.infra: RAG, Memory, Cache, Telemetry, Voice, Knowledge Graph, Guardrails, Plugins, Theme Manager & Autocomplete
+- core.production: Mechanical CAD, BOM Optimizer, Harness Sizer, Report Generator & Presentation Exporter
+- core.infra: RAG, Memory, Cache, Telemetry, Voice, Knowledge Graph, Guardrails, Plugins, Theme Manager, Autocomplete & Consensus Matrix
 """
 
 from core.engine.runner import run_agent_task
@@ -30,6 +30,7 @@ from core.hardware.emc_compliance import audit_emc_fcc_compliance
 from core.hardware.vision import encode_image_to_base64
 from core.hardware.autorouter import auto_route_pcb_netlist
 from core.hardware.mcu_selector import recommend_mcu_for_project
+from core.hardware.layer_stackup import calculate_pcb_stackup
 
 from core.software.executor import execute_command, compile_c, compile_cpp
 from core.software.self_heal import auto_compile_and_fix
@@ -48,6 +49,7 @@ from core.production.gantt_planner import generate_project_gantt_chart
 from core.production.harness import calculate_wire_harness
 from core.production.project_gen import create_multidisciplinary_project
 from core.production.report_generator import generate_project_markdown_report
+from core.production.presentation_exporter import export_project_presentation
 
 from core.infra.profile import load_user_profile, save_user_profile, build_personalized_system_prompt
 from core.infra.cache import get_cache_metrics
@@ -61,3 +63,4 @@ from core.infra.self_reflection import run_with_self_reflection
 from core.infra.guardrails import sanitize_and_verify_code
 from core.infra.plugin_loader import discover_and_reload_plugins
 from core.infra.theme_manager import set_cli_theme
+from core.infra.consensus_matrix import calculate_consensus_matrix

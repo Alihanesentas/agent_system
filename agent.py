@@ -77,6 +77,9 @@ from core.infra.plugin_loader import discover_and_reload_plugins
 from core.hardware.mcu_selector import recommend_mcu_for_project
 from core.software.linter import format_code_snippet
 from core.infra.theme_manager import set_cli_theme
+from core.hardware.layer_stackup import calculate_pcb_stackup
+from core.production.presentation_exporter import export_project_presentation
+from core.infra.consensus_matrix import calculate_consensus_matrix
 
 class Colors:
     CYAN = '\033[96m'
@@ -219,6 +222,9 @@ def print_help():
   {Colors.GREEN}/mcu <req>{Colors.RESET}                   -> Multi-MCU selector & spec recommender engine
   {Colors.GREEN}/lint <code>{Colors.RESET}                -> Auto-format & lint C++/Python code snippet
   {Colors.GREEN}/theme <name>{Colors.RESET}               -> Switch CLI color palette (cyberpunk, matrix, dracula)
+  {Colors.GREEN}/stackup [layers]{Colors.RESET}          -> PCB dielectric layer stackup & USB 2.0 trace specs
+  {Colors.GREEN}/slides{Colors.RESET}                      -> Export HTML presentation slide deck
+  {Colors.GREEN}/consensus-matrix{Colors.RESET}         -> Multi-model consensus confidence matrix breakdown
 {Colors.BOLD}{Colors.YELLOW}  ── System ──{Colors.RESET}
   {Colors.GREEN}/agent <name>{Colors.RESET}               -> Switch sub-agent (orchestrator, planner, software, electronics, reviewer)
   {Colors.GREEN}/model <name>{Colors.RESET}               -> Switch model (gpt-4o, gpt-4o-mini, claude-3-5-sonnet, gemini-1.5-flash)
@@ -867,6 +873,21 @@ def start_interactive_shell(default_agent: str = "orchestrator", default_model: 
                     res = set_cli_theme(t_in)
                     print(f"{Colors.CYAN}--- CLI THEME SWITCHER ---{Colors.RESET}")
                     print(f"  Active Theme: {res.get('active_theme', t_in).upper()}\n")
+                elif cmd == "/stackup":
+                    l_in = int(parts[1]) if len(parts) > 1 and parts[1].isdigit() else 4
+                    res = calculate_pcb_stackup(layers=l_in)
+                    print(f"{Colors.CYAN}--- PCB LAYER STACKUP CALCULATOR ---{Colors.RESET}")
+                    print(f"  Total Layers: {res['total_layers']} | Target Thickness: {res['target_board_thickness_mm']}mm")
+                    print(f"  USB 2.0 90-Ohm Trace Width: {res['usb2_differential_specs']['trace_width_mm']}mm\n")
+                elif cmd == "/slides":
+                    res = export_project_presentation()
+                    print(f"{Colors.CYAN}--- PRESENTATION SLIDE DECK EXPORTER ---{Colors.RESET}")
+                    print(f"  File Generated: {res['output_file']} ({res['bytes_written']} bytes)\n")
+                elif cmd == "/consensus-matrix":
+                    c_prompt = " ".join(parts[1:]) if len(parts) > 1 else "Verify pinout compatibility"
+                    res = calculate_consensus_matrix(c_prompt)
+                    print(f"{Colors.CYAN}--- CONSENSUS CONFIDENCE MATRIX ---{Colors.RESET}")
+                    print(f"  Agreement Rate: {res['consensus_agreement_rate']} | Models Voted: {res['total_models_voted']}\n")
                 # --- Component & Datasheet Tools ---
                 elif cmd == "/datasheet":
                     if len(parts) > 1:

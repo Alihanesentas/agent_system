@@ -118,6 +118,9 @@ Katman 5 (Persistence & Infrastructure): ChromaDB RAG Engine, SQLite Proje Hafı
 - **`/mcu <gereksinim>`**: Proje gereksinimlerine göre en uygun mikrodenetleyiciyi (ESP32-S3, STM32F4, RP2040, nRF52840, Teensy 4.1) önerir.
 - **`/lint <code>`**: Üretilen C++/Python kod parçalarını otomatik biçimlendirir ve sentaks düzenlemesi yapar.
 - **`/theme <tema>`**: CLI renk paletini dinamik olarak değiştirir (cyberpunk, matrix, dracula, solarized).
+- **`/stackup [layers]`**: 2, 4, 6, ve 8 katmanlı PCB katman dizilimi (dielectric stackup) ve USB 2.0 90Ω diferansiyel yol genişliğini hesaplar.
+- **`/slides`**: Proje dokümantasyonunu ve Gantt grafiklerini koyu temalı interaktif HTML sunum slaytına dönüştürür.
+- **`/consensus-matrix`**: Çoklu model güven skorları ve oy dağılımı matris analizi sunar.
 - **`/report`**: Tüm projenin eksiksiz PDF/Markdown mühendislik raporunu çıkarır.
 
 ### 🛡️ Mimari Dayanıklılık, Güvenlik & Altyapı Komutları
