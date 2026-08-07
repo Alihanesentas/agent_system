@@ -13,6 +13,7 @@ from typing import Dict, Any, List, Optional
 # Import core tracer runner and modules
 # Import core tracer runner and sub-packages
 from core.engine.runner import run_agent_task, trace_agent, log_agent_activity
+from core.infra.memory import SlidingWindowMemory
 from core.infra.cache import get_cache_metrics
 from core.hardware.schematics import parse_kicad_schematic, update_kicad_component_value, parse_bom_csv
 from core.hardware.vision import encode_image_to_base64

@@ -1,6 +1,6 @@
 from typing import Dict, Any, Tuple
 import ast
-from core.runner import run_agent_task
+from core.engine.runner import run_agent_task
 
 def analyze_code_quality(code_str: str) -> Tuple[bool, str]:
     """

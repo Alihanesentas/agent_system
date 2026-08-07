@@ -2,7 +2,7 @@ import sqlite3
 import os
 from typing import Dict, Any, List, Optional
 from subagent_tracker.backend.tracker import count_tokens, calculate_cost, MODEL_PRICING
-from core.router import analyze_task_complexity
+from core.engine.router import analyze_task_complexity
 
 DB_PATH = os.path.join(os.path.dirname(__file__), "..", "subagent_tracker", "backend", "tracker.db")
 
