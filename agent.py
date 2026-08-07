@@ -49,6 +49,10 @@ from core.finetune import estimate_lora_vram, export_finetuning_dataset
 from core.pcb_drc import calculate_trace_impedance, audit_pcb_drc_rules
 from core.cart_builder import build_distributor_cart_payload
 from core.arena import run_agent_arena
+from core.thermal import analyze_thermal_dissipation
+from core.battery import calculate_battery_lifespan
+from core.embedded_test_gen import generate_unity_c_test
+from core.bom_optimizer import optimize_bom_cost
 
 class Colors:
     CYAN = '\033[96m'
@@ -158,6 +162,11 @@ def print_help():
   {Colors.GREEN}/drc <width_mm>{Colors.RESET}              -> Audit PCB manufacturing rules & calculate 50Ω impedance
   {Colors.GREEN}/cart [bom.csv]{Colors.RESET}              -> Generate Mouser/LCSC 1-click shopping cart payload
   {Colors.GREEN}/arena <prompt>{Colors.RESET}              -> Run head-to-head model benchmark arena (gpt-4o vs mini)
+{Colors.BOLD}{Colors.YELLOW}  ── Frontier Thermal, Battery & Production Tools ──{Colors.RESET}
+  {Colors.GREEN}/thermal <vin> <vout> <amps>{Colors.RESET} -> Thermal dissipation & heatsink sizing calculator
+  {Colors.GREEN}/battery <mah> <active_ma>{Colors.RESET}   -> Battery lifespan & solar panel wattage calculator
+  {Colors.GREEN}/unittest-gen <mod> <funcs>{Colors.RESET}  -> Generate Unity C embedded unit test runner code
+  {Colors.GREEN}/bom-opt{Colors.RESET}                     -> Analyze BOM cost drivers & production quantity tiers
 {Colors.BOLD}{Colors.YELLOW}  ── System ──{Colors.RESET}
   {Colors.GREEN}/agent <name>{Colors.RESET}               -> Switch sub-agent (orchestrator, planner, software, electronics, reviewer)
   {Colors.GREEN}/model <name>{Colors.RESET}               -> Switch model (gpt-4o, gpt-4o-mini, claude-3-5-sonnet, gemini-1.5-flash)
@@ -627,6 +636,40 @@ def start_interactive_shell(default_agent: str = "orchestrator", default_model: 
                         print(f"{Colors.GREEN}🏆 Speed Winner: {res['speed_winner']} (Difference: {res['latency_difference_ms']}ms){Colors.RESET}\n")
                     else:
                         print("Usage: /arena <prompt_text>")
+                # --- Frontier Thermal, Battery & Production Tools ---
+                elif cmd == "/thermal":
+                    if len(parts) > 3:
+                        vin, vout, amps = float(parts[1]), float(parts[2]), float(parts[3])
+                        res = analyze_thermal_dissipation(vin, vout, amps)
+                        print(f"{Colors.CYAN}--- THERMAL DISSIPATION & HEATSINK ANALYSIS ---{Colors.RESET}")
+                        print(f"  Power Dissipation: {res['power_dissipation_watts']} W  |  Temp Rise: {res['temperature_rise_c']} °C")
+                        print(f"  Junction Temp:     {res['calculated_junction_temp_c']} °C ({res['thermal_status']})")
+                        print(f"  Heatsink Needed:   {res['recommended_heatsink_rating_cw']} °C/W\n")
+                    else:
+                        print("Usage: /thermal <vin> <vout> <amps> (e.g. /thermal 12.0 3.3 0.5)")
+                elif cmd == "/battery":
+                    mah = float(parts[1]) if len(parts) > 1 else 2500.0
+                    a_ma = float(parts[2]) if len(parts) > 2 else 80.0
+                    res = calculate_battery_lifespan(battery_capacity_mah=mah, active_current_ma=a_ma)
+                    print(f"{Colors.CYAN}--- BATTERY LIFESPAN & SOLAR SIZING ---{Colors.RESET}")
+                    print(f"  Battery Capacity: {mah} mAh  |  Avg Current: {res['average_current_draw_ma']} mA")
+                    print(f"  Lifespan:         {res['estimated_lifespan_days']} Days ({res['estimated_lifespan_months']} Months)")
+                    print(f"  Solar Panel:      {res['recommended_solar_panel_watts']} W Panel Needed\n")
+                elif cmd == "/unittest-gen":
+                    if len(parts) > 2:
+                        mod, funcs = parts[1], parts[2:]
+                        code = generate_unity_c_test(mod, funcs)
+                        print(f"{Colors.CYAN}--- UNITY C EMBEDDED UNIT TEST CODE ---{Colors.RESET}")
+                        print(f"{Colors.GREEN}{code}{Colors.RESET}\n")
+                    else:
+                        print("Usage: /unittest-gen <module_name> <func1> <func2>")
+                elif cmd == "/bom-opt":
+                    sample_bom = [{"part": "ESP32-S3-WROOM-1", "unit_price_usd": 3.20, "qty": 1}, {"part": "AMS1117-3.3", "unit_price_usd": 0.30, "qty": 1}]
+                    res = optimize_bom_cost(sample_bom, target_production_qty=1000)
+                    print(f"{Colors.CYAN}--- BOM COST OPTIMIZATION (1000 Units Target) ---{Colors.RESET}")
+                    print(f"  Total Board BOM Cost: ${res['total_bom_unit_cost_usd']}")
+                    print(f"  Cost Drivers:         {res['cost_drivers']}")
+                    print(f"  Recommendation:       {res['recommendation']}\n")
                 # --- Component & Datasheet Tools ---
                 elif cmd == "/datasheet":
                     if len(parts) > 1:
