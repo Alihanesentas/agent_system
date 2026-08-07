@@ -272,3 +272,30 @@ def clear_logs():
     """Resets logs for benchmarking clean state."""
     AgentLog.delete().execute()
     return {"status": "success", "message": "All activity logs have been cleared."}
+
+# --- REST API Gateway for External Apps & IDEs ---
+
+class TaskPayload(BaseModel):
+    prompt: str
+    agent_name: Optional[str] = "orchestrator"
+    model_name: Optional[str] = "gpt-4o"
+
+@app.post("/api/v1/agent/run")
+def api_run_agent(payload: TaskPayload):
+    """Triggers an agent task remotely via REST API."""
+    from core.runner import run_agent_task
+    output = run_agent_task(agent_name=payload.agent_name or "orchestrator", user_prompt=payload.prompt, model_name=payload.model_name or "gpt-4o")
+    return {"status": "success", "agent": payload.agent_name, "model": payload.model_name, "output": output}
+
+@app.post("/api/v1/consensus")
+def api_consensus(payload: TaskPayload):
+    """Triggers Multi-Model Consensus Voting remotely."""
+    from core.consensus import run_consensus
+    return run_consensus(payload.prompt)
+
+@app.get("/api/v1/pinout")
+def api_pinout(sda: str = "GPIO21", scl: str = "GPIO22", output_pin: str = "GPIO34"):
+    """Checks GPIO pin conflicts remotely via REST API."""
+    from core.pinout import check_pinout_conflicts
+    return check_pinout_conflicts({"I2C_SDA": sda, "I2C_SCL": scl, "OUTPUT_PIN": output_pin}, mcu_family="ESP32")
+

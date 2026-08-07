@@ -35,6 +35,10 @@ from core.pinout import check_pinout_conflicts
 from core.consensus import run_consensus
 from core.github_pr import create_feature_branch_and_pr
 from core.tui_dashboard import render_tui_dashboard
+from core.flasher import flash_firmware, read_serial_monitor
+from core.pcb_render import analyze_gerber_layers
+from core.datasheet_compare import compare_datasheets, format_comparison_markdown
+from core.self_improve import analyze_and_refine_agent_prompt
 
 class Colors:
     CYAN = '\033[96m'
@@ -122,6 +126,12 @@ def print_help():
   {Colors.GREEN}/consensus <prompt>{Colors.RESET}          -> Multi-model consensus voting (OpenAI + Claude + Gemini)
   {Colors.GREEN}/pr <branch> <title>{Colors.RESET}         -> Auto create git branch, commit & submit GitHub PR
   {Colors.GREEN}/tui{Colors.RESET}                         -> Display interactive TUI system status dashboard
+{Colors.BOLD}{Colors.YELLOW}  ── Production & Flashing Tools ──{Colors.RESET}
+  {Colors.GREEN}/flash <file.bin>{Colors.RESET}            -> Flash firmware binary to MCU via USB/TTY (esptool/st-flash)
+  {Colors.GREEN}/serial [port]{Colors.RESET}              -> Read live UART serial console logs
+  {Colors.GREEN}/gerber <folder>{Colors.RESET}             -> Analyze PCB Gerber layers & 3D enclosure bounds
+  {Colors.GREEN}/datasheet-compare <p1> <p2>{Colors.RESET} -> Comparative specification matrix for 2 PDF datasheets
+  {Colors.GREEN}/improve <agent> <reason>{Colors.RESET}    -> Auto-refine agent prompt spec based on error patterns
 {Colors.BOLD}{Colors.YELLOW}  ── System ──{Colors.RESET}
   {Colors.GREEN}/agent <name>{Colors.RESET}               -> Switch sub-agent (orchestrator, planner, software, electronics, reviewer)
   {Colors.GREEN}/model <name>{Colors.RESET}               -> Switch model (gpt-4o, gpt-4o-mini, claude-3-5-sonnet, gemini-1.5-flash)
@@ -440,6 +450,48 @@ def start_interactive_shell(default_agent: str = "orchestrator", default_model: 
                         print("Usage: /pr <branch_name> <pr_title>")
                 elif cmd == "/tui":
                     render_tui_dashboard()
+                # --- Production & Flashing Tools ---
+                elif cmd == "/flash":
+                    if len(parts) > 1:
+                        bin_path = parts[1]
+                        print(f"{Colors.CYAN}⚡ Flashing firmware '{bin_path}' over USB/TTY...{Colors.RESET}")
+                        res = flash_firmware(bin_path)
+                        print(f"{Colors.GREEN if res['status']=='success' else Colors.RED}{res}{Colors.RESET}\n")
+                    else:
+                        print("Usage: /flash <firmware_binary.bin>")
+                elif cmd == "/serial":
+                    port = parts[1] if len(parts) > 1 else "/dev/ttyUSB0"
+                    print(f"{Colors.CYAN}🔌 Reading UART Serial Console on '{port}'...{Colors.RESET}")
+                    res = read_serial_monitor(port=port)
+                    logs = res.get("logs") or res.get("simulated_logs", [])
+                    for l in logs:
+                        print(f"  {Colors.GREEN}{l}{Colors.RESET}")
+                    print()
+                elif cmd == "/gerber":
+                    if len(parts) > 1:
+                        g_path = parts[1]
+                        print(f"{Colors.CYAN}📐 Analyzing PCB Gerber layers & enclosure bounds for '{g_path}'...{Colors.RESET}")
+                        res = analyze_gerber_layers(g_path)
+                        print(f"{Colors.GREEN}--- PCB GERBER ANALYSIS ---{Colors.RESET}")
+                        print(f"  Dimensions: {res['pcb_dimensions']['width_mm']}mm x {res['pcb_dimensions']['height_mm']}mm ({res['pcb_dimensions']['area_sq_cm']} sq cm)")
+                        print(f"  Layers:     {res['pcb_dimensions']['estimated_layers']} Layer PCB")
+                        print(f"  Enclosure:  {res['enclosure_3d_recommendation']}\n")
+                    else:
+                        print("Usage: /gerber <gerber_folder_path>")
+                elif cmd == "/datasheet-compare":
+                    if len(parts) > 2:
+                        res = compare_datasheets(parts[1], parts[2])
+                        md_out = format_comparison_markdown(res)
+                        print(f"{Colors.BLUE}{md_out}{Colors.RESET}\n")
+                    else:
+                        print("Usage: /datasheet-compare <datasheet1.pdf> <datasheet2.pdf>")
+                elif cmd == "/improve":
+                    if len(parts) > 2:
+                        agent_target, reason = parts[1], " ".join(parts[2:])
+                        res = analyze_and_refine_agent_prompt(agent_target, "User task", reason)
+                        print(f"{Colors.GREEN}✅ {res}{Colors.RESET}\n")
+                    else:
+                        print("Usage: /improve <agent_name> <error_reason_or_rule>")
                 # --- Component & Datasheet Tools ---
                 elif cmd == "/datasheet":
                     if len(parts) > 1:
