@@ -41,6 +41,7 @@ from core.datasheet_compare import compare_datasheets, format_comparison_markdow
 from core.self_improve import analyze_and_refine_agent_prompt
 from core.mechanical import generate_openscad_enclosure, recommend_slicer_settings
 from core.research import search_arxiv_papers, generate_patent_prior_art_query
+from core.mcp_client import MCPExecutionMode, dispatch_task
 
 class Colors:
     CYAN = '\033[96m'
@@ -140,6 +141,7 @@ def print_help():
   {Colors.GREEN}/arxiv <query>{Colors.RESET}              -> Search arXiv scientific preprints for R&D literature
   {Colors.GREEN}/patent <invention>{Colors.RESET}          -> Generate patent prior art search queries & CPC codes
   {Colors.GREEN}/mcp{Colors.RESET}                         -> Display Model Context Protocol (MCP) server guide
+  {Colors.GREEN}/mcp-mode [on|off]{Colors.RESET}           -> Toggle between Direct Native Execution & MCP Stdio Protocol
 {Colors.BOLD}{Colors.YELLOW}  ── System ──{Colors.RESET}
   {Colors.GREEN}/agent <name>{Colors.RESET}               -> Switch sub-agent (orchestrator, planner, software, electronics, reviewer)
   {Colors.GREEN}/model <name>{Colors.RESET}               -> Switch model (gpt-4o, gpt-4o-mini, claude-3-5-sonnet, gemini-1.5-flash)
@@ -544,6 +546,18 @@ def start_interactive_shell(default_agent: str = "orchestrator", default_model: 
                     print(f"{Colors.CYAN}🔌 MODEL CONTEXT PROTOCOL (MCP) SERVER GUIDE{Colors.RESET}")
                     print("  Add to Claude Desktop config (~/Library/Application Support/Claude/claude_desktop_config.json):")
                     print('  {\n    "mcpServers": {\n      "agent-system": {\n        "command": "python3",\n        "args": ["/Users/alihanesentas/Desktop/agent_system/mcp_server.py"]\n      }\n    }\n  }\n')
+                elif cmd == "/mcp-mode":
+                    if len(parts) > 1:
+                        opt = parts[1].lower()
+                        if opt == "on":
+                            MCPExecutionMode.set_enabled(True)
+                            print(f"{Colors.GREEN}🔌 MCP Protocol Mode ENABLED. Tasks will be routed via mcp_server.py JSON-RPC (~15% schema token overhead).{Colors.RESET}")
+                        elif opt == "off":
+                            MCPExecutionMode.set_enabled(False)
+                            print(f"{Colors.GREEN}⚡ Direct Native Execution Mode ENABLED. Tasks execute natively (Zero token overhead, maximum speed).{Colors.RESET}")
+                    else:
+                        status = "ENABLED (MCP JSON-RPC Protocol)" if MCPExecutionMode.is_enabled() else "DISABLED (Direct Native Execution)"
+                        print(f"MCP Mode Status: {Colors.CYAN}{status}{Colors.RESET}. Usage: /mcp-mode <on|off>")
                 # --- Component & Datasheet Tools ---
                 elif cmd == "/datasheet":
                     if len(parts) > 1:
@@ -598,20 +612,22 @@ def start_interactive_shell(default_agent: str = "orchestrator", default_model: 
                 if mem_metrics["savings_percent"] > 0:
                     print(f"{Colors.DIM}🧠 [Sliding Memory Pruning]: Saved {mem_metrics['savings_percent']}% tokens ({mem_metrics['tokens_saved']} tokens){Colors.RESET}")
 
-                print(f"{Colors.DIM}Thinking & executing task with [{active_agent.upper()}]...{Colors.RESET}")
+                print(f"{Colors.DIM}Thinking & executing task with [{active_agent.upper()}] (MCP Mode: {'ON' if MCPExecutionMode.is_enabled() else 'OFF'})...{Colors.RESET}")
                 start_time = time.time()
 
-                output = run_agent_task(
-                    agent_name=active_agent,
+                disp_result = dispatch_task(
                     user_prompt=pruned_prompt,
+                    agent_name=active_agent,
                     model_name=active_model
                 )
+                output = disp_result.get("output", "")
                 elapsed = round((time.time() - start_time) * 1000, 1)
 
                 memory.add_message("assistant", output)
 
                 # Render transparent thinking process box and formatted response
                 reasoning_steps = [
+                    f"Execution Mode: {disp_result.get('execution_mode')}",
                     f"Analyzed prompt & retrieved context for [{active_agent}]",
                     f"Optimized tokens & checked semantic cache",
                     f"Dispatched task to LLM Provider [{active_model}]"
