@@ -139,6 +139,11 @@ Katman 5 (Persistence & Infrastructure): ChromaDB RAG Engine, SQLite Proje Hafı
 - **`/ensemble`**: Paralel koşan modellerin yanıtlarını çoğunluk konsensüs oylaması ile birleştirir.
 - **`/bom-sensitivity`**: Enflasyon ve tedarik krizlerinde BOM maliyet salınımlarını Monte Carlo simülasyonu ile analiz eder.
 - **`/compact-memory`**: SQLite uzun vadeli hafıza kayıtlarını ve ChromaDB vektör veri tabanını sıkıştırarak disk alanını boşaltır.
+- **`/watchdog`**: Gömülü sistem CPU panic crash dump kayıtlarını ve Watchdog reset nedenini analiz eder.
+- **`/snap-fit`**: 3D kutu geçme kapak (cantilever snap-fit) tırnak gerilimini (%) ve kırılma dayanımını hesaplar.
+- **`/agent-telemetry`**: Alt agent'ların adım adım çalışma sürelerini (ms) ve gecikme profilini raporlar.
+- **`/footprint-check`**: KiCad şematik sembol pinleri ile PCB footprint pad düzenini çapraz denetler.
+- **`/backoff`**: LLM API 429 Rate Limit durumlarında üssel geri çekilme (jitter delay) süresini hesaplar.
 - **`/report`**: Tüm projenin eksiksiz PDF/Markdown mühendislik raporunu çıkarır.
 
 ### 🛡️ Mimari Dayanıklılık, Güvenlik & Altyapı Komutları

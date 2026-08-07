@@ -98,6 +98,11 @@ from core.production.airflow_calculator import calculate_enclosure_ventilation
 from core.infra.ensemble_aggregator import aggregate_ensemble_responses
 from core.hardware.bom_sensitivity import analyze_bom_cost_sensitivity
 from core.infra.memory_compactor import compact_agent_memory
+from core.software.watchdog_analyzer import analyze_crash_dump
+from core.production.snap_fit import calculate_snap_fit_joint
+from core.engine.agent_telemetry import global_agent_telemetry
+from core.hardware.footprint_crosscheck import crosscheck_footprint_pinout
+from core.infra.adaptive_backoff import calculate_adaptive_backoff_delay
 
 class Colors:
     CYAN = '\033[96m'
@@ -261,6 +266,11 @@ def print_help():
   {Colors.GREEN}/ensemble{Colors.RESET}                    -> Multi-model dynamic response ensemble aggregator
   {Colors.GREEN}/bom-sensitivity{Colors.RESET}             -> Monte Carlo BOM component cost sensitivity & inflation analyzer
   {Colors.GREEN}/compact-memory{Colors.RESET}             -> Compact SQLite long-term logs & vector database storage
+  {Colors.GREEN}/watchdog{Colors.RESET}                   -> Firmware CPU panic crash dump & watchdog reset cause analyzer
+  {Colors.GREEN}/snap-fit{Colors.RESET}                   -> 3D enclosure cantilever snap-fit joint & latch strain calculator
+  {Colors.GREEN}/agent-telemetry{Colors.RESET}           -> Multi-agent step-by-step latency Gantt profiler
+  {Colors.GREEN}/footprint-check{Colors.RESET}          -> Cross-check KiCad schematic symbol pins vs footprint pads
+  {Colors.GREEN}/backoff{Colors.RESET}                    -> API rate limit exponential backoff jitter delay calculator
 {Colors.BOLD}{Colors.YELLOW}  ── System ──{Colors.RESET}
   {Colors.GREEN}/agent <name>{Colors.RESET}               -> Switch sub-agent (orchestrator, planner, software, electronics, reviewer)
   {Colors.GREEN}/model <name>{Colors.RESET}               -> Switch model (gpt-4o, gpt-4o-mini, claude-3-5-sonnet, gemini-1.5-flash)
@@ -1004,6 +1014,26 @@ def start_interactive_shell(default_agent: str = "orchestrator", default_model: 
                     res = compact_agent_memory()
                     print(f"{Colors.CYAN}--- AGENT MEMORY COMPACTOR ---{Colors.RESET}")
                     print(f"  Space Freed: {res['disk_space_freed_mb']} MB ({res['memory_compacted_pct']}% Compacted)\n")
+                elif cmd == "/watchdog":
+                    res = analyze_crash_dump()
+                    print(f"{Colors.CYAN}--- FIRMWARE WATCHDOG CRASH DUMP ANALYZER ---{Colors.RESET}")
+                    print(f"  Cause: {res['cause_description']} | PC: {res['program_counter']}\n")
+                elif cmd == "/snap-fit":
+                    res = calculate_snap_fit_joint()
+                    print(f"{Colors.CYAN}--- 3D CANTILEVER SNAP-FIT JOINT CALCULATOR ---{Colors.RESET}")
+                    print(f"  Strain: {res['calculated_strain_pct']}% | Durability: {res['joint_durability']}\n")
+                elif cmd == "/agent-telemetry":
+                    res = global_agent_telemetry.get_telemetry_report()
+                    print(f"{Colors.CYAN}--- MULTI-AGENT EXECUTION LATENCY TELEMETRY ---{Colors.RESET}")
+                    print(f"  Total Execution: {res['total_execution_ms']} ms | Spans Logged: {res['spans_count']}\n")
+                elif cmd == "/footprint-check":
+                    res = crosscheck_footprint_pinout()
+                    print(f"{Colors.CYAN}--- KICAD SYMBOL VS FOOTPRINT CROSS-CHECKER ---{Colors.RESET}")
+                    print(f"  Status: {res['status'].upper()} | Pins Checked: {res['total_pins_checked']}\n")
+                elif cmd == "/backoff":
+                    res = calculate_adaptive_backoff_delay()
+                    print(f"{Colors.CYAN}--- ADAPTIVE EXPONENTIAL BACKOFF CALCULATOR ---{Colors.RESET}")
+                    print(f"  Calculated Jitter Delay: {res['calculated_jitter_delay_ms']} ms\n")
                 # --- Component & Datasheet Tools ---
                 elif cmd == "/datasheet":
                     if len(parts) > 1:
