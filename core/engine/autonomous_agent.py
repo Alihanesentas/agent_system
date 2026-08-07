@@ -46,7 +46,22 @@ def execute_autonomous_goal(goal_description: str) -> Dict[str, Any]:
     cad_res = generate_openscad_enclosure(60, 40, 20)
     trace_steps.append(f"📐 [Auto-CAD Engine]: Generated OpenSCAD enclosure (60x40x20mm)")
 
-    # Step 6: Autonomous LLM Firmware Generation & Verification
+    # Step 6: Autonomous PCB Auto-Routing
+    from core.hardware.autorouter import auto_route_pcb_netlist
+    route_res = auto_route_pcb_netlist([{"name": "VCC", "x1": 5, "y1": 5, "x2": 45, "y2": 5}])
+    trace_steps.append(f"🛣️ [Auto-PCB Router]: Routed {route_res['total_nets_routed']} net traces (Completion: {route_res['completion_rate']})")
+
+    # Step 7: Autonomous Hardware Knowledge Graph Query
+    from core.infra.knowledge_graph import global_knowledge_graph
+    kg_res = global_knowledge_graph.query_graph("ESP32-S3")
+    trace_steps.append(f"🕸️ [Auto-Knowledge Graph]: Resolved {kg_res['matching_relationships_count']} relational component edges")
+
+    # Step 8: Autonomous Hardware-in-the-Loop (HIL) Test Verification
+    from core.software.hil_testing import run_hil_hardware_test
+    hil_res = run_hil_hardware_test(binary_path=f"{proj_name}/firmware/firmware.bin")
+    trace_steps.append(f"⚡ [Auto-HIL Test]: Hardware Assertions Passed -> {hil_res['passed_count']}/{hil_res['total_assertions']}")
+
+    # Step 9: Autonomous LLM Firmware Generation & Verification
     firmware_prompt = f"Write complete C++ PlatformIO firmware for goal: '{goal_description}' using ESP32-S3."
     fw_code = run_agent_task(agent_name="software", user_prompt=firmware_prompt, model_name="gpt-4o")
     trace_steps.append(f"💻 [Auto-Software Synthesis]: Generated C++ Firmware ({len(fw_code)} bytes)")

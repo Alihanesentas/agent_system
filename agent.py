@@ -64,6 +64,10 @@ from core.engine.agent_tree_sim import run_agent_tree_simulation, print_static_t
 from core.infra.worker_queue import global_worker_queue
 from core.infra.rate_limiter import global_rate_limiter
 from core.infra.checkpoint import create_system_checkpoint, restore_system_checkpoint
+from core.software.hil_testing import run_hil_hardware_test
+from core.infra.voice_agent import process_voice_command
+from core.hardware.autorouter import auto_route_pcb_netlist
+from core.infra.knowledge_graph import global_knowledge_graph
 
 class Colors:
     CYAN = '\033[96m'
@@ -193,6 +197,11 @@ def print_help():
   {Colors.GREEN}/ratelimit{Colors.RESET}                   -> View LLM API Token Bucket rate limiter status
   {Colors.GREEN}/checkpoint{Colors.RESET}                  -> Create snapshot checkpoint of system state
   {Colors.GREEN}/restore{Colors.RESET}                     -> Restore system state from snapshot checkpoint
+{Colors.BOLD}{Colors.YELLOW}  ── Frontier Hardware-in-Loop, Voice, Router & Graph ──{Colors.RESET}
+  {Colors.GREEN}/hil <file.bin>{Colors.RESET}               -> Run Hardware-in-the-Loop physical board test
+  {Colors.GREEN}/voice <prompt>{Colors.RESET}              -> Voice Assistant hands-free workbench command
+  {Colors.GREEN}/autoroute{Colors.RESET}                   -> Auto-route PCB netlist traces
+  {Colors.GREEN}/graph <query>{Colors.RESET}                 -> Query Hardware Knowledge Graph for MCU/Sensors
 {Colors.BOLD}{Colors.YELLOW}  ── System ──{Colors.RESET}
   {Colors.GREEN}/agent <name>{Colors.RESET}               -> Switch sub-agent (orchestrator, planner, software, electronics, reviewer)
   {Colors.GREEN}/model <name>{Colors.RESET}               -> Switch model (gpt-4o, gpt-4o-mini, claude-3-5-sonnet, gemini-1.5-flash)
@@ -782,6 +791,30 @@ def start_interactive_shell(default_agent: str = "orchestrator", default_model: 
                     print(f"{Colors.CYAN}--- SNAPSHOT CHECKPOINT RESTORED ---{Colors.RESET}")
                     print(f"  Status: {res['status']}")
                     print(f"  Time:   {res['date_str']}\n")
+                # --- Frontier Tools ---
+                elif cmd == "/hil":
+                    b_path = parts[1] if len(parts) > 1 else "firmware.bin"
+                    res = run_hil_hardware_test(b_path)
+                    print(f"{Colors.CYAN}--- HARDWARE-IN-THE-LOOP (HIL) TEST RESULT ---{Colors.RESET}")
+                    print(f"  Status: {res['status'].upper()} | Assertions Passed: {res['passed_count']}/{res['total_assertions']}")
+                    print(f"  Passed: {', '.join(res['passed_assertions'])}\n")
+                elif cmd == "/voice":
+                    v_input = " ".join(parts[1:]) if len(parts) > 1 else "Audit pinouts and check thermal dissipation"
+                    res = process_voice_command(v_input)
+                    print(f"{Colors.CYAN}--- VOICE ENGINEERING ASSISTANT ---{Colors.RESET}")
+                    print(f"  Transcription: {res['transcription']}")
+                    print(f"  Response:      {res['assistant_response']}\n")
+                elif cmd == "/autoroute":
+                    res = auto_route_pcb_netlist([{"name": "VCC", "x1": 5, "y1": 5, "x2": 45, "y2": 5}])
+                    print(f"{Colors.CYAN}--- KICAD PCB AUTO-ROUTER ---{Colors.RESET}")
+                    print(f"  Board Size: {res['board_size_mm'][0]}x{res['board_size_mm'][1]}mm | Layers: {res['layers']}")
+                    print(f"  Completion: {res['completion_rate']} ({res['total_nets_routed']} nets routed)\n")
+                elif cmd == "/graph":
+                    q = parts[1] if len(parts) > 1 else "ESP32-S3"
+                    res = global_knowledge_graph.query_graph(q)
+                    print(f"{Colors.CYAN}--- HARDWARE KNOWLEDGE GRAPH QUERY ---{Colors.RESET}")
+                    print(f"  Query: {res['query']} | Matching Nodes: {res['matching_components_count']}")
+                    print(f"  Relationships: {len(res['relationships'])}\n")
                 # --- Component & Datasheet Tools ---
                 elif cmd == "/datasheet":
                     if len(parts) > 1:

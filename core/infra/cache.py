@@ -9,6 +9,7 @@ DB_PATH = os.path.join(os.path.dirname(__file__), "..", "subagent_tracker", "bac
 
 def init_cache_table():
     """Initializes the semantic cache table in SQLite."""
+    os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
     cursor.execute("""
