@@ -88,6 +88,11 @@ from core.software.static_analyzer import audit_firmware_security
 from core.production.fea_simulation import run_mechanical_fea_simulation
 from core.production.bom_stock_tracker import check_bom_supply_chain_risks
 from core.infra.context_pruner import compress_prompt_context
+from core.hardware.kicad_drc_rules import generate_kicad_dru_file
+from core.software.flash_partition import calculate_flash_partitions
+from core.production.fasteners import calculate_screw_boss_dimensions
+from core.infra.circuit_breaker import global_circuit_breaker
+from core.infra.token_budget import global_token_budget
 
 class Colors:
     CYAN = '\033[96m'
@@ -241,6 +246,11 @@ def print_help():
   {Colors.GREEN}/fea [force_N]{Colors.RESET}               -> 3D mechanical FEA stress & deformation simulator
   {Colors.GREEN}/supply-risk{Colors.RESET}                 -> Multi-vendor BOM stock availability & EOL risk alert
   {Colors.GREEN}/prune <text>{Colors.RESET}                 -> LLM prompt compression & context pruning engine
+  {Colors.GREEN}/drc-rules{Colors.RESET}                   -> Export custom KiCad 7/8 DRC design rules (.kicad_dru)
+  {Colors.GREEN}/partition [mb]{Colors.RESET}             -> Flash partition layout & SRAM static allocation visualizer
+  {Colors.GREEN}/fasteners [type]{Colors.RESET}           -> 3D enclosure metric screw boss thread sizer (M2-M4)
+  {Colors.GREEN}/circuit-breaker{Colors.RESET}           -> Multi-model API failure fallback & circuit breaker status
+  {Colors.GREEN}/budget{Colors.RESET}                      -> Token expenditure dollar budget tracker & alert monitor
 {Colors.BOLD}{Colors.YELLOW}  ── System ──{Colors.RESET}
   {Colors.GREEN}/agent <name>{Colors.RESET}               -> Switch sub-agent (orchestrator, planner, software, electronics, reviewer)
   {Colors.GREEN}/model <name>{Colors.RESET}               -> Switch model (gpt-4o, gpt-4o-mini, claude-3-5-sonnet, gemini-1.5-flash)
@@ -942,6 +952,28 @@ def start_interactive_shell(default_agent: str = "orchestrator", default_model: 
                     res = compress_prompt_context(t_in)
                     print(f"{Colors.CYAN}--- LLM CONTEXT PRUNING ENGINE ---{Colors.RESET}")
                     print(f"  Original: {res['original_char_length']} chars | Savings: {res['token_savings_pct']}%\n")
+                elif cmd == "/drc-rules":
+                    res = generate_kicad_dru_file()
+                    print(f"{Colors.CYAN}--- KICAD DRC RULES FILE EXPORTER ---{Colors.RESET}")
+                    print(f"  Min Clearance: {res['min_clearance_mm']}mm | Status: SUCCESS (.kicad_dru)\n")
+                elif cmd == "/partition":
+                    mb_in = int(parts[1]) if len(parts) > 1 and parts[1].isdigit() else 8
+                    res = calculate_flash_partitions(mb_in)
+                    print(f"{Colors.CYAN}--- FLASH PARTITION TABLE VISUALIZER ---{Colors.RESET}")
+                    print(f"  Total Flash: {res['total_flash_mb']} MB | Partitions Defined: {len(res['partitions'])}\n")
+                elif cmd == "/fasteners":
+                    s_type = parts[1] if len(parts) > 1 else "M3"
+                    res = calculate_screw_boss_dimensions(s_type)
+                    print(f"{Colors.CYAN}--- 3D SCREW BOSS FASTENER SIZER ---{Colors.RESET}")
+                    print(f"  Screw: {res['screw_type']} | Pilot Hole: {res['recommended_pilot_hole_mm']}mm | Boss OD: {res['recommended_boss_od_mm']}mm\n")
+                elif cmd == "/circuit-breaker":
+                    res = global_circuit_breaker.record_failure("gpt-4o")
+                    print(f"{Colors.CYAN}--- LLM API CIRCUIT BREAKER ---{Colors.RESET}")
+                    print(f"  Status: {res['status'].upper()} | Failures Tracked: {res['failure_count']}\n")
+                elif cmd == "/budget":
+                    res = global_token_budget.add_cost(0.005)
+                    print(f"{Colors.CYAN}--- TOKEN COST BUDGET TRACKER ---{Colors.RESET}")
+                    print(f"  Spent: ${res['current_spent_usd']} / ${res['monthly_cap_usd']} ({res['budget_used_pct']}% Used)\n")
                 # --- Component & Datasheet Tools ---
                 elif cmd == "/datasheet":
                     if len(parts) > 1:

@@ -2,10 +2,10 @@
 Core Architectural Package Entrypoint.
 Provides backward-compatible re-exports for all sub-packages:
 - core.engine: Multi-Agent Pipeline, DAG Parallel Executor & Cost Router
-- core.hardware: KiCad, SPICE, Pinout, Thermal, DRC, RF, Auto-Router, MCU Selector, Layer Stackup, KiCad 3D Models & SPICE Transpiler
-- core.software: Firmware, Unity Tests, Self-Healing, Edge AI, HIL Testing, Linter, Power Profiler & Static Security Scanner
-- core.production: Mechanical CAD, BOM Optimizer, Harness Sizer, Report Generator, Presentation Exporter, FEA Simulation & BOM Stock Tracker
-- core.infra: RAG, Memory, Cache, Telemetry, Voice, Knowledge Graph, Guardrails, Plugins, Theme Manager, Autocomplete, Consensus Matrix, Pareto Frontier & Context Pruner
+- core.hardware: KiCad, SPICE, Pinout, Thermal, DRC, RF, Auto-Router, MCU Selector, Layer Stackup, KiCad 3D Models, SPICE Transpiler & DRC Rules
+- core.software: Firmware, Unity Tests, Self-Healing, Edge AI, HIL Testing, Linter, Power Profiler, Static Security Scanner & Flash Partitions
+- core.production: Mechanical CAD, BOM Optimizer, Harness Sizer, Report Generator, Presentation Exporter, FEA Simulation, BOM Stock Tracker & Screw Boss Fasteners
+- core.infra: RAG, Memory, Cache, Telemetry, Voice, Knowledge Graph, Guardrails, Plugins, Theme Manager, Autocomplete, Consensus Matrix, Pareto Frontier, Context Pruner, Circuit Breaker & Token Budget
 """
 
 from core.engine.runner import run_agent_task
@@ -33,6 +33,7 @@ from core.hardware.mcu_selector import recommend_mcu_for_project
 from core.hardware.layer_stackup import calculate_pcb_stackup
 from core.hardware.kicad_3d_models import analyze_3d_component_clearance
 from core.hardware.spice_transpiler import transpile_kicad_to_spice
+from core.hardware.kicad_drc_rules import generate_kicad_dru_file
 
 from core.software.executor import execute_command, compile_c, compile_cpp
 from core.software.self_heal import auto_compile_and_fix
@@ -44,6 +45,7 @@ from core.software.hil_testing import run_hil_hardware_test
 from core.software.linter import format_code_snippet
 from core.software.power_profiler import profile_firmware_power
 from core.software.static_analyzer import audit_firmware_security
+from core.software.flash_partition import calculate_flash_partitions
 
 from core.production.mechanical import generate_openscad_enclosure, recommend_slicer_settings
 from core.production.battery import calculate_battery_lifespan
@@ -56,6 +58,7 @@ from core.production.report_generator import generate_project_markdown_report
 from core.production.presentation_exporter import export_project_presentation
 from core.production.fea_simulation import run_mechanical_fea_simulation
 from core.production.bom_stock_tracker import check_bom_supply_chain_risks
+from core.production.fasteners import calculate_screw_boss_dimensions
 
 from core.infra.profile import load_user_profile, save_user_profile, build_personalized_system_prompt
 from core.infra.cache import get_cache_metrics
@@ -72,3 +75,5 @@ from core.infra.theme_manager import set_cli_theme
 from core.infra.consensus_matrix import calculate_consensus_matrix
 from core.infra.pareto_frontier import calculate_pareto_frontier
 from core.infra.context_pruner import compress_prompt_context
+from core.infra.circuit_breaker import global_circuit_breaker
+from core.infra.token_budget import global_token_budget

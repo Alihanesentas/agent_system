@@ -129,6 +129,11 @@ Katman 5 (Persistence & Infrastructure): ChromaDB RAG Engine, SQLite Proje Hafı
 - **`/fea [force_N]`**: 3D basılı kutunun mekanik gerilim (FEA Stress) ve deformasyon simülasyonunu yapar.
 - **`/supply-risk`**: BOM parçalarının küresel tedarik zinciri stok durumunu ve EOL (üretim sonu) risklerini tarar.
 - **`/prune <text>`**: LLM prompt bağlamını %60 oranında sıkıştırarak token maliyetini düşürür.
+- **`/drc-rules`**: Özel KiCad 7.0/8.0 fabrika DRC kural dosyasını (`.kicad_dru`) oluşturur.
+- **`/partition [mb]`**: Flash hafıza bölüm haritasını (nvs, app0, app1, spiffs) ve SRAM yerleşimini görselleştirir.
+- **`/fasteners [type]`**: 3D kutu vida yuvası (screw boss M2-M4) kılavuz delik çapı ve duvar kalınlığını hesaplar.
+- **`/circuit-breaker`**: LLM API bağlantı kopmalarında otomatik alternatif modele geçen devre kesici durumunu gösterir.
+- **`/budget`**: Aylık/günlük LLM token harcama tutarını ($) ve bütçe uyarı sınırını takip eder.
 - **`/report`**: Tüm projenin eksiksiz PDF/Markdown mühendislik raporunu çıkarır.
 
 ### 🛡️ Mimari Dayanıklılık, Güvenlik & Altyapı Komutları
