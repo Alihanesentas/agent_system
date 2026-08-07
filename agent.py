@@ -24,6 +24,7 @@ from core.git_ops import git_status, git_diff, git_log, git_auto_commit
 from core.plugins import list_plugins, execute_plugin, load_plugins_from_dir
 from core.datasheet import summarize_datasheet, extract_datasheet
 from core.component_search import search_component, get_component_alternatives, compare_components
+from core.agent_test import create_system_test_suite
 
 class Colors:
     CYAN = '\033[96m'
@@ -100,6 +101,7 @@ def print_help():
   {Colors.GREEN}/git-status{Colors.RESET}                  -> Show git status
   {Colors.GREEN}/git-commit <msg>{Colors.RESET}            -> Auto stage & commit all changes
   {Colors.GREEN}/plugins{Colors.RESET}                     -> List registered plugins
+  {Colors.GREEN}/test{Colors.RESET}                        -> Run automated agent unit test suite
 {Colors.BOLD}{Colors.YELLOW}  ── System ──{Colors.RESET}
   {Colors.GREEN}/agent <name>{Colors.RESET}               -> Switch sub-agent (orchestrator, planner, software, electronics, reviewer)
   {Colors.GREEN}/model <name>{Colors.RESET}               -> Switch model (gpt-4o, gpt-4o-mini, claude-3-5-sonnet, gemini-1.5-flash)
@@ -350,6 +352,17 @@ def start_interactive_shell(default_agent: str = "orchestrator", default_model: 
                         print(f"  • {p['name']} [{p['category']}]: {p['description']}")
                     if not plugins:
                         print(f"  {Colors.DIM}No plugins loaded. Add .py files to plugins/ directory.{Colors.RESET}")
+                    print()
+                elif cmd == "/test":
+                    print(f"{Colors.CYAN}🧪 Running Automated Agent Unit Test Suite...{Colors.RESET}")
+                    suite = create_system_test_suite()
+                    res = suite.run_all()
+                    print(f"{Colors.GREEN}--- TEST SUITE RESULTS: {res['suite_name']} ({res['pass_rate']} Pass Rate) ---{Colors.RESET}")
+                    for r in res["results"]:
+                        status = f"{Colors.GREEN}✅ PASS{Colors.RESET}" if r["passed"] else f"{Colors.RED}❌ FAIL{Colors.RESET}"
+                        print(f"  {status} [{r['name']}] ({r['elapsed_ms']}ms)")
+                        if r["failures"]:
+                            print(f"     Failures: {r['failures']}")
                     print()
                 # --- Component & Datasheet Tools ---
                 elif cmd == "/datasheet":
