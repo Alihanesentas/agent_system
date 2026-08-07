@@ -1,0 +1,85 @@
+{
+  "name": "agent-system-vscode",
+  "displayName": "Autonomous Agent System for VSCode & Cursor",
+  "description": "Integrated SOTA Multi-Agent Assistant with Real-time Token Tracking, Hardware Pinout Audit, and Consensus Voting.",
+  "version": "1.0.0",
+  "publisher": "Alihanesentas",
+  "engines": {
+    "vscode": "^1.75.0"
+  },
+  "categories": [
+    "Other",
+    "Programming Languages",
+    "Snippets"
+  ],
+  "activationEvents": [
+    "onCommand:agentSystem.runTask",
+    "onCommand:agentSystem.runConsensus",
+    "onCommand:agentSystem.checkPinout",
+    "onCommand:agentSystem.showStats"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "agentSystem.runTask",
+        "title": "Agent System: Run Task on Selected Code",
+        "category": "Agent System"
+      },
+      {
+        "command": "agentSystem.runConsensus",
+        "title": "Agent System: Multi-Model Consensus Voting",
+        "category": "Agent System"
+      },
+      {
+        "command": "agentSystem.checkPinout",
+        "title": "Agent System: Audit Pinout Conflicts",
+        "category": "Agent System"
+      },
+      {
+        "command": "agentSystem.showStats",
+        "title": "Agent System: Show Live Token & Cost Stats",
+        "category": "Agent System"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "agentSystem.runTask",
+        "key": "ctrl+alt+a",
+        "mac": "cmd+alt+a"
+      }
+    ],
+    "configuration": {
+      "title": "Agent System Configuration",
+      "properties": {
+        "agentSystem.apiUrl": {
+          "type": "string",
+          "default": "http://127.0.0.1:8000",
+          "description": "FastAPI Agent System Backend API Base URL"
+        },
+        "agentSystem.defaultAgent": {
+          "type": "string",
+          "default": "orchestrator",
+          "enum": ["orchestrator", "planner", "software", "electronics", "reviewer"],
+          "description": "Default active sub-agent for code tasks"
+        },
+        "agentSystem.defaultModel": {
+          "type": "string",
+          "default": "gpt-4o",
+          "enum": ["gpt-4o", "gpt-4o-mini", "claude-3-5-sonnet", "gemini-1.5-flash", "llama3"],
+          "description": "Default model provider"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.75.0",
+    "@types/node": "16.x",
+    "typescript": "^4.9.4"
+  }
+}
