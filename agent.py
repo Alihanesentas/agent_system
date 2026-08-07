@@ -59,6 +59,7 @@ from core.ota_builder import generate_ota_update_manifest
 from core.gantt_planner import generate_project_gantt_chart
 from core.emc_compliance import audit_emc_fcc_compliance
 from core.autonomous_agent import execute_autonomous_goal
+from core.layered_architecture import run_layered_pipeline
 
 class Colors:
     CYAN = '\033[96m'
@@ -181,6 +182,7 @@ def print_help():
   {Colors.GREEN}/emc{Colors.RESET}                        -> Audit PCB for FCC Class B & CE EMC compliance
 {Colors.BOLD}{Colors.YELLOW}  ── True Autonomy Goal Loop ──{Colors.RESET}
   {Colors.GREEN}/auto <goal_description>{Colors.RESET}     -> Fully autonomous goal execution (Auto-Plan->HW->SW->Thermal->CAD->Build)
+  {Colors.GREEN}/layers <goal_description>{Colors.RESET}   -> Execute task via explicit 5-Layer Architecture Engine
 {Colors.BOLD}{Colors.YELLOW}  ── System ──{Colors.RESET}
   {Colors.GREEN}/agent <name>{Colors.RESET}               -> Switch sub-agent (orchestrator, planner, software, electronics, reviewer)
   {Colors.GREEN}/model <name>{Colors.RESET}               -> Switch model (gpt-4o, gpt-4o-mini, claude-3-5-sonnet, gemini-1.5-flash)
@@ -733,6 +735,16 @@ def start_interactive_shell(default_agent: str = "orchestrator", default_model: 
                         print("")
                     else:
                         print("Usage: /auto <goal_description>")
+                elif cmd == "/layers":
+                    if len(parts) > 1:
+                        g_txt = " ".join(parts[1:])
+                        print(f"{Colors.CYAN}🏢 Executing 5-Layer Architecture Pipeline for: '{g_txt}'...{Colors.RESET}")
+                        res = run_layered_pipeline(g_txt)
+                        print(f"{Colors.GREEN}✅ {res['final_summary']}{Colors.RESET}")
+                        print(f"  Layer 2 Strategy Phases: {res['layer_2_strategy']}")
+                        print(f"  Layer 4 Symbolic Checks: {res['layer_4_symbolic']}\n")
+                    else:
+                        print("Usage: /layers <goal_description>")
                 # --- Component & Datasheet Tools ---
                 elif cmd == "/datasheet":
                     if len(parts) > 1:
