@@ -42,6 +42,13 @@ Designed to measure, visualize, and benchmark LLM token usage, execution latency
 - **📋 Structured JSON Output Enforcer (`core/schemas.py`)**: Formats agent outputs into compact JSON, eliminating conversational fluff and reducing completion tokens by **%45+**.
 - **🤖 Autonomous REPL Terminal Shell (`agent.py`)**: Gemini CLI & Claude CLI style terminal shell with interactive prompt routing, file read/write tools, KiCad schema tools, vision reader, model switching, and slash commands.
 - **💻 Cross-Platform Terminal CLI (`cli.py`)**: Works on Linux, macOS, and Windows. Commands for `stats`, `logs`, `watch` (live refresh), `export` (CSV), and `test`.
+- **📚 RAG Engine (`core/rag.py`)**: ChromaDB vector store with smart overlapping chunking, PDF table extraction (`pdfplumber`), and automatic context injection into LLM prompts for grounded answers.
+- **🛠️ Tool Executor (`core/executor.py`)**: Safe shell command runner with `gcc`, `g++`, `make`, `cmake`, and `platformio` build pipeline support. Includes command safety checks and timeout protection.
+- **💾 Persistent Long-Term Memory (`core/longmem.py`)**: SQLite-based cross-session memory for project decisions, component selections, pinout assignments, and design rationale that persists across agent restarts.
+- **🔀 Multi-Agent DAG Pipeline (`core/pipeline.py`)**: Directed Acyclic Graph orchestration with topological sort and parallel execution. Pre-built `embedded_dev_pipeline()` runs Planner → [Hardware + Software (parallel)] → Reviewer.
+- **📨 Webhook Notifications (`core/notify.py`)**: Slack, Discord, and Telegram alerts on task completion, errors, or build results via Incoming Webhooks.
+- **🔧 Git Automation (`core/git_ops.py`)**: Agent-driven git operations: status, diff, log, auto-commit, branch creation, and stash management.
+- **🔌 Plugin Architecture (`core/plugins.py`)**: Extensible tool registration system with auto-discovery from `plugins/` directory. Add custom tools (SPICE, CAD, slicer) as drop-in Python files.
 
 ---
 
@@ -123,13 +130,24 @@ agent_system/
 │   ├── runner.py                 # Runner & @trace_agent decorator
 │   ├── optimizer.py              # Automated Prompt Optimizer
 │   ├── cache.py                  # Semantic Cache Engine
+│   ├── rag.py                    # RAG Engine (ChromaDB + PDF)
+│   ├── executor.py               # Tool Executor & Build Pipeline
+│   ├── longmem.py                # Persistent Long-Term Memory
+│   ├── pipeline.py               # Multi-Agent DAG Pipeline
+│   ├── notify.py                 # Webhook Notifications (Slack/Discord/Telegram)
+│   ├── git_ops.py                # Git Automation
+│   ├── plugins.py                # Plugin Architecture
 │   ├── reviewer.py               # Critic/Reviewer Cross-Verification
 │   ├── router.py                 # Model Cascading Router
+│   ├── selector.py               # Dynamic Model Selector Algorithm
 │   ├── schemas.py                # Structured JSON Schema Enforcer
 │   ├── schematics.py             # KiCad Schematic & PCB BOM Tools
 │   ├── vision.py                 # Base64 Multimodal Vision Reader
 │   ├── memory.py                 # Sliding Window Context Memory
-│   └── llm.py                    # Live LLM API Dispatcher
+│   ├── llm.py                    # Live LLM API Dispatcher
+│   └── service.py                # Autonomous Service Manager
+├── plugins/                      # Drop-in Plugin Directory
+│   └── example_plugin.py         # Plugin template
 └── subagent_tracker/             # Tracker Application
     ├── backend/                  # FastAPI + Peewee SQLite Engine
     │   ├── database.py
