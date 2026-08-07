@@ -39,6 +39,8 @@ from core.flasher import flash_firmware, read_serial_monitor
 from core.pcb_render import analyze_gerber_layers
 from core.datasheet_compare import compare_datasheets, format_comparison_markdown
 from core.self_improve import analyze_and_refine_agent_prompt
+from core.mechanical import generate_openscad_enclosure, recommend_slicer_settings
+from core.research import search_arxiv_papers, generate_patent_prior_art_query
 
 class Colors:
     CYAN = '\033[96m'
@@ -132,6 +134,12 @@ def print_help():
   {Colors.GREEN}/gerber <folder>{Colors.RESET}             -> Analyze PCB Gerber layers & 3D enclosure bounds
   {Colors.GREEN}/datasheet-compare <p1> <p2>{Colors.RESET} -> Comparative specification matrix for 2 PDF datasheets
   {Colors.GREEN}/improve <agent> <reason>{Colors.RESET}    -> Auto-refine agent prompt spec based on error patterns
+{Colors.BOLD}{Colors.YELLOW}  ── Multidisciplinary CAD & R&D Tools ──{Colors.RESET}
+  {Colors.GREEN}/cad <l> <w> <h>{Colors.RESET}             -> Generate OpenSCAD 3D parametric enclosure script
+  {Colors.GREEN}/slicer <material>{Colors.RESET}          -> Recommend 3D printing slicer settings (PLA/ABS/PETG/TPU)
+  {Colors.GREEN}/arxiv <query>{Colors.RESET}              -> Search arXiv scientific preprints for R&D literature
+  {Colors.GREEN}/patent <invention>{Colors.RESET}          -> Generate patent prior art search queries & CPC codes
+  {Colors.GREEN}/mcp{Colors.RESET}                         -> Display Model Context Protocol (MCP) server guide
 {Colors.BOLD}{Colors.YELLOW}  ── System ──{Colors.RESET}
   {Colors.GREEN}/agent <name>{Colors.RESET}               -> Switch sub-agent (orchestrator, planner, software, electronics, reviewer)
   {Colors.GREEN}/model <name>{Colors.RESET}               -> Switch model (gpt-4o, gpt-4o-mini, claude-3-5-sonnet, gemini-1.5-flash)
@@ -492,6 +500,50 @@ def start_interactive_shell(default_agent: str = "orchestrator", default_model: 
                         print(f"{Colors.GREEN}✅ {res}{Colors.RESET}\n")
                     else:
                         print("Usage: /improve <agent_name> <error_reason_or_rule>")
+                # --- Multidisciplinary CAD & R&D Tools ---
+                elif cmd == "/cad":
+                    if len(parts) > 3:
+                        try:
+                            l, w, h = float(parts[1]), float(parts[2]), float(parts[3])
+                            scad = generate_openscad_enclosure(l, w, h)
+                            print(f"{Colors.CYAN}--- OPENSCAD 3D PARAMETRIC ENCLOSURE CODE ---{Colors.RESET}")
+                            print(f"{Colors.GREEN}{scad}{Colors.RESET}\n")
+                        except ValueError:
+                            print("Error: Length, width, and height must be numeric values.")
+                    else:
+                        print("Usage: /cad <length_mm> <width_mm> <height_mm>")
+                elif cmd == "/slicer":
+                    mat = parts[1] if len(parts) > 1 else "PLA"
+                    res = recommend_slicer_settings(material=mat)
+                    print(f"{Colors.CYAN}--- 3D PRINTING SLICER RECOMMENDATIONS ({res['material']}) ---{Colors.RESET}")
+                    for k, v in res["slicer_recommendations"].items():
+                        print(f"  • {k}: {v}")
+                    print()
+                elif cmd == "/arxiv":
+                    if len(parts) > 1:
+                        q_str = " ".join(parts[1:])
+                        print(f"{Colors.CYAN}📚 Searching arXiv scientific preprints for '{q_str}'...{Colors.RESET}")
+                        papers = search_arxiv_papers(q_str, max_results=3)
+                        for p in papers:
+                            print(f"  {Colors.GREEN}• {p['title']} ({p['published']}){Colors.RESET}")
+                            print(f"    Authors: {p['authors']} | URL: {p['url']}")
+                            print(f"    {Colors.DIM}{p['summary']}{Colors.RESET}\n")
+                    else:
+                        print("Usage: /arxiv <research_topic>")
+                elif cmd == "/patent":
+                    if len(parts) > 1:
+                        inv_text = " ".join(parts[1:])
+                        res = generate_patent_prior_art_query(inv_text)
+                        print(f"{Colors.CYAN}--- PATENT PRIOR ART SEARCH QUERY ---{Colors.RESET}")
+                        print(f"  CPC Codes:     {', '.join(res['suggested_cpc_classifications'])}")
+                        print(f"  Boolean Query: {res['boolean_search_string']}")
+                        print(f"  Google URL:    {res['google_patents_query']}\n")
+                    else:
+                        print("Usage: /patent <invention_description>")
+                elif cmd == "/mcp":
+                    print(f"{Colors.CYAN}🔌 MODEL CONTEXT PROTOCOL (MCP) SERVER GUIDE{Colors.RESET}")
+                    print("  Add to Claude Desktop config (~/Library/Application Support/Claude/claude_desktop_config.json):")
+                    print('  {\n    "mcpServers": {\n      "agent-system": {\n        "command": "python3",\n        "args": ["/Users/alihanesentas/Desktop/agent_system/mcp_server.py"]\n      }\n    }\n  }\n')
                 # --- Component & Datasheet Tools ---
                 elif cmd == "/datasheet":
                     if len(parts) > 1:
