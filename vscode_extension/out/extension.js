@@ -5,6 +5,9 @@ const vscode = require("vscode");
 const http = require("http");
 function activate(context) {
     console.log('🤖 Agent System VSCode Extension is now active!');
+    // Register Webview Sidebar View Provider
+    const provider = new AgentSidebarWebviewProvider(context.extensionUri);
+    context.subscriptions.push(vscode.window.registerWebviewViewProvider(AgentSidebarWebviewProvider.viewType, provider));
     // Status Bar Item
     const statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
     statusBarItem.text = '$(robot) Agent System: Active';
@@ -15,12 +18,7 @@ function activate(context) {
     // Command 1: Run Task on Selected Code
     let disposableRunTask = vscode.commands.registerCommand('agentSystem.runTask', async () => {
         const editor = vscode.window.activeTextEditor;
-        if (!editor) {
-            vscode.window.showErrorMessage('No active code editor found.');
-            return;
-        }
-        const selection = editor.selection;
-        const selectedText = editor.document.getText(selection) || editor.document.getText();
+        const selectedText = editor ? (editor.document.getText(editor.selection) || editor.document.getText()) : '';
         const promptInput = await vscode.window.showInputBox({
             prompt: 'Enter instructions for the Agent System',
             placeHolder: 'e.g. Refactor this function or audit hardware pinouts'
@@ -28,32 +26,7 @@ function activate(context) {
         if (!promptInput) {
             return;
         }
-        const config = vscode.workspace.getConfiguration('agentSystem');
-        const apiUrl = config.get('apiUrl') || 'http://127.0.0.1:8000';
-        const agentName = config.get('defaultAgent') || 'orchestrator';
-        const modelName = config.get('defaultModel') || 'gpt-4o';
-        vscode.window.withProgress({
-            location: vscode.ProgressLocation.Notification,
-            title: `🤖 Agent System [${agentName.toUpperCase()}] processing code...`,
-            cancellable: false
-        }, async () => {
-            try {
-                const fullPrompt = `${promptInput}\n\nCODE CONTEXT:\n\`\`\`\n${selectedText}\n\`\`\``;
-                const result = await postJson(`${apiUrl}/api/v1/agent/run`, {
-                    prompt: fullPrompt,
-                    agent_name: agentName,
-                    model_name: modelName
-                });
-                const outputChannel = vscode.window.createOutputChannel('Agent System');
-                outputChannel.appendLine(`=== AGENT RESPONSE [${agentName.toUpperCase()}] ===`);
-                outputChannel.appendLine(result.output);
-                outputChannel.show();
-                vscode.window.showInformationMessage('✅ Agent task completed successfully!');
-            }
-            catch (err) {
-                vscode.window.showErrorMessage(`Failed to run agent task: ${err.message}`);
-            }
-        });
+        runTaskApi(promptInput, selectedText);
     });
     // Command 2: Multi-Model Consensus Voting
     let disposableConsensus = vscode.commands.registerCommand('agentSystem.runConsensus', async () => {
@@ -64,23 +37,7 @@ function activate(context) {
         if (!promptInput) {
             return;
         }
-        const config = vscode.workspace.getConfiguration('agentSystem');
-        const apiUrl = config.get('apiUrl') || 'http://127.0.0.1:8000';
-        vscode.window.withProgress({
-            location: vscode.ProgressLocation.Notification,
-            title: '🗳️ Running Multi-Model Consensus Voting (OpenAI + Claude + Gemini)...',
-            cancellable: false
-        }, async () => {
-            try {
-                const result = await postJson(`${apiUrl}/api/v1/consensus`, { prompt: promptInput });
-                const outputChannel = vscode.window.createOutputChannel('Agent System Consensus');
-                outputChannel.appendLine(result.consensus_synthesis);
-                outputChannel.show();
-            }
-            catch (err) {
-                vscode.window.showErrorMessage(`Consensus voting failed: ${err.message}`);
-            }
-        });
+        runConsensusApi(promptInput);
     });
     // Command 3: Audit Pinout Conflicts
     let disposablePinout = vscode.commands.registerCommand('agentSystem.checkPinout', async () => {
@@ -95,7 +52,7 @@ function activate(context) {
         try {
             const result = await getJson(`${apiUrl}/api/v1/pinout?sda=${sda}&scl=${scl}&output_pin=${outPin}`);
             if (result.conflicts && result.conflicts.length > 0) {
-                vscode.window.showErrorMessage(`🔴 Pin Conflict Detected: ${result.conflicts.join(' | ')}`);
+                vscode.window.showErrorMessage(`🔴 Pin Conflict: ${result.conflicts.join(' | ')}`);
             }
             else {
                 vscode.window.showInformationMessage('✅ Clean Pinout Assignment! No hardware collisions detected.');
@@ -122,7 +79,134 @@ function activate(context) {
 exports.activate = activate;
 function deactivate() { }
 exports.deactivate = deactivate;
-// Helper HTTP POST JSON
+// ------------------------------------------------------------------
+// Webview Sidebar Provider Implementation
+// ------------------------------------------------------------------
+class AgentSidebarWebviewProvider {
+    constructor(_extensionUri) {
+        this._extensionUri = _extensionUri;
+    }
+    resolveWebviewView(webviewView, context, _token) {
+        webviewView.webview.options = {
+            enableScripts: true,
+            localResourceRoots: [this._extensionUri]
+        };
+        webviewView.webview.html = this._getHtmlForWebview(webviewView.webview);
+        webviewView.webview.onDidReceiveMessage(async (data) => {
+            switch (data.type) {
+                case 'runTask':
+                    runTaskApi(data.prompt, '');
+                    break;
+                case 'runConsensus':
+                    runConsensusApi(data.prompt);
+                    break;
+            }
+        });
+    }
+    _getHtmlForWebview(webview) {
+        return `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agent System Dashboard</title>
+    <style>
+        body { font-family: var(--vscode-font-family); padding: 10px; color: var(--vscode-foreground); }
+        .card { background: var(--vscode-sideBar-background); border: 1px solid var(--vscode-panel-border); padding: 12px; margin-bottom: 12px; border-radius: 6px; }
+        h3 { margin-top: 0; color: var(--vscode-symbolIcon-keywordForeground); }
+        button { background: var(--vscode-button-background); color: var(--vscode-button-foreground); border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; width: 100%; margin-top: 6px; font-weight: bold; }
+        button:hover { background: var(--vscode-button-hoverBackground); }
+        textarea { width: 100%; height: 60px; background: var(--vscode-input-background); color: var(--vscode-input-foreground); border: 1px solid var(--vscode-input-border); border-radius: 4px; padding: 6px; box-sizing: border-box; }
+        .badge { display: inline-block; padding: 2px 6px; background: var(--vscode-badge-background); color: var(--vscode-badge-foreground); border-radius: 4px; font-size: 11px; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h3>🤖 Autonomous Agent OS</h3>
+        <p>Active Agent: <span class="badge">ORCHESTRATOR</span></p>
+        <p>Model: <span class="badge">OpenAI gpt-4o</span></p>
+        <p>Backend: <span class="badge" style="background: green; color: white;">Port 8000 (Active)</span></p>
+    </div>
+
+    <div class="card">
+        <h3>⚡ Quick Prompt Execution</h3>
+        <textarea id="promptInput" placeholder="Enter instructions for Agent System..."></textarea>
+        <button onclick="runTask()">🚀 Run Task</button>
+    </div>
+
+    <div class="card">
+        <h3>🗳️ Consensus Voting</h3>
+        <button onclick="runConsensus()">Run Multi-Model Consensus</button>
+    </div>
+
+    <script>
+        const vscode = acquireVsCodeApi();
+        function runTask() {
+            const prompt = document.getElementById('promptInput').value;
+            if (prompt) {
+                vscode.postMessage({ type: 'runTask', prompt: prompt });
+            }
+        }
+        function runConsensus() {
+            const prompt = document.getElementById('promptInput').value || 'Compare ESP32 vs STM32';
+            vscode.postMessage({ type: 'runConsensus', prompt: prompt });
+        }
+    </script>
+</body>
+</html>`;
+    }
+}
+AgentSidebarWebviewProvider.viewType = 'agentSystemSidebarView';
+// ------------------------------------------------------------------
+// API Helper Functions
+// ------------------------------------------------------------------
+async function runTaskApi(promptInput, codeContext) {
+    const config = vscode.workspace.getConfiguration('agentSystem');
+    const apiUrl = config.get('apiUrl') || 'http://127.0.0.1:8000';
+    const agentName = config.get('defaultAgent') || 'orchestrator';
+    const modelName = config.get('defaultModel') || 'gpt-4o';
+    vscode.window.withProgress({
+        location: vscode.ProgressLocation.Notification,
+        title: `🤖 Agent System [${agentName.toUpperCase()}] processing task...`,
+        cancellable: false
+    }, async () => {
+        try {
+            const fullPrompt = codeContext ? `${promptInput}\n\nCODE CONTEXT:\n\`\`\`\n${codeContext}\n\`\`\`` : promptInput;
+            const result = await postJson(`${apiUrl}/api/v1/agent/run`, {
+                prompt: fullPrompt,
+                agent_name: agentName,
+                model_name: modelName
+            });
+            const outputChannel = vscode.window.createOutputChannel('Agent System Output');
+            outputChannel.appendLine(`=== AGENT RESPONSE [${agentName.toUpperCase()}] ===`);
+            outputChannel.appendLine(result.output);
+            outputChannel.show();
+            vscode.window.showInformationMessage('✅ Agent task completed successfully!');
+        }
+        catch (err) {
+            vscode.window.showErrorMessage(`Failed to run agent task: ${err.message}`);
+        }
+    });
+}
+async function runConsensusApi(promptInput) {
+    const config = vscode.workspace.getConfiguration('agentSystem');
+    const apiUrl = config.get('apiUrl') || 'http://127.0.0.1:8000';
+    vscode.window.withProgress({
+        location: vscode.ProgressLocation.Notification,
+        title: '🗳️ Running Multi-Model Consensus Voting...',
+        cancellable: false
+    }, async () => {
+        try {
+            const result = await postJson(`${apiUrl}/api/v1/consensus`, { prompt: promptInput });
+            const outputChannel = vscode.window.createOutputChannel('Agent System Consensus');
+            outputChannel.appendLine(result.consensus_synthesis);
+            outputChannel.show();
+        }
+        catch (err) {
+            vscode.window.showErrorMessage(`Consensus voting failed: ${err.message}`);
+        }
+    });
+}
 function postJson(urlStr, bodyObj) {
     return new Promise((resolve, reject) => {
         const u = new URL(urlStr);
@@ -153,7 +237,6 @@ function postJson(urlStr, bodyObj) {
         req.end();
     });
 }
-// Helper HTTP GET JSON
 function getJson(urlStr) {
     return new Promise((resolve, reject) => {
         http.get(urlStr, (res) => {

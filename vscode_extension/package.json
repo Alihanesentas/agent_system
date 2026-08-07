@@ -13,6 +13,7 @@
     "Snippets"
   ],
   "activationEvents": [
+    "onView:agentSystemSidebarView",
     "onCommand:agentSystem.runTask",
     "onCommand:agentSystem.runConsensus",
     "onCommand:agentSystem.checkPinout",
@@ -20,6 +21,24 @@
   ],
   "main": "./out/extension.js",
   "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "agentSystemActivityBar",
+          "title": "Agent System",
+          "icon": "$(robot)"
+        }
+      ]
+    },
+    "views": {
+      "agentSystemActivityBar": [
+        {
+          "type": "webview",
+          "id": "agentSystemSidebarView",
+          "name": "Autonomous Agent Dashboard"
+        }
+      ]
+    },
     "commands": [
       {
         "command": "agentSystem.runTask",
