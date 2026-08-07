@@ -113,6 +113,11 @@ from core.software.stack_guard import analyze_task_stack_requirements
 from core.production.gasket_sizer import calculate_gasket_groove_dimensions
 from core.infra.dead_letter_queue import global_dlq
 from core.infra.cost_forecast import forecast_token_costs
+from core.hardware.solder_stencil import calculate_solder_stencil_specs
+from core.software.bootloader_checker import audit_bootloader_config
+from core.production.cable_gland import calculate_cable_gland_dimensions
+from core.infra.agent_health import get_system_subpackage_health
+from core.infra.token_minimizer import count_and_estimate_tokens
 
 class Colors:
     CYAN = '\033[96m'
@@ -291,6 +296,11 @@ def print_help():
   {Colors.GREEN}/gasket{Colors.RESET}                     -> 3D enclosure IP67 waterproof rubber O-ring gasket gland sizer
   {Colors.GREEN}/dlq{Colors.RESET}                        -> Multi-agent dead letter queue failed task status & retry
   {Colors.GREEN}/cost-forecast{Colors.RESET}             -> Forecast daily/monthly LLM API token expenditure burn rate ($)
+  {Colors.GREEN}/stencil{Colors.RESET}                   -> PCB SMT solder paste stencil foil thickness & volume calculator
+  {Colors.GREEN}/bootloader-check{Colors.RESET}          -> Firmware bootloader flash offset & vector table auditor
+  {Colors.GREEN}/cable-gland{Colors.RESET}                -> 3D printed enclosure waterproof cable gland & strain relief sizer
+  {Colors.GREEN}/agent-health{Colors.RESET}               -> Multi-agent system sub-package real-time health monitor
+  {Colors.GREEN}/token-count <text>{Colors.RESET}          -> Count BPE tokens and estimate prompt costs per model tier
 {Colors.BOLD}{Colors.YELLOW}  ── System ──{Colors.RESET}
   {Colors.GREEN}/agent <name>{Colors.RESET}               -> Switch sub-agent (orchestrator, planner, software, electronics, reviewer)
   {Colors.GREEN}/model <name>{Colors.RESET}               -> Switch model (gpt-4o, gpt-4o-mini, claude-3-5-sonnet, gemini-1.5-flash)
@@ -1094,6 +1104,27 @@ def start_interactive_shell(default_agent: str = "orchestrator", default_model: 
                     res = forecast_token_costs()
                     print(f"{Colors.CYAN}--- LLM TOKEN COST FORECAST ENGINE ---{Colors.RESET}")
                     print(f"  Daily Burn Rate: ${res['current_daily_burn_rate_usd']} | Monthly Forecast: ${res['forecasted_monthly_cost_usd']}\n")
+                elif cmd == "/stencil":
+                    res = calculate_solder_stencil_specs()
+                    print(f"{Colors.CYAN}--- PCB SOLDER PASTE STENCIL CALCULATOR ---{Colors.RESET}")
+                    print(f"  Recommended Foil: {res['recommended_stencil_foil_um']} um | Paste Vol: {res['estimated_paste_volume_mm3']} mm3\n")
+                elif cmd == "/bootloader-check":
+                    res = audit_bootloader_config()
+                    print(f"{Colors.CYAN}--- FIRMWARE BOOTLOADER INTEGRITY AUDITOR ---{Colors.RESET}")
+                    print(f"  Status: {res['status'].upper()} | App Offset: {res['app_flash_offset']}\n")
+                elif cmd == "/cable-gland":
+                    res = calculate_cable_gland_dimensions()
+                    print(f"{Colors.CYAN}--- 3D BOX CABLE GLAND SIZER ---{Colors.RESET}")
+                    print(f"  Gland: {res['gland_type']} | Cutout Hole: {res['panel_cutout_hole_diameter_mm']} mm\n")
+                elif cmd == "/agent-health":
+                    res = get_system_subpackage_health()
+                    print(f"{Colors.CYAN}--- MULTI-AGENT SUBPACKAGE HEALTH MONITOR ---{Colors.RESET}")
+                    print(f"  Score: {res['overall_system_score']} | Sub-packages: Healthy ({len(res['subpackages'])})\n")
+                elif cmd == "/token-count":
+                    t_in = " ".join(parts[1:]) if len(parts) > 1 else "ESP32-S3 IoT PCB design specification"
+                    res = count_and_estimate_tokens(t_in)
+                    print(f"{Colors.CYAN}--- LLM PROMPT TOKEN COUNTER ---{Colors.RESET}")
+                    print(f"  Chars: {res['char_length']} | Est. BPE Tokens: {res['estimated_bpe_tokens']} | GPT-4o Cost: ${res['estimated_costs_usd']['gpt-4o']}\n")
                 # --- Component & Datasheet Tools ---
                 elif cmd == "/datasheet":
                     if len(parts) > 1:

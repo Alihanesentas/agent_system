@@ -154,6 +154,11 @@ Katman 5 (Persistence & Infrastructure): ChromaDB RAG Engine, SQLite Proje Hafı
 - **`/gasket`**: 3D kutular için IP67 su geçirmez kauçuk O-ring conta kanalı (groove) genişlik ve derinliğini hesaplar.
 - **`/dlq`**: Başarısız olan agent alt görevlerini Dead Letter Queue (DLQ) havuzunda toplar ve tek tıkla yeniden dener.
 - **`/cost-forecast`**: Günlük LLM harcama trendine göre haftalık ve aylık token maliyet tahminini ($) çıkarır.
+- **`/stencil`**: PCB SMT krem lehim stensil (stencil) folyo kalınlığını (µm) ve lehim macunu hacmini ($mm^3$) hesaplar.
+- **`/bootloader-check`**: Gömülü sistem bootloader flash adres ofsetlerini ve vektör tablosu hizalamasını denetler.
+- **`/cable-gland`**: 3D kutu harici kablo çıkışları için PG7/PG9/M12 su geçirmez rekor montaj delik çaplarını hesaplar.
+- **`/agent-health`**: Tüm 5 alt paketin ve 60+ modülün anlık sağlık durumunu ve icra başarım skorunu izler.
+- **`/token-count <text>`**: İstem metnindeki BPE token sayısını hesaplar ve model katmanlarına göre maliyeti tahmin eder.
 - **`/report`**: Tüm projenin eksiksiz PDF/Markdown mühendislik raporunu çıkarır.
 
 ### 🛡️ Mimari Dayanıklılık, Güvenlik & Altyapı Komutları

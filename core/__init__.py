@@ -2,10 +2,10 @@
 Core Architectural Package Entrypoint.
 Provides backward-compatible re-exports for all sub-packages:
 - core.engine: Multi-Agent Pipeline, DAG Parallel Executor, Cost Router, Agent Telemetry & Critical Path
-- core.hardware: KiCad, SPICE, Pinout, Thermal, DRC, RF, Auto-Router, MCU Selector, Layer Stackup, KiCad 3D Models, SPICE Transpiler, DRC Rules, BOM Sensitivity, Footprint Crosscheck, Trace Length Matching & KiCad Subsheets
-- core.software: Firmware, Unity Tests, Self-Healing, Edge AI, HIL Testing, Linter, Power Profiler, Static Security Scanner, Flash Partitions, OTA Verifier, Watchdog Analyzer, Test Coverage & Stack Guard
-- core.production: Mechanical CAD, BOM Optimizer, Harness Sizer, Report Generator, Presentation Exporter, FEA Simulation, BOM Stock Tracker, Screw Boss Fasteners, Airflow Calculator, Snap-Fit Joints, Flexure Hinges & Gasket Sizer
-- core.infra: RAG, Memory, Cache, Telemetry, Voice, Knowledge Graph, Guardrails, Plugins, Theme Manager, Autocomplete, Consensus Matrix, Pareto Frontier, Context Pruner, Circuit Breaker, Token Budget, Ensemble Aggregator, Memory Compactor, Adaptive Backoff, System Prompt Builder, Dead Letter Queue & Cost Forecast
+- core.hardware: KiCad, SPICE, Pinout, Thermal, DRC, RF, Auto-Router, MCU Selector, Layer Stackup, KiCad 3D Models, SPICE Transpiler, DRC Rules, BOM Sensitivity, Footprint Crosscheck, Trace Length Matching, KiCad Subsheets & Solder Stencil
+- core.software: Firmware, Unity Tests, Self-Healing, Edge AI, HIL Testing, Linter, Power Profiler, Static Security Scanner, Flash Partitions, OTA Verifier, Watchdog Analyzer, Test Coverage, Stack Guard & Bootloader Checker
+- core.production: Mechanical CAD, BOM Optimizer, Harness Sizer, Report Generator, Presentation Exporter, FEA Simulation, BOM Stock Tracker, Screw Boss Fasteners, Airflow Calculator, Snap-Fit Joints, Flexure Hinges, Gasket Sizer & Cable Glands
+- core.infra: RAG, Memory, Cache, Telemetry, Voice, Knowledge Graph, Guardrails, Plugins, Theme Manager, Autocomplete, Consensus Matrix, Pareto Frontier, Context Pruner, Circuit Breaker, Token Budget, Ensemble Aggregator, Memory Compactor, Adaptive Backoff, System Prompt Builder, Dead Letter Queue, Cost Forecast, Agent Health & Token Minimizer
 """
 
 from core.engine.runner import run_agent_task
@@ -40,6 +40,7 @@ from core.hardware.bom_sensitivity import analyze_bom_cost_sensitivity
 from core.hardware.footprint_crosscheck import crosscheck_footprint_pinout
 from core.hardware.trace_length_matching import calculate_length_matching
 from core.hardware.kicad_subsheets import generate_hierarchical_subsheets
+from core.hardware.solder_stencil import calculate_solder_stencil_specs
 
 from core.software.executor import execute_command, compile_c, compile_cpp
 from core.software.self_heal import auto_compile_and_fix
@@ -56,6 +57,7 @@ from core.software.ota_verifier import verify_firmware_binary
 from core.software.watchdog_analyzer import analyze_crash_dump
 from core.software.test_coverage import generate_lcov_coverage_report
 from core.software.stack_guard import analyze_task_stack_requirements
+from core.software.bootloader_checker import audit_bootloader_config
 
 from core.production.mechanical import generate_openscad_enclosure, recommend_slicer_settings
 from core.production.battery import calculate_battery_lifespan
@@ -73,6 +75,7 @@ from core.production.airflow_calculator import calculate_enclosure_ventilation
 from core.production.snap_fit import calculate_snap_fit_joint
 from core.production.flexure_hinge import calculate_flexure_hinge
 from core.production.gasket_sizer import calculate_gasket_groove_dimensions
+from core.production.cable_gland import calculate_cable_gland_dimensions
 
 from core.infra.profile import load_user_profile, save_user_profile, build_personalized_system_prompt
 from core.infra.cache import get_cache_metrics
@@ -97,3 +100,5 @@ from core.infra.adaptive_backoff import calculate_adaptive_backoff_delay
 from core.infra.system_prompt_builder import build_personalized_engineer_prompt
 from core.infra.dead_letter_queue import global_dlq
 from core.infra.cost_forecast import forecast_token_costs
+from core.infra.agent_health import get_system_subpackage_health
+from core.infra.token_minimizer import count_and_estimate_tokens
