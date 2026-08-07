@@ -162,6 +162,10 @@ npm install && npm run dev
 
 ---
 
+## 📘 User Guide & End-User Operating Manual
+
+For a comprehensive guide on operating modes, natural language workflows, step-by-step product design, and FAQ, see **[docs/USER_GUIDE.md](docs/USER_GUIDE.md)**.
+
 ## 📖 Master Functional Manual Summary
 
 For the complete, functional 58+ slash command manual, see **[docs/MASTER_FUNCTIONAL_MANUAL.md](docs/MASTER_FUNCTIONAL_MANUAL.md)**.
