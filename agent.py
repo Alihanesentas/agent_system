@@ -22,6 +22,8 @@ from core.pipeline import AgentPipeline, embedded_dev_pipeline
 from core.notify import notify_all
 from core.git_ops import git_status, git_diff, git_log, git_auto_commit
 from core.plugins import list_plugins, execute_plugin, load_plugins_from_dir
+from core.datasheet import summarize_datasheet, extract_datasheet
+from core.component_search import search_component, get_component_alternatives, compare_components
 
 class Colors:
     CYAN = '\033[96m'
@@ -79,6 +81,11 @@ def print_help():
   {Colors.GREEN}/index <path>{Colors.RESET}                -> Index file or directory into RAG vector store
   {Colors.GREEN}/search <query>{Colors.RESET}              -> Semantic search across indexed documents (RAG)
   {Colors.GREEN}/rag-stats{Colors.RESET}                   -> View RAG index statistics
+{Colors.BOLD}{Colors.YELLOW}  ── Component & Datasheet Tools ──{Colors.RESET}
+  {Colors.GREEN}/datasheet <pdf_path>{Colors.RESET}        -> Extract & summarize datasheet PDF pin tables & specs
+  {Colors.GREEN}/part <part_number>{Colors.RESET}          -> Search component stock, pricing, specs & datasheet
+  {Colors.GREEN}/alt <part_number>{Colors.RESET}           -> Find in-stock & drop-in alternative components
+  {Colors.GREEN}/compare <part1> <part2>{Colors.RESET}    -> Side-by-side parametric component comparison
 {Colors.BOLD}{Colors.YELLOW}  ── Build & Execute ──{Colors.RESET}
   {Colors.GREEN}/run <command>{Colors.RESET}               -> Execute a shell command (gcc, make, platformio, etc.)
   {Colors.GREEN}/gcc <file.c>{Colors.RESET}                -> Compile a C source file with gcc
@@ -344,6 +351,49 @@ def start_interactive_shell(default_agent: str = "orchestrator", default_model: 
                     if not plugins:
                         print(f"  {Colors.DIM}No plugins loaded. Add .py files to plugins/ directory.{Colors.RESET}")
                     print()
+                # --- Component & Datasheet Tools ---
+                elif cmd == "/datasheet":
+                    if len(parts) > 1:
+                        print(f"{Colors.CYAN}📄 Extracting datasheet PDF '{parts[1]}'...{Colors.RESET}")
+                        summary = summarize_datasheet(parts[1])
+                        print(f"{Colors.BLUE}{summary}{Colors.RESET}\n")
+                    else:
+                        print("Usage: /datasheet <pdf_file_path>")
+                elif cmd == "/part":
+                    if len(parts) > 1:
+                        part_no = parts[1]
+                        print(f"{Colors.CYAN}🔍 Searching component API for '{part_no}'...{Colors.RESET}")
+                        info = search_component(part_no)
+                        print(f"{Colors.GREEN}--- {info.get('part_number')} ({info.get('manufacturer')}) ---{Colors.RESET}")
+                        print(f"  Category:    {info.get('category')}")
+                        print(f"  Description: {info.get('description')}")
+                        print(f"  Voltage:     {info.get('operating_voltage')}")
+                        print(f"  Package:     {info.get('package')}")
+                        print(f"  Stock:       {info.get('stock_status')}")
+                        print(f"  Datasheet:   {info.get('datasheet_url')}\n")
+                    else:
+                        print("Usage: /part <part_number>")
+                elif cmd == "/alt":
+                    if len(parts) > 1:
+                        part_no = parts[1]
+                        res = get_component_alternatives(part_no)
+                        print(f"{Colors.CYAN}--- ALTERNATIVE COMPONENTS FOR '{part_no}' ---{Colors.RESET}")
+                        for alt in res.get("alternatives", []):
+                            drop = f"{Colors.GREEN}[DROP-IN]{Colors.RESET}" if alt.get("drop_in") else "[COMPATIBLE]"
+                            print(f"  • {alt['part_number']} ({alt['manufacturer']}) {drop}")
+                            print(f"    Desc: {alt['desc']} | Stock: {alt['stock']} | Price: ${alt['price_usd']}")
+                        print()
+                    else:
+                        print("Usage: /alt <part_number>")
+                elif cmd == "/compare":
+                    if len(parts) > 2:
+                        res = compare_components([parts[1], parts[2]])
+                        print(f"{Colors.CYAN}--- PARAMETRIC COMPARISON ---{Colors.RESET}")
+                        for item in res:
+                            print(f"  • {item.get('part_number'):<20} | Stock: {item.get('stock_status'):<25} | Pkg: {item.get('package')}")
+                        print()
+                    else:
+                        print("Usage: /compare <part_number_1> <part_number_2>")
                 else:
                     print(f"{Colors.RED}Unknown command '{cmd}'. Type /help for available commands.{Colors.RESET}")
             # --- NEW COMMAND HANDLERS (inserted before general prompt) ---
