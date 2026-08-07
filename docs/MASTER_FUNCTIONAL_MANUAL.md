@@ -149,6 +149,11 @@ Katman 5 (Persistence & Infrastructure): ChromaDB RAG Engine, SQLite Proje Hafı
 - **`/critical-path`**: Alt agent görev bağımlılık grafiğinde en uzun kritik yolu (bottleneck) analiz eder.
 - **`/trace-matching`**: PCB yüksek hızlı diferansiyel yol uzunluk eşlemesini (length matching) ve faz kayması dalga sayısını hesaplar.
 - **`/prompt-builder`**: Agent'lar için özelleştirilmiş sistem istemi (system prompt) bağlamını dinamik oluşturur.
+- **`/subsheets`**: Çok yapraklı hiyerarşik KiCad şematik yapısını (`power.kicad_sch`, `mcu.kicad_sch`) otonom üretir.
+- **`/stack-guard`**: FreeRTOS gömülü C++ görevlerinin güvenli yığın (stack frame) bellek ihtiyacını hesaplar.
+- **`/gasket`**: 3D kutular için IP67 su geçirmez kauçuk O-ring conta kanalı (groove) genişlik ve derinliğini hesaplar.
+- **`/dlq`**: Başarısız olan agent alt görevlerini Dead Letter Queue (DLQ) havuzunda toplar ve tek tıkla yeniden dener.
+- **`/cost-forecast`**: Günlük LLM harcama trendine göre haftalık ve aylık token maliyet tahminini ($) çıkarır.
 - **`/report`**: Tüm projenin eksiksiz PDF/Markdown mühendislik raporunu çıkarır.
 
 ### 🛡️ Mimari Dayanıklılık, Güvenlik & Altyapı Komutları

@@ -108,6 +108,11 @@ from core.production.flexure_hinge import calculate_flexure_hinge
 from core.engine.critical_path import calculate_critical_path
 from core.hardware.trace_length_matching import calculate_length_matching
 from core.infra.system_prompt_builder import build_personalized_engineer_prompt
+from core.hardware.kicad_subsheets import generate_hierarchical_subsheets
+from core.software.stack_guard import analyze_task_stack_requirements
+from core.production.gasket_sizer import calculate_gasket_groove_dimensions
+from core.infra.dead_letter_queue import global_dlq
+from core.infra.cost_forecast import forecast_token_costs
 
 class Colors:
     CYAN = '\033[96m'
@@ -281,6 +286,11 @@ def print_help():
   {Colors.GREEN}/critical-path{Colors.RESET}              -> Multi-agent task dependency critical path bottleneck profiler
   {Colors.GREEN}/trace-matching{Colors.RESET}             -> PCB high-speed differential pair trace length matching & skew tuning
   {Colors.GREEN}/prompt-builder{Colors.RESET}             -> LLM system prompt context personalization builder
+  {Colors.GREEN}/subsheets{Colors.RESET}                  -> Generate multi-sheet hierarchical KiCad schematics
+  {Colors.GREEN}/stack-guard{Colors.RESET}                -> FreeRTOS task C++ call graph stack overflow guard calculator
+  {Colors.GREEN}/gasket{Colors.RESET}                     -> 3D enclosure IP67 waterproof rubber O-ring gasket gland sizer
+  {Colors.GREEN}/dlq{Colors.RESET}                        -> Multi-agent dead letter queue failed task status & retry
+  {Colors.GREEN}/cost-forecast{Colors.RESET}             -> Forecast daily/monthly LLM API token expenditure burn rate ($)
 {Colors.BOLD}{Colors.YELLOW}  ── System ──{Colors.RESET}
   {Colors.GREEN}/agent <name>{Colors.RESET}               -> Switch sub-agent (orchestrator, planner, software, electronics, reviewer)
   {Colors.GREEN}/model <name>{Colors.RESET}               -> Switch model (gpt-4o, gpt-4o-mini, claude-3-5-sonnet, gemini-1.5-flash)
@@ -1064,6 +1074,26 @@ def start_interactive_shell(default_agent: str = "orchestrator", default_model: 
                     res = build_personalized_engineer_prompt()
                     print(f"{Colors.CYAN}--- SYSTEM PROMPT PERSONALIZATION BUILDER ---{Colors.RESET}")
                     print(f"  Role: {res['agent_role']} | Target MCU: {res['target_mcu']}\n")
+                elif cmd == "/subsheets":
+                    res = generate_hierarchical_subsheets()
+                    print(f"{Colors.CYAN}--- KICAD HIERARCHICAL SUBSHEET GENERATOR ---{Colors.RESET}")
+                    print(f"  Root Sheet: {res['root_sheet']} | Sub-sheets: {res['hierarchical_sheets_count']}\n")
+                elif cmd == "/stack-guard":
+                    res = analyze_task_stack_requirements()
+                    print(f"{Colors.CYAN}--- FREERTOS TASK STACK GUARD ANALYZER ---{Colors.RESET}")
+                    print(f"  Recommended Safe Stack: {res['recommended_safe_stack_bytes']} Bytes ({res['freertos_stack_words']} Words)\n")
+                elif cmd == "/gasket":
+                    res = calculate_gasket_groove_dimensions()
+                    print(f"{Colors.CYAN}--- 3D WATERPROOF GASKET SIZER ---{Colors.RESET}")
+                    print(f"  Groove Depth: {res['recommended_groove_depth_mm']} mm | Rating: {res['target_ip_rating']}\n")
+                elif cmd == "/dlq":
+                    res = global_dlq.get_dlq_report()
+                    print(f"{Colors.CYAN}--- DEAD LETTER QUEUE (DLQ) REPORT ---{Colors.RESET}")
+                    print(f"  Total Failed Tasks: {res['total_failed_tasks']}\n")
+                elif cmd == "/cost-forecast":
+                    res = forecast_token_costs()
+                    print(f"{Colors.CYAN}--- LLM TOKEN COST FORECAST ENGINE ---{Colors.RESET}")
+                    print(f"  Daily Burn Rate: ${res['current_daily_burn_rate_usd']} | Monthly Forecast: ${res['forecasted_monthly_cost_usd']}\n")
                 # --- Component & Datasheet Tools ---
                 elif cmd == "/datasheet":
                     if len(parts) > 1:
