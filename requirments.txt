@@ -4,3 +4,5 @@ pydantic
 tiktoken
 peewee
 requests
+chromadb
+pdfplumber

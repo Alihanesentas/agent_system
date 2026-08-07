@@ -7,6 +7,7 @@ from typing import Dict, Any, Callable, Optional
 from core.optimizer import compress_prompt
 from core.cache import find_cached_response, store_in_cache
 from core.llm import call_llm
+from core.rag import build_rag_context
 
 TRACKER_API_URL = "http://127.0.0.1:8000/api/log"
 
@@ -79,6 +80,7 @@ def run_agent_task(
     session_id: Optional[int] = None,
     use_cache: bool = True,
     optimize_prompt: bool = False,
+    use_rag: bool = True,
     agent_fn: Optional[Callable[[str], str]] = None
 ) -> str:
     """
@@ -104,7 +106,14 @@ def run_agent_task(
             )
             return cached['response']
 
-    # 2. Optional Prompt Optimization
+    # 2. RAG Context Injection
+    if use_rag:
+        rag_context = build_rag_context(user_prompt, n_results=3, max_context_chars=3000)
+        if rag_context:
+            input_to_process = rag_context + input_to_process
+            print(f"📚 [RAG]: Injected {len(rag_context)} chars of retrieved context from indexed documents.")
+
+    # 3. Optional Prompt Optimization
     if optimize_prompt:
         compressed_input, metrics = compress_prompt(input_to_process, model_name)
         print(f"⚡ [Token Optimizer]: Compressed prompt from {metrics['original_tokens']} -> {metrics['compressed_tokens']} tokens ({metrics['savings_percent']}% savings)")

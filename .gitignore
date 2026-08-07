@@ -12,6 +12,7 @@ __pycache__/
 subagent_tracker/backend/tracker.db
 subagent_tracker/logs/
 subagent_tracker/backend/logs/
+rag_store/
 
 # Frontend dependencies & build output
 node_modules/

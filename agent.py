@@ -15,6 +15,7 @@ from core.runner import run_agent_task, trace_agent, log_agent_activity
 from core.memory import SlidingWindowMemory
 from core.schematics import parse_kicad_schematic, update_kicad_component_value, parse_bom_csv
 from core.vision import encode_image_to_base64
+from core.rag import index_file, index_directory, search as rag_search, get_index_stats
 
 class Colors:
     CYAN = '\033[96m'
@@ -69,6 +70,9 @@ def print_help():
   {Colors.GREEN}/kicad-set <file> <ref> <val>{Colors.RESET} -> Update component value (e.g., /kicad-set demo.kicad_sch R1 1k)
   {Colors.GREEN}/bom <file.csv>{Colors.RESET}             -> Parse PCB Bill of Materials CSV
   {Colors.GREEN}/vision <image_path>{Colors.RESET}          -> Encode image schematic to Base64 for Vision LLMs
+  {Colors.GREEN}/index <path>{Colors.RESET}                -> Index file or directory into RAG vector store
+  {Colors.GREEN}/search <query>{Colors.RESET}              -> Semantic search across indexed documents (RAG)
+  {Colors.GREEN}/rag-stats{Colors.RESET}                   -> View RAG index statistics
   {Colors.GREEN}/agent <name>{Colors.RESET}               -> Switch sub-agent (orchestrator, planner, software, electronics, reviewer, tutor)
   {Colors.GREEN}/model <name>{Colors.RESET}               -> Switch model (gpt-4o, gpt-4o-mini, claude-3-5-sonnet, gemini-1.5-flash)
   {Colors.GREEN}/memory{Colors.RESET}                     -> View sliding window context memory status
@@ -159,6 +163,43 @@ def start_interactive_shell(default_agent: str = "orchestrator", default_model: 
                         print(f"{Colors.GREEN}✅ Image encoded to Base64 (MIME: {res.get('mime_type')}, Length: {res.get('base64_length')} chars){Colors.RESET}")
                     else:
                         print("Usage: /vision <image_path>")
+                elif cmd == "/index":
+                    if len(parts) > 1:
+                        target = parts[1]
+                        if os.path.isdir(target):
+                            print(f"{Colors.CYAN}📚 Indexing directory '{target}' into RAG store...{Colors.RESET}")
+                            res = index_directory(target)
+                        else:
+                            print(f"{Colors.CYAN}📄 Indexing file '{target}' into RAG store...{Colors.RESET}")
+                            res = index_file(target)
+                        if res.get("status") == "success":
+                            chunks = res.get("chunks_indexed", res.get("total_chunks_indexed", 0))
+                            print(f"{Colors.GREEN}✅ Indexed {chunks} chunks successfully.{Colors.RESET}")
+                        else:
+                            print(f"{Colors.RED}❌ {res.get('error', 'Unknown error')}{Colors.RESET}")
+                    else:
+                        print("Usage: /index <file_or_directory_path>")
+                elif cmd == "/search":
+                    if len(parts) > 1:
+                        query = " ".join(parts[1:])
+                        hits = rag_search(query, n_results=5)
+                        print(f"{Colors.CYAN}--- RAG SEARCH RESULTS (Top 5) ---{Colors.RESET}")
+                        for i, hit in enumerate(hits, 1):
+                            sim = hit.get('similarity', 0)
+                            src = hit.get('source', '?')
+                            print(f"  {Colors.GREEN}{i}. [{src}] (Relevance: {sim:.0%}){Colors.RESET}")
+                            preview = hit.get('text', '')[:200].replace('\n', ' ')
+                            print(f"     {Colors.DIM}{preview}...{Colors.RESET}")
+                        print()
+                    else:
+                        print("Usage: /search <query text>")
+                elif cmd == "/rag-stats":
+                    stats = get_index_stats()
+                    print(f"{Colors.CYAN}--- RAG INDEX STATISTICS ---{Colors.RESET}")
+                    print(f"  Total Chunks: {stats.get('total_chunks', 0)}")
+                    print(f"  Collection:   {stats.get('collection_name', 'N/A')}")
+                    print(f"  Store Path:   {stats.get('persist_directory', 'N/A')}")
+                    print()
                 elif cmd == "/agent":
                     if len(parts) > 1:
                         active_agent = parts[1].lower()
