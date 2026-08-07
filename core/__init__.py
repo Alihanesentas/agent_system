@@ -1,11 +1,11 @@
 """
 Core Architectural Package Entrypoint.
 Provides backward-compatible re-exports for all sub-packages:
-- core.engine: Multi-Agent Pipeline & Simulation Engines
+- core.engine: Multi-Agent Pipeline, DAG Parallel Executor & Cost Router
 - core.hardware: KiCad, SPICE, Pinout, Thermal, DRC, RF & Auto-Router
 - core.software: Firmware, Unity Tests, Self-Healing, Edge AI & HIL Testing
 - core.production: Mechanical CAD, BOM Optimizer & Harness Sizer
-- core.infra: RAG, Memory, Cache, Telemetry, Voice Assistant & Knowledge Graph
+- core.infra: RAG, Memory, Cache, Telemetry, Voice, Knowledge Graph, Guardrails & Plugin Loader
 """
 
 from core.engine.runner import run_agent_task
@@ -14,6 +14,8 @@ from core.engine.layered_architecture import run_layered_pipeline
 from core.engine.autonomous_agent import execute_autonomous_goal
 from core.engine.agent_tree_sim import run_agent_tree_simulation, print_static_tree_topology
 from core.engine.arena import run_agent_arena
+from core.engine.dag_executor import global_dag_executor
+from core.engine.cost_router import route_task_to_optimal_model
 
 from core.hardware.schematics import parse_kicad_schematic, update_kicad_component_value
 from core.hardware.datasheet import extract_datasheet
@@ -52,3 +54,6 @@ from core.infra.worker_queue import global_worker_queue
 from core.infra.checkpoint import create_system_checkpoint, restore_system_checkpoint
 from core.infra.voice_agent import process_voice_command
 from core.infra.knowledge_graph import global_knowledge_graph
+from core.infra.self_reflection import run_with_self_reflection
+from core.infra.guardrails import sanitize_and_verify_code
+from core.infra.plugin_loader import discover_and_reload_plugins
