@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Interactive Autonomous Multi-Agent CLI Shell (Claude CLI / Gemini CLI Style)
-Features Sliding Window Memory for 70-80% prompt token reduction in multi-turn dialogues.
+Features Electronics Schematic Parsers, Base64 Vision Reader, and Sliding Window Memory.
 """
 
 import sys
@@ -10,9 +10,11 @@ import time
 import argparse
 from typing import Dict, Any, List, Optional
 
-# Import core tracer runner and memory manager
+# Import core tracer runner and modules
 from core.runner import run_agent_task, trace_agent, log_agent_activity
 from core.memory import SlidingWindowMemory
+from core.schematics import parse_kicad_schematic, update_kicad_component_value, parse_bom_csv
+from core.vision import encode_image_to_base64
 
 class Colors:
     CYAN = '\033[96m'
@@ -26,7 +28,7 @@ class Colors:
     RESET = '\033[0m'
 
 class AgentFileSystemTools:
-    """Built-in file and shell execution tools for the CLI agent."""
+    """Built-in file, electronics schematics, and vision tools for the CLI agent."""
     
     @staticmethod
     def read_file(file_path: str) -> str:
@@ -61,17 +63,20 @@ class AgentFileSystemTools:
 def print_help():
     help_text = f"""
 {Colors.BOLD}{Colors.CYAN}🤖 MULTI-AGENT INTERACTIVE SHELL COMMANDS:{Colors.RESET}
-  {Colors.GREEN}/read <path>{Colors.RESET}         -> Reads a file in your project directory
-  {Colors.GREEN}/write <path> <text>{Colors.RESET} -> Writes content to a file in your project directory
-  {Colors.GREEN}/list [path]{Colors.RESET}        -> Lists files in project directory
-  {Colors.GREEN}/agent <name>{Colors.RESET}       -> Switch active sub-agent (orchestrator, planner, software, reviewer, tutor)
-  {Colors.GREEN}/model <name>{Colors.RESET}       -> Switch model (gpt-4o, gpt-4o-mini, claude-3-5-sonnet, gemini-1.5-flash)
-  {Colors.GREEN}/memory{Colors.RESET}             -> View current sliding window context memory status
-  {Colors.GREEN}/stats{Colors.RESET}              -> View live token, cost, and latency statistics
-  {Colors.GREEN}/logs{Colors.RESET}               -> View recent activity trace logs
-  {Colors.GREEN}/clear{Colors.RESET}              -> Clear terminal screen and memory
-  {Colors.GREEN}/help{Colors.RESET}               -> Show this help menu
-  {Colors.GREEN}/exit{Colors.RESET}               -> Exit interactive shell
+  {Colors.GREEN}/read <path>{Colors.RESET}                 -> Reads a file in your project directory
+  {Colors.GREEN}/write <path> <text>{Colors.RESET}         -> Writes content to a file in your project directory
+  {Colors.GREEN}/kicad <file.kicad_sch>{Colors.RESET}       -> Parse KiCad schematic components & net labels
+  {Colors.GREEN}/kicad-set <file> <ref> <val>{Colors.RESET} -> Update component value (e.g., /kicad-set demo.kicad_sch R1 1k)
+  {Colors.GREEN}/bom <file.csv>{Colors.RESET}             -> Parse PCB Bill of Materials CSV
+  {Colors.GREEN}/vision <image_path>{Colors.RESET}          -> Encode image schematic to Base64 for Vision LLMs
+  {Colors.GREEN}/agent <name>{Colors.RESET}               -> Switch sub-agent (orchestrator, planner, software, electronics, reviewer, tutor)
+  {Colors.GREEN}/model <name>{Colors.RESET}               -> Switch model (gpt-4o, gpt-4o-mini, claude-3-5-sonnet, gemini-1.5-flash)
+  {Colors.GREEN}/memory{Colors.RESET}                     -> View sliding window context memory status
+  {Colors.GREEN}/stats{Colors.RESET}                      -> View live token, cost, and latency statistics
+  {Colors.GREEN}/logs{Colors.RESET}                       -> View recent activity trace logs
+  {Colors.GREEN}/clear{Colors.RESET}                      -> Clear terminal screen and memory
+  {Colors.GREEN}/help{Colors.RESET}                       -> Show this help menu
+  {Colors.GREEN}/exit{Colors.RESET}                       -> Exit interactive shell
 """
     print(help_text)
 
@@ -80,7 +85,7 @@ def print_banner():
 {Colors.CYAN}======================================================================{Colors.RESET}
 {Colors.BOLD}{Colors.GREEN} 🤖 MULTI-AGENT AUTONOMOUS CLI SHELL (Gemini / Claude Style) {Colors.RESET}
 {Colors.CYAN}======================================================================{Colors.RESET}
-Type {Colors.YELLOW}/help{Colors.RESET} for slash commands. Enabled: {Colors.CYAN}Sliding Window Memory ({Colors.GREEN}70% Token Savings{Colors.CYAN}){Colors.RESET}
+Type {Colors.YELLOW}/help{Colors.RESET} for slash commands. Enabled: {Colors.CYAN}KiCad Schematics + Vision + Memory{Colors.RESET}
 """
     print(banner)
 
@@ -105,7 +110,7 @@ def start_interactive_shell(default_agent: str = "orchestrator", default_model: 
 
             # Slash commands
             if user_input.startswith("/"):
-                parts = user_input.split(maxsplit=2)
+                parts = user_input.split(maxsplit=3)
                 cmd = parts[0].lower()
 
                 if cmd in ["/exit", "/quit"]:
@@ -124,12 +129,42 @@ def start_interactive_shell(default_agent: str = "orchestrator", default_model: 
                     print(f"Total Turns: {len(memory.history)} | Pruned: {metrics['pruned_count']} turns")
                     print(f"Token Reduction: {metrics['savings_percent']}% saved ({metrics['tokens_saved']} tokens)")
                     print(f"{Colors.DIM}{context}{Colors.RESET}\n")
+                elif cmd == "/kicad":
+                    if len(parts) > 1:
+                        res = parse_kicad_schematic(parts[1])
+                        print(f"{Colors.CYAN}--- KICAD SCHEMATIC PARSE RESULT ---{Colors.RESET}")
+                        print(f"File: {parts[1]} | Total Components: {res.get('total_components', 0)}")
+                        for comp in res.get("components", []):
+                            print(f"  • {comp['reference']:<6} = {comp['value']:<10} ({comp['library_id']})")
+                        print()
+                    else:
+                        print("Usage: /kicad <file.kicad_sch>")
+                elif cmd == "/kicad-set":
+                    if len(parts) > 3:
+                        res = update_kicad_component_value(parts[1], parts[2], parts[3])
+                        print(f"{Colors.GREEN}✅ {res}{Colors.RESET}")
+                    else:
+                        print("Usage: /kicad-set <file.kicad_sch> <ref> <new_value> (e.g. /kicad-set demo.kicad_sch R1 1k)")
+                elif cmd == "/bom":
+                    if len(parts) > 1:
+                        res = parse_bom_csv(parts[1])
+                        print(f"{Colors.CYAN}--- PCB BOM CSV PARSE RESULT ---{Colors.RESET}")
+                        print(f"File: {parts[1]} | Line Items: {res.get('total_line_items', 0)}")
+                        print()
+                    else:
+                        print("Usage: /bom <file.csv>")
+                elif cmd == "/vision":
+                    if len(parts) > 1:
+                        res = encode_image_to_base64(parts[1])
+                        print(f"{Colors.GREEN}✅ Image encoded to Base64 (MIME: {res.get('mime_type')}, Length: {res.get('base64_length')} chars){Colors.RESET}")
+                    else:
+                        print("Usage: /vision <image_path>")
                 elif cmd == "/agent":
                     if len(parts) > 1:
                         active_agent = parts[1].lower()
                         print(f"{Colors.GREEN}Switched active agent to: {active_agent.upper()}{Colors.RESET}")
                     else:
-                        print(f"Current agent: {active_agent}. Usage: /agent <orchestrator|planner|software|reviewer|tutor>")
+                        print(f"Current agent: {active_agent}. Usage: /agent <orchestrator|planner|software|electronics|reviewer|tutor>")
                 elif cmd == "/model":
                     if len(parts) > 1:
                         active_model = parts[1].lower()
@@ -164,7 +199,6 @@ def start_interactive_shell(default_agent: str = "orchestrator", default_model: 
                 else:
                     print(f"{Colors.RED}Unknown command '{cmd}'. Type /help for available commands.{Colors.RESET}")
             else:
-                # Add user turn to sliding window memory
                 memory.add_message("user", user_input)
                 pruned_prompt, mem_metrics = memory.get_pruned_context(system_prompt=f"Role: {active_agent}", model_name=active_model)
 
@@ -181,7 +215,6 @@ def start_interactive_shell(default_agent: str = "orchestrator", default_model: 
                 )
                 elapsed = round((time.time() - start_time) * 1000, 1)
 
-                # Add assistant response turn to sliding window memory
                 memory.add_message("assistant", output)
 
                 print(f"\n{Colors.BOLD}{Colors.PURPLE}🤖 [{active_agent.upper()} Response ({elapsed}ms)]:{Colors.RESET}")
