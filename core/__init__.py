@@ -3,7 +3,7 @@ Core Architectural Package Entrypoint.
 Provides backward-compatible re-exports for all sub-packages:
 - core.engine: Multi-Agent Pipeline, DAG Parallel Executor, Cost Router, Agent Telemetry, Critical Path & State Machine
 - core.hardware: KiCad, SPICE, Pinout, Thermal, DRC, RF, Auto-Router, MCU Selector, Layer Stackup, KiCad 3D Models, SPICE Transpiler, DRC Rules, BOM Sensitivity, Footprint Crosscheck, Trace Length Matching, KiCad Subsheets, Solder Stencil & Genetic Optimizer
-- core.software: Firmware, Unity Tests, Self-Healing, Edge AI, HIL Testing, Linter, Power Profiler, Static Security Scanner, Flash Partitions, OTA Verifier, Watchdog Analyzer, Test Coverage, Stack Guard & Bootloader Checker
+- core.software: Firmware, Unity Tests, Self-Healing, Edge AI, HIL Testing, Linter, Power Profiler, Static Security Scanner, Flash Partitions, OTA Verifier, Watchdog Analyzer, Test Coverage, Stack Guard, Bootloader Checker, Web REST API Architecture, Docker/K8s Generator, UML Generator, DB Migration & DevOps Terraform
 - core.production: Mechanical CAD, BOM Optimizer, Harness Sizer, Report Generator, Presentation Exporter, FEA Simulation, BOM Stock Tracker, Screw Boss Fasteners, Airflow Calculator, Snap-Fit Joints, Flexure Hinges, Gasket Sizer & Cable Glands
 - core.infra: RAG, Memory, Cache, Telemetry, Voice, Knowledge Graph, Guardrails, Plugins, Theme Manager, Autocomplete, Consensus Matrix, Pareto Frontier, Context Pruner, Circuit Breaker, Token Budget, Ensemble Aggregator, Memory Compactor, Adaptive Backoff, System Prompt Builder, Dead Letter Queue, Cost Forecast, Agent Health, Token Minimizer & DSPy Optimizer
 """
@@ -60,6 +60,11 @@ from core.software.watchdog_analyzer import analyze_crash_dump
 from core.software.test_coverage import generate_lcov_coverage_report
 from core.software.stack_guard import analyze_task_stack_requirements
 from core.software.bootloader_checker import audit_bootloader_config
+from core.software.web_architecture import generate_web_api_architecture
+from core.software.docker_k8s import generate_docker_k8s_manifests
+from core.software.uml_generator import generate_uml_architecture_diagram
+from core.software.db_migration import generate_db_schema_and_migrations
+from core.software.cloud_devops import generate_devops_terraform_config
 
 from core.production.mechanical import generate_openscad_enclosure, recommend_slicer_settings
 from core.production.battery import calculate_battery_lifespan

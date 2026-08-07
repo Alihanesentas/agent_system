@@ -10,7 +10,7 @@
 
 ## 📌 Executive Overview
 
-The **Neuro-Symbolic Multi-Agent System** is a SOTA, autonomous engineering operating system tailored for **Embedded Systems**, **KiCad PCB Electronics**, **OpenSCAD 3D Mechanical CAD**, **C++ Firmware**, **Edge AI / TinyML**, and **R&D Product Development**.
+The **Neuro-Symbolic Multi-Agent System** is a SOTA, autonomous engineering operating system tailored for **Full-Stack Web & Backend Software**, **Cloud & DevOps Infrastructure**, **Database Architecture**, **Embedded Systems**, **KiCad PCB Electronics**, **OpenSCAD 3D Mechanical CAD**, **C++ / Python Software**, **Edge AI / TinyML**, and **R&D Product Development**.
 
 By coupling the high-level reasoning power of Large Language Models (*Claude 3.5 Sonnet, GPT-4o, Gemini 1.5 Flash*) with deterministic **0-Token ($0.00 Cost) Local Symbolic Python Engines**, the system achieves **80-90% token cost reduction**, **100% mathematical and physical accuracy**, and **zero micro-management autonomous execution**.
 

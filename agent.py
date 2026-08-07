@@ -121,6 +121,11 @@ from core.infra.token_minimizer import count_and_estimate_tokens
 from core.infra.dspy_optimizer import global_dspy_optimizer
 from core.engine.state_machine import global_agent_fsm
 from core.hardware.genetic_optimizer import run_genetic_hardware_optimization
+from core.software.web_architecture import generate_web_api_architecture
+from core.software.docker_k8s import generate_docker_k8s_manifests
+from core.software.uml_generator import generate_uml_architecture_diagram
+from core.software.db_migration import generate_db_schema_and_migrations
+from core.software.cloud_devops import generate_devops_terraform_config
 
 class Colors:
     CYAN = '\033[96m'
@@ -307,6 +312,11 @@ def print_help():
   {Colors.GREEN}/dspy{Colors.RESET}                       -> DSPy-style automatic prompt optimizer & few-shot bootstrapper
   {Colors.GREEN}/fsm{Colors.RESET}                        -> Sub-agent finite state machine (FSM) status & rollback
   {Colors.GREEN}/genetic-hw{Colors.RESET}                 -> Multi-objective Pareto genetic hardware & PCB evolutionary optimizer
+  {Colors.GREEN}/web-stack [name]{Colors.RESET}            -> Full-stack FastAPI / Express REST API architecture generator
+  {Colors.GREEN}/docker-gen [service]{Colors.RESET}         -> Automated Dockerfile & Kubernetes deployment manifest generator
+  {Colors.GREEN}/uml [system]{Colors.RESET}                -> Software UML sequence & class diagram generator (Mermaid)
+  {Colors.GREEN}/db-schema [table]{Colors.RESET}           -> Database PostgreSQL DDL schema & migration generator
+  {Colors.GREEN}/devops [project]{Colors.RESET}            -> Cloud AWS Terraform HCL infrastructure & CI/CD generator
 {Colors.BOLD}{Colors.YELLOW}  ── System ──{Colors.RESET}
   {Colors.GREEN}/agent <name>{Colors.RESET}               -> Switch sub-agent (orchestrator, planner, software, electronics, reviewer)
   {Colors.GREEN}/model <name>{Colors.RESET}               -> Switch model (gpt-4o, gpt-4o-mini, claude-3-5-sonnet, gemini-1.5-flash)
@@ -1143,6 +1153,31 @@ def start_interactive_shell(default_agent: str = "orchestrator", default_model: 
                     res = run_genetic_hardware_optimization()
                     print(f"{Colors.CYAN}--- GENETIC HARDWARE PARETO OPTIMIZER ---{Colors.RESET}")
                     print(f"  Generations: {res['generations_run']} | Fitness Score: {res['best_pareto_candidate']['fitness_score']}\n")
+                elif cmd == "/web-stack":
+                    name = parts[1] if len(parts) > 1 else "SoftwareAPI"
+                    res = generate_web_api_architecture(name)
+                    print(f"{Colors.CYAN}--- FULL-STACK WEB & REST API GENERATOR ---{Colors.RESET}")
+                    print(f"  App: {res['app_name']} | Framework: {res['framework']} | Endpoints: {res['endpoints_generated']}\n")
+                elif cmd == "/docker-gen":
+                    svc = parts[1] if len(parts) > 1 else "web-service"
+                    res = generate_docker_k8s_manifests(svc)
+                    print(f"{Colors.CYAN}--- DOCKER & KUBERNETES MANIFEST GENERATOR ---{Colors.RESET}")
+                    print(f"  Service: {res['service_name']} | Status: Dockerfile & K8s Manifest Generated\n")
+                elif cmd == "/uml":
+                    sys_name = parts[1] if len(parts) > 1 else "BackendSystem"
+                    res = generate_uml_architecture_diagram(sys_name)
+                    print(f"{Colors.CYAN}--- SOFTWARE UML DIAGRAM GENERATOR ---{Colors.RESET}")
+                    print(f"  System: {res['system_name']} | Mermaid Sequence UML Generated\n")
+                elif cmd == "/db-schema":
+                    tbl = parts[1] if len(parts) > 1 else "users"
+                    res = generate_db_schema_and_migrations(tbl)
+                    print(f"{Colors.CYAN}--- DATABASE DDL SCHEMA & MIGRATION GENERATOR ---{Colors.RESET}")
+                    print(f"  Table: {res['table_name']} | Indexes: {res['indexed_columns']}\n")
+                elif cmd == "/devops":
+                    proj = parts[1] if len(parts) > 1 else "CloudApp"
+                    res = generate_devops_terraform_config(proj)
+                    print(f"{Colors.CYAN}--- CLOUD TERRAFORM & DEVOPS GENERATOR ---{Colors.RESET}")
+                    print(f"  Project: {res['project_name']} | Resources: {res['resources_created']}\n")
                 # --- Component & Datasheet Tools ---
                 elif cmd == "/datasheet":
                     if len(parts) > 1:

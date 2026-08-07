@@ -137,13 +137,18 @@ For specific, one-off engineering queries, you can invoke any of the 58+ symboli
    ```
 2. The Self-Healing Engine captures `gcc` / `platformio` error tracebacks, identifies the broken function contract, modifies the C++ code, and re-compiles automatically until 100% build pass is achieved.
 
-### Workflow 3: Running Physical Hardware-in-the-Loop (HIL) Tests
-1. Connect your ESP32 or STM32 development board to USB.
-2. Run:
+### Workflow 4: Building Full-Stack Web, Backend & Cloud Software
+1. Open terminal and run `agent`.
+2. Enter your general computer software goal in natural language:
    ```zsh
-   agent> /hil firmware/firmware.bin
+   agent> Create a production FastAPI REST backend with Docker, PostgreSQL schema, and AWS Terraform scripts
    ```
-3. The system flashes the binary via `esptool`, opens the serial monitor, sends test assertions, and verifies physical hardware pin toggles.
+3. The system automatically triggers the zero-token software tools:
+   - **`web_architecture.py`**: Generates production FastAPI REST API routers and Pydantic schemas.
+   - **`db_migration.py`**: Generates PostgreSQL DDL table schemas and index optimization.
+   - **`docker_k8s.py`**: Generates multi-stage Dockerfile and Kubernetes manifests.
+   - **`cloud_devops.py`**: Generates AWS Terraform HCL infrastructure scripts.
+   - **`uml_generator.py`**: Generates Mermaid sequence architecture diagrams.
 
 ---
 
