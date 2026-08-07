@@ -35,18 +35,41 @@ def build_default_agent_tree() -> AgentTreeNode:
     """Builds 5-layer hierarchical agent tree."""
     root = AgentTreeNode("Orchestrator", "System Strategy & Delegation", "Claude 3.5 Sonnet / GPT-4o", "Layer 2")
 
-    hw = AgentTreeNode("Hardware Agent", "KiCad Schematics & Pinout", "GPT-4o-mini", "Layer 3")
-    sw = AgentTreeNode("Software Agent", "C++ PlatformIO Firmware", "Gemini 1.5 Flash", "Layer 3")
-    rev = AgentTreeNode("Reviewer Agent", "Syntax & Safety Audit", "Claude 3.5 Sonnet", "Layer 3")
+    hw = AgentTreeNode("Hardware Agent", "KiCad Schematics & Pinout Audit", "GPT-4o-mini", "Layer 3")
+    sw = AgentTreeNode("Software Agent", "C++ PlatformIO Firmware & Unity Tests", "Gemini 1.5 Flash", "Layer 3")
+    mech = AgentTreeNode("Mechanical CAD Agent", "OpenSCAD 3D Enclosure & Slicer", "GPT-4o-mini", "Layer 3")
+    ai = AgentTreeNode("Edge AI / TinyML Agent", "INT8 Model Memory & ESP-DL Wrapper", "Gemini 1.5 Flash", "Layer 3")
+    rev = AgentTreeNode("Reviewer Agent", "Syntax & EMC/FCC Safety Audit", "Claude 3.5 Sonnet", "Layer 3")
 
-    symbolic = AgentTreeNode("Symbolic Python Engine", "SPICE / DRC / Thermal / CAD", "Local 0-Token Engine", "Layer 4")
+    symbolic = AgentTreeNode("Symbolic Python Engine", "SPICE / DRC / Thermal / RF / Harness", "Local 0-Token Engine", "Layer 4")
+    persistence = AgentTreeNode("Persistence Layer", "ChromaDB RAG / SQLite Memory / Profile", "Local Vector DB", "Layer 5")
     
     hw.add_child(symbolic)
+    symbolic.add_child(persistence)
+    
     root.add_child(hw)
     root.add_child(sw)
+    root.add_child(mech)
+    root.add_child(ai)
     root.add_child(rev)
 
     return root
+
+def print_static_tree_topology():
+    """Prints pure static 5-layer agent tree structure without requiring prompt input."""
+    root = build_default_agent_tree()
+    console.print("\n[bold cyan]🏢 5-LAYER MULTIDISCIPLINARY AGENT TREE TOPOLOGY (SYSTEM BLUEPRINT)[/bold cyan]\n")
+    
+    r_tree = Tree("[bold gold1]🌐 Layer 1: Presentation & Interaction (REPL CLI / VSCode / Web Dashboard / MCP Server)[/bold gold1]")
+    
+    def populate(node: AgentTreeNode, branch):
+        label = f"[bold cyan]{node.layer}[/bold cyan] -> [bold white]{node.name}[/bold white] [bold yellow]({node.model})[/bold yellow]\n  └─ [dim]{node.role}[/dim]"
+        nb = branch.add(label)
+        for child in node.children:
+            populate(child, nb)
+
+    populate(root, r_tree)
+    console.print(Panel(r_tree, border_style="cyan", padding=(1, 2)))
 
 def render_tree_view(root: AgentTreeNode, active_node_name: str, goal: str) -> Layout:
     """Renders side-by-side Layout with Live Agent Tree and Active Thinking Box."""

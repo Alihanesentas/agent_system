@@ -60,7 +60,7 @@ from core.gantt_planner import generate_project_gantt_chart
 from core.emc_compliance import audit_emc_fcc_compliance
 from core.autonomous_agent import execute_autonomous_goal
 from core.layered_architecture import run_layered_pipeline
-from core.agent_tree_sim import run_agent_tree_simulation
+from core.agent_tree_sim import run_agent_tree_simulation, print_static_tree_topology
 
 class Colors:
     CYAN = '\033[96m'
@@ -752,7 +752,7 @@ def start_interactive_shell(default_agent: str = "orchestrator", default_model: 
                         t_txt = " ".join(parts[1:])
                         run_agent_tree_simulation(t_txt)
                     else:
-                        print("Usage: /tree <goal_description>")
+                        print_static_tree_topology()
                 # --- Component & Datasheet Tools ---
                 elif cmd == "/datasheet":
                     if len(parts) > 1:
