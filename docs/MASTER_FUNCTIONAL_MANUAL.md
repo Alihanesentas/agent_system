@@ -6,174 +6,178 @@
 
 ---
 
-## 🏛️ 1. MİMARİ VE KATMAN YAPISI (5-LAYER ARCHITECTURE)
+## 🏛️ 1. ARCHITECTURAL DESIGN & CONTRACTS (5-LAYER ARCHITECTURE)
 
-Sistem, yapay zeka modellerinin yüksek seviyeli muhakeme gücünü, 0-Token ($0 Maliyetli) yerel Sembolik Python İşlem Motorları ile birleştirir.
+The system couples the high-level reasoning power of Large Language Models with deterministic 0-Token ($0.00 Cost) Local Symbolic Python Engines.
 
 ```
-Katman 1 (Presentation): Rich REPL CLI, VSCode/Cursor Extension v1.2.0, React Web Analytics Dashboard (Port 5173), Stdio MCP Server 2.0.
-Katman 2 (Orchestration): Claude 3.5 Sonnet / GPT-4o Orchestrator, /auto Otonom Hedef Döngüsü, /tree Canlı Ağaç Monitörü.
-Katman 3 (Specialist Sub-Agents): Electronics PCB Agent, Software Firmware Agent, Mechanical 3D CAD Agent, Reviewer Agent.
-Katman 4 (Symbolic Python Engines): SPICE Devre Simülatörü, Pinout Auditor, Termal Isınma Hesabı, PCB DRC & Empedans, OpenSCAD 3D Generator, USB Flasher.
-Katman 5 (Persistence & Infrastructure): ChromaDB RAG Engine, SQLite Proje Hafızası, Mühendis Profili, Async Worker Queue, Token Bucket Limiter.
+Layer 1 (Presentation): Rich REPL CLI, VSCode/Cursor Extension v1.2.0, React Web Analytics Dashboard (Port 5173), Stdio MCP Server 2.0.
+Layer 2 (Orchestration): Claude 3.5 Sonnet / GPT-4o Orchestrator, /auto Autonomous Goal Loop, /tree Live Agent Tree Monitor.
+Layer 3 (Specialist Sub-Agents): Electronics PCB Sub-Agent, Firmware C++ Sub-Agent, Mechanical 3D CAD Sub-Agent, Reviewer Sub-Agent.
+Layer 4 (Symbolic Python Engines): SPICE Simulator, Pinout Auditor, Thermal Dissipation, PCB DRC & Impedance, OpenSCAD 3D Generator, USB Flasher.
+Layer 5 (Persistence & Infrastructure): ChromaDB RAG Engine, SQLite Long-Term Memory, User Engineer Profile, Async Worker Queue, Token Bucket Limiter.
 ```
 
 ---
 
-## 🔌 2. MODÜLER DİZİN VE ALT PAKET KATALOĞU (`core/`)
+## 🔌 2. MODULAR PACKAGE CATALOG (`core/`)
 
-- **`core/engine/`**: İş Akışı, DAG, Otonom Hedef ve Simülasyon Motorları
-  - `autonomous_agent.py`: `/auto` Tam Otonom Hedef Döngüsü
-  - `layered_architecture.py`: `/layers` 5 Katmanlı İcra Motoru
-  - `agent_tree_sim.py`: `/tree` Canlı Ağaç Simülasyonu
-  - `dag_executor.py`: Paralel Asenkron DAG Yürütücü
-  - `cost_router.py`: `/cost` Dinamik Model Maliyet Yönlendiricisi
-  - `replay_engine.py`: `/replay` Zaman Yolculuklu Hata Hata Ayıklama Motoru
-- **`core/hardware/`**: KiCad, PCB, SPICE & Donanım Araçları
-  - `schematics.py`: KiCad Şematik ve Netlist Ayrıştırıcı
-  - `spice.py`: `/spice` RC Devre Simülatörü
-  - `pinout.py`: `/pinout` ESP32 Pin Çakışma ve Strapping Pin Denetleyicisi
-  - `thermal.py`: `/thermal` Termal Güç Kaybı ve Soğutucu Hesabı
-  - `pcb_drc.py`: `/drc` PCB DRC Fabrika Kuralları ve 50Ω Empedans Denetimi
-  - `autorouter.py`: `/autoroute` KiCad PCB A* Otomatik Yolu Çizici
-  - `rf_antenna.py`: `/rf` PCB Anten ve 50Ω Pi-Network Eşleme Hesabı
-  - `flasher.py`: `/flash` USB Firmware Yükleyici ve Seri Monitör
-  - `emc_compliance.py`: `/emc` FCC Class B & CE Sertifikasyon Pre-Checker
-- **`core/software/`**: Firmware, Test & Yapay Zeka Motorları
-  - `executor.py`: gcc / make / platformio Çalıştırıcı
-  - `self_heal.py`: `/heal` Otonom Kod Tamir Döngüsü
-  - `hil_testing.py`: `/hil` Hardware-in-the-Loop Fiziksel Kart Test Motoru
-  - `embedded_test_gen.py`: `/unittest-gen` Unity C Birim Test Üreteci
-  - `edge_ai.py`: `/edge-ai` TinyML SRAM Hesabı ve ESP-DL C++ Sarmalayıcı
-  - `ota_builder.py`: `/ota` Firmware OTA Güncelleme Manifest Üreteci
-  - `finetune.py`: `/finetune` LoRA Veri Seti İhracatçısı ve VRAM Hesabı
-- **`core/production/`**: CAD, Mekanik & Üretim Planlama Araçları
-  - `mechanical.py`: `/cad` OpenSCAD 3D Kutu ve FDM Slicer Önerici
-  - `cart_builder.py`: `/cart` Mouser / LCSC 1-Tık Sepet Üreteci
-  - `bom_optimizer.py`: `/bom-opt` BOM Maliyet Sürücüsü İyileştirici
-  - `battery.py`: `/battery` Pil Ömrü ve Güneş Paneli Hesabı
-  - `harness.py`: `/harness` Kablo AWG Kesit ve Gerilim Düşümü Hesabı
-  - `gantt_planner.py`: `/gantt` Mermaid Gantt Zaman Çizelgesi
-  - `project_gen.py`: `/create-project` Multidisipliner Proje Klasör Üreteci
-  - `report_generator.py`: `/report` Tam Proje Rapor İhracatçısı
-- **`core/infra/`**: Altyapı, Önbellek, Vektör Veritabanı & Telemetri
-  - `cache.py`: Semantik Önbellek Engine (%80 Token Tasarrufu)
-  - `checkpoint.py`: `/checkpoint` & `/restore` Snapshot Kaydetme/Yükleme
-  - `voice_agent.py`: `/voice` Eller Serbest Sesli Mühendis Asistanı
-  - `knowledge_graph.py`: `/graph` Donanım İlişki Grafiği
-  - `self_reflection.py`: `/reflect` Otonom Hata Eleştirisi Döngüsü
-  - `guardrails.py`: `/guard` Gerçek Zamanlı Çıktı Güvenlik Filtresi
-  - `plugin_loader.py`: `/reload-plugins` Canlı Sıcak Yüklemeli Eklenti Motoru
-  - `worker_queue.py`: `/worker` Asenkron İş Kuyruğu
+- **`core/engine/`**: Workflow, DAG, Autonomous Goal & Simulation Engines
+  - `autonomous_agent.py`: `/auto` True Goal-Driven Loop
+  - `layered_architecture.py`: `/layers` 5-Layer Architectural Engine
+  - `agent_tree_sim.py`: `/tree` Live Agent Tree Hierarchy Monitor
+  - `dag_executor.py`: Parallel Async DAG Executor
+  - `cost_router.py`: `/cost` Dynamic Model Cost Optimizer Router
+  - `replay_engine.py`: `/replay` Time-Travel Execution Debugger
+  - `state_machine.py`: `/fsm` Finite State Machine & Rollback Engine
+  - `critical_path.py`: `/critical-path` Critical Bottleneck Path Profiler
+  - `agent_telemetry.py`: `/agent-telemetry` Sub-Agent Latency Profiler
+- **`core/hardware/`**: KiCad, PCB, SPICE & Hardware Tools
+  - `schematics.py`: KiCad Schematic & Netlist S-Expression Parser
+  - `spice.py`: `/spice` RC Filter Simulator
+  - `spice_transpiler.py`: `/spice-transpile` KiCad Netlist to SPICE Transpiler
+  - `pinout.py`: `/pinout` ESP32 Pinout Conflict & Strapping Pin Auditor
+  - `thermal.py`: `/thermal` Thermal Dissipation & Heatsink Calculator
+  - `pcb_drc.py`: `/drc` PCB Factory DRC Rules & 50Ω Trace Impedance
+  - `autorouter.py`: `/autoroute` KiCad PCB A* Netlist Auto-Router
+  - `rf_antenna.py`: `/rf` PCB Quarter-Wave Monopole Antennas & 50Ω Matching
+  - `flasher.py`: `/flash` USB Firmware Flasher & Serial Monitor
+  - `emc_compliance.py`: `/emc` FCC Class B & CE Certification Pre-Checker
+  - `mcu_selector.py`: `/mcu` Multi-MCU Board Selector & Spec Recommender
+  - `layer_stackup.py`: `/stackup` PCB Dielectric Layer Stackup Calculator
+  - `kicad_3d_models.py`: `/3d-clearance` 3D Component Height Clearance Audit
+  - `footprint_crosscheck.py`: `/footprint-check` Symbol vs Footprint Pad Cross-Checker
+  - `trace_length_matching.py`: `/trace-matching` Differential Pair Length Matching
+  - `genetic_optimizer.py`: `/genetic-hw` Multi-Objective Genetic Hardware Optimizer
+- **`core/software/`**: Firmware, Testing & AI Engines
+  - `executor.py`: Shell Runner for gcc / make / platformio
+  - `self_heal.py`: `/heal` Self-Healing Build Repair Loop
+  - `hil_testing.py`: `/hil` Hardware-in-the-Loop Physical Board Test Engine
+  - `embedded_test_gen.py`: `/unittest-gen` Unity C Unit Test Generator
+  - `edge_ai.py`: `/edge-ai` TinyML SRAM Calculator & ESP-DL Wrapper
+  - `ota_builder.py`: `/ota` Firmware OTA Update Manifest Generator
+  - `ota_verifier.py`: `/ota-verify` SHA-256 Binary Integrity Verifier
+  - `watchdog_analyzer.py`: `/watchdog` CPU Panic Crash Dump & Watchdog Analyzer
+  - `static_analyzer.py`: `/security` Static C++ Security & Memory Leak Scanner
+  - `test_coverage.py`: `/coverage` C++ Unit Test LCOV Coverage Report Generator
+  - `stack_guard.py`: `/stack-guard` FreeRTOS Task Stack Overflow Guard
+  - `bootloader_checker.py`: `/bootloader-check` Firmware Bootloader Offset Auditor
+- **`core/production/`**: CAD, Mechanical & Production Planning Tools
+  - `mechanical.py`: `/cad` OpenSCAD 3D Enclosure Generator & Slicer Recommender
+  - `fasteners.py`: `/fasteners` 3D Printed Screw Boss Thread Sizer (M2-M4)
+  - `snap_fit.py`: `/snap-fit` Cantilever Snap-Fit Joint Strain Calculator
+  - `flexure_hinge.py`: `/flexure` Living Hinge Strain & Bend Radius Calculator
+  - `gasket_sizer.py`: `/gasket` IP67 Waterproof O-Ring Gasket Groove Sizer
+  - `cable_gland.py`: `/cable-gland` Waterproof Cable Gland Cutout Hole Sizer
+  - `airflow_calculator.py`: `/airflow` Ventilation Slot & CFM Airflow Calculator
+  - `fea_simulation.py`: `/fea` 3D Mechanical FEA Stress & Deformation Simulator
+  - `cart_builder.py`: `/cart` Mouser / LCSC 1-Click Shopping Cart Generator
+  - `bom_optimizer.py`: `/bom-opt` BOM Cost Driver & Tier Optimizer
+  - `bom_stock_tracker.py`: `/supply-risk` Multi-Vendor BOM Stock & EOL Risk Alert
+  - `bom_sensitivity.py`: `/bom-sensitivity` Monte Carlo Cost Sensitivity Analyzer
+  - `battery.py`: `/battery` Battery Lifespan & Solar Panel Calculator
+  - `harness.py`: `/harness` Wire AWG Cross-Section & Voltage Drop Calculator
+  - `gantt_planner.py`: `/gantt` Mermaid Gantt Project Schedule Generator
+  - `project_gen.py`: `/create-project` Unified Project Tree Generator
+  - `report_generator.py`: `/report` Full Project Markdown Report Generator
+  - `presentation_exporter.py`: `/slides` Interactive HTML Presentation Exporter
+- **`core/infra/`**: Infrastructure, Vector Store, Cache & Telemetry
+  - `cache.py`: Semantic Cache Engine (80% Token Savings)
+  - `checkpoint.py`: `/checkpoint` & `/restore` Snapshot State Backup/Restore
+  - `voice_agent.py`: `/voice` Hands-Free Workbench Voice Assistant
+  - `knowledge_graph.py`: `/graph` Hardware Relational Knowledge Graph
+  - `self_reflection.py`: `/reflect` Self-Reflective Failure Critique Engine
+  - `guardrails.py`: `/guard` Real-Time Code Output Safety Filter
+  - `plugin_loader.py`: `/reload-plugins` Hot-Reloadable Plugin Loader
+  - `worker_queue.py`: `/worker` Async Background Worker Queue
   - `rate_limiter.py`: `/ratelimit` LLM API Token Bucket Throttler
-  - `telemetry.py`: `/metrics` Prometheus Metrik Uç Noktası
-  - `autocomplete.py`: CLI Otomatik TAB Tamamlayıcısı
+  - `circuit_breaker.py`: `/circuit-breaker` Multi-Model API Fallback Circuit Breaker
+  - `token_budget.py`: `/budget` Token Expenditure Dollar Budget Tracker
+  - `cost_forecast.py`: `/cost-forecast` LLM Token Burn Rate Forecast Engine
+  - `dspy_optimizer.py`: `/dspy` DSPy Prompt Optimizer & Few-Shot Bootstrapper
+  - `ensemble_aggregator.py`: `/ensemble` Multi-Model Response Ensemble Aggregator
+  - `context_pruner.py`: `/prune` LLM Prompt Context Pruner (60% Savings)
+  - `memory_compactor.py`: `/compact-memory` SQLite & Vector Store Memory Compactor
+  - `adaptive_backoff.py`: `/backoff` API Rate Limit Exponential Backoff Calculator
+  - `system_prompt_builder.py`: `/prompt-builder` Dynamic System Prompt Context Builder
+  - `agent_health.py`: `/agent-health` Sub-Package Real-Time Health Monitor
+  - `token_minimizer.py`: `/token-count` BPE Token Counter & Cost Estimator
+  - `theme_manager.py`: `/theme` CLI Color Palette Switcher
+  - `autocomplete.py`: REPL TAB Command Auto-Completer
 
 ---
 
-## 🛠️ 3. TÜM 55+ SLASH KOMUTLARININ FONKSİYONEL REHBERİ
+## 🛠️ 3. COMPREHENSIVE SLASH COMMAND MANUAL (58+ COMMANDS)
 
-### 🤖 Otonom Hedef & Katmanlı İcra Komutları
-- **`/auto <hedef>`**: Tek bir cümlelik hedeften (Örn: `/auto ESP32 hava durumu istasyonu yap`) tüm donanım, şematik, DRC, 3D CAD, auto-routing, HIL test ve C++ firmware dosyalarını otonom üretir.
-- **`/layers <hedef>`**: Görevi açık 5-Katmanlı Mimari Motoru üzerinden adım adım çalıştırır.
-- **`/tree [hedef]`**: Canlı hiyerarşik Agent Ağacını ve modellerin çalışma sürelerini görselleştirir.
+### 🤖 Autonomous Goal & Layer Execution Commands
+- **`/auto <goal>`**: Executes high-level goal completely autonomously (hardware + CAD + firmware + DRC + report).
+- **`/layers <goal>`**: Step-by-step execution across 5-Layer Architecture.
+- **`/tree [goal]`**: Visualizes hierarchical agent execution tree and latencies.
 
-### 🔌 Donanım & PCB Elektronik Komutları
-- **`/kicad <file.kicad_sch>`**: KiCad şematik bileşenlerini ve net etiketlerini ayrıştırır.
-- **`/kicad-set <file> <ref> <val>`**: Şematik dosyasında bileşen değerini (Örn: R1 1k) günceller.
-- **`/bom <file.csv>`**: PCB Bill of Materials CSV dosyasını analiz eder.
-- **`/spice <r_ohms> <c_farads>`**: RC düşük geçiren filtre zaman sabiti ve frekans yanıtını simüle eder.
-- **`/pinout <sda> <scl> <out>`**: ESP32 GPIO pin çakışmalarını ve strapping pin tehlikelerini denetler.
-- **`/thermal <vin> <vout> <amps>`**: Isıl güç kaybını ve soğutucu (°C/W) ihtiyacını hesaplar.
-- **`/drc <width_mm>`**: PCB fabrika üretim kurallarını ve 50Ω mikroşerit empedansını denetler.
-- **`/autoroute`**: KiCad PCB şematik bacak yollarını A* algoritması ile otonom çizer.
-- **`/rf [freq_mhz]`**: PCB çeyrek-dalga monopole anten boyutlarını ve 50Ω Pi-network eşleme değerlerini hesaplar.
-- **`/gerber <folder>`**: Gerber katmanlarını ve 3D kutu sınır boyutlarını çıkarır.
-- **`/emc`**: FCC Class B ve CE EMC uyumluluk ön denetimini gerçekleştirir.
+### 🔌 Electronics & Hardware Commands
+- **`/kicad <file.kicad_sch>`**: Parses KiCad schematic components and net labels.
+- **`/spice <r_ohms> <c_farads>`**: Simulates RC low-pass filter frequency response.
+- **`/spice-transpile`**: Transpiles KiCad netlist to raw SPICE `.cir` file.
+- **`/pinout <sda> <scl> <out>`**: Audits ESP32 pinout conflicts and strapping pin risks.
+- **`/thermal <vin> <vout> <amps>`**: Calculates thermal dissipation and heatsink requirements.
+- **`/drc <width_mm>`**: Audits PCB factory DRC rules and 50Ω trace impedance.
+- **`/autoroute`**: Auto-routes KiCad PCB netlist traces using A* algorithm.
+- **`/rf [freq_mhz]`**: Calculates PCB quarter-wave monopole antenna dimensions.
+- **`/mcu <req>`**: Recommends optimal microcontroller (ESP32-S3, STM32F4, RP2040, nRF52840, Teensy 4.1).
+- **`/stackup [layers]`**: Calculates PCB dielectric layer stackup and USB 2.0 90Ω trace width.
+- **`/3d-clearance`**: Audits KiCad 3D STEP component height clearance against lid.
+- **`/footprint-check`**: Cross-checks schematic symbol pins vs PCB footprint pads.
+- **`/trace-matching`**: Calculates high-speed differential pair length matching and serpentine tuning.
+- **`/genetic-hw`**: Optimizes PCB trace length, thermal dissipation, and BOM cost across 50 generations.
 
-### 🔍 Donanım Arama & Tedarik Komutları
-- **`/part <part_number>`**: Mouser/DigiKey/LCSC stok, fiyat ve datasheet araması yapar.
-- **`/alt <part_number>`**: Stoklu muadil ve doğrudan yerine takılabilir (drop-in) bileşen önerir.
-- **`/compare <p1> <p2>`**: Yan yana parametrik bileşen karşılaştırması sunar.
-- **`/cart [bom.csv]`**: Mouser / LCSC 1-tık alışveriş sepeti JSON yükünü oluşturur.
-- **`/datasheet <pdf_path>`**: PDF datasheet dosyasından pin tablolarını ve özellikleri çıkarır.
+### 💻 Software & Firmware Commands
+- **`/heal <file.c>`**: Self-healing loop for build errors.
+- **`/hil <file.bin>`**: Runs Hardware-in-the-Loop physical board tests.
+- **`/unittest-gen <mod>`**: Generates Unity C unit test files.
+- **`/edge-ai <params>`**: Calculates TinyML SRAM/Flash memory and wraps ESP-DL C++ code.
+- **`/ota [version]`**: Generates firmware OTA update manifest.
+- **`/ota-verify`**: Verifies firmware binary SHA-256 signature and magic header.
+- **`/watchdog`**: Analyzes CPU panic crash dumps and watchdog reset causes.
+- **`/security <code>`**: Audits C++ code for memory leaks and unsafe functions.
+- **`/coverage`**: Reports C++ unit test line and branch LCOV coverage.
+- **`/stack-guard`**: Calculates safe FreeRTOS task stack size.
+- **`/bootloader-check`**: Audits bootloader flash offset and vector table integrity.
 
-### 💻 Yazılım & Gömülü Sistem Komutları
-- **`/heal <file.c>`**: Derleme ve lint hatalarını otonom düzelten self-healing döngüsü.
-- **`/hil <file.bin>`**: USB ile bağlı fiziksel kartlarda Hardware-in-the-Loop otonom test koşar.
-- **`/unittest-gen <mod>`**: Gömülü Unity C birim test dosyalarını oluşturur.
-- **`/edge-ai <params>`**: TinyML model peak SRAM/Flash kullanımını hesaplar ve ESP-DL C++ sarmalayıcısı üretir.
-- **`/ota [version]`**: Firmware OTA güncelleme manifestini ve SHA-256 doğrulamasını üretir.
-- **`/finetune`**: LoRA 4-bit fine-tuning VRAM ihtiyacını hesaplar ve JSONL veri setini dışa aktarır.
-- **`/run <command>`**: Güvenli alt süreçte shell derleme komutu çalıştırır.
+### 🛠️ Mechanical CAD & Production Commands
+- **`/cad <l> <w> <h>`**: Generates parametric OpenSCAD 3D enclosure script.
+- **`/slicer <material>`**: Recommends FDM 3D printer slicer settings.
+- **`/fasteners [type]`**: Sizes 3D printed screw boss pilot holes (M2-M4).
+- **`/snap-fit`**: Calculates 3D printed snap-fit joint deflection and strain.
+- **`/flexure`**: Calculates compliant living hinge bend radius and fatigue limits.
+- **`/gasket`**: Calculates IP67 waterproof O-ring groove depth and width.
+- **`/cable-gland`**: Sizes waterproof cable gland panel cutout holes (PG7-PG9).
+- **`/airflow`**: Calculates ventilation slot surface area and CFM fan specs.
+- **`/fea [force_N]`**: Simulates 3D enclosure mechanical stress and deformation.
+- **`/cart [bom.csv]`**: Generates Mouser / LCSC 1-click shopping cart payload.
+- **`/bom-opt`**: Optimizes BOM cost drivers and volume pricing tiers.
+- **`/supply-risk`**: Audits BOM parts for EOL risk and global stock availability.
+- **`/bom-sensitivity`**: Runs Monte Carlo simulation on BOM price swings.
+- **`/gantt`**: Generates Mermaid Gantt project schedule chart.
+- **`/report`**: Exports full multidisciplinary Markdown engineering report.
+- **`/slides`**: Exports interactive dark-themed HTML presentation slide deck.
 
-### 🛠️ Mekanik CAD & Üretim Planlama Komutları
-- **`/cad <l> <w> <h>`**: Parametrik OpenSCAD 3D kutu betiği oluşturur.
-- **`/slicer <material>`**: FDM 3D yazıcı (PLA/ABS/PETG/TPU) dilimleyici ayarlarını önerir.
-- **`/harness <amps> <length>`**: Kablo AWG kesit alanını ve gerilim düşümünü hesaplar.
-- **`/battery <mah> <active_ma>`**: Pil çalışma ömrünü ve güneş paneli watt gücünü hesaplar.
-- **`/bom-opt`**: BOM maliyet sürücülerini ve 100/1000 adet üretim adımlarını optimize eder.
-- **`/gantt`**: Multidisipliner projenin Mermaid Gantt zaman çizelgesini üretir.
-- **`/create-project <name>`**: Birleşik proje dizin yapısını (firmware, hw, cad, docs) oluşturur.
-- **`/mcu <gereksinim>`**: Proje gereksinimlerine göre en uygun mikrodenetleyiciyi (ESP32-S3, STM32F4, RP2040, nRF52840, Teensy 4.1) önerir.
-- **`/lint <code>`**: Üretilen C++/Python kod parçalarını otomatik biçimlendirir ve sentaks düzenlemesi yapar.
-- **`/theme <tema>`**: CLI renk paletini dinamik olarak değiştirir (cyberpunk, matrix, dracula, solarized).
-- **`/stackup [layers]`**: 2, 4, 6, ve 8 katmanlı PCB katman dizilimi (dielectric stackup) ve USB 2.0 90Ω diferansiyel yol genişliğini hesaplar.
-- **`/slides`**: Proje dokümantasyonunu ve Gantt grafiklerini koyu temalı interaktif HTML sunum slaytına dönüştürür.
-- **`/consensus-matrix`**: Çoklu model güven skorları ve oy dağılımı matris analizi sunar.
-- **`/3d-clearance`**: KiCad 3D STEP bileşen yüksekliklerini analiz eder ve kutu kapağı çakışma kontrolü yapar.
-- **`/power <code>`**: Firmware C++ kodunun ortalama akım çekimini (mA) ve pil çalışma süresini hesaplar.
-- **`/pareto`**: Modellere ait gecikme (ms), maliyet ($) ve doğruluk skoru Pareto optimal eğri analizini sunar.
-- **`/spice-transpile`**: KiCad şematik netlist verisini doğrudan SPICE `.cir` simülasyon dosyasına dönüştürür.
-- **`/security <code>`**: C++ firmware kodundaki bellek sızıntılarını ve güvensiz fonksiyonları statik tarar.
-- **`/fea [force_N]`**: 3D basılı kutunun mekanik gerilim (FEA Stress) ve deformasyon simülasyonunu yapar.
-- **`/supply-risk`**: BOM parçalarının küresel tedarik zinciri stok durumunu ve EOL (üretim sonu) risklerini tarar.
-- **`/prune <text>`**: LLM prompt bağlamını %60 oranında sıkıştırarak token maliyetini düşürür.
-- **`/drc-rules`**: Özel KiCad 7.0/8.0 fabrika DRC kural dosyasını (`.kicad_dru`) oluşturur.
-- **`/partition [mb]`**: Flash hafıza bölüm haritasını (nvs, app0, app1, spiffs) ve SRAM yerleşimini görselleştirir.
-- **`/fasteners [type]`**: 3D kutu vida yuvası (screw boss M2-M4) kılavuz delik çapı ve duvar kalınlığını hesaplar.
-- **`/circuit-breaker`**: LLM API bağlantı kopmalarında otomatik alternatif modele geçen devre kesici durumunu gösterir.
-- **`/budget`**: Aylık/günlük LLM token harcama tutarını ($) ve bütçe uyarı sınırını takip eder.
-- **`/ota-verify`**: Firmware binary dosyasının SHA-256 kriptografik imzasını ve magic başlığını doğrular.
-- **`/airflow`**: 3D kutunun pasif havalandırma ızgara alanını (mm²) ve gerekli CFM fan hava akışını hesaplar.
-- **`/ensemble`**: Paralel koşan modellerin yanıtlarını çoğunluk konsensüs oylaması ile birleştirir.
-- **`/bom-sensitivity`**: Enflasyon ve tedarik krizlerinde BOM maliyet salınımlarını Monte Carlo simülasyonu ile analiz eder.
-- **`/compact-memory`**: SQLite uzun vadeli hafıza kayıtlarını ve ChromaDB vektör veri tabanını sıkıştırarak disk alanını boşaltır.
-- **`/watchdog`**: Gömülü sistem CPU panic crash dump kayıtlarını ve Watchdog reset nedenini analiz eder.
-- **`/snap-fit`**: 3D kutu geçme kapak (cantilever snap-fit) tırnak gerilimini (%) ve kırılma dayanımını hesaplar.
-- **`/agent-telemetry`**: Alt agent'ların adım adım çalışma sürelerini (ms) ve gecikme profilini raporlar.
-- **`/footprint-check`**: KiCad şematik sembol pinleri ile PCB footprint pad düzenini çapraz denetler.
-- **`/backoff`**: LLM API 429 Rate Limit durumlarında üssel geri çekilme (jitter delay) süresini hesaplar.
-- **`/coverage`**: C++ birim test satır ve dallanma LCOV kapsama oranını (%) raporlar.
-- **`/flexure`**: 3D kutu bükülebilir mafsal (flexure living hinge) gerilim ve bükülme yarıçapı sınırını hesaplar.
-- **`/critical-path`**: Alt agent görev bağımlılık grafiğinde en uzun kritik yolu (bottleneck) analiz eder.
-- **`/trace-matching`**: PCB yüksek hızlı diferansiyel yol uzunluk eşlemesini (length matching) ve faz kayması dalga sayısını hesaplar.
-- **`/prompt-builder`**: Agent'lar için özelleştirilmiş sistem istemi (system prompt) bağlamını dinamik oluşturur.
-- **`/subsheets`**: Çok yapraklı hiyerarşik KiCad şematik yapısını (`power.kicad_sch`, `mcu.kicad_sch`) otonom üretir.
-- **`/stack-guard`**: FreeRTOS gömülü C++ görevlerinin güvenli yığın (stack frame) bellek ihtiyacını hesaplar.
-- **`/gasket`**: 3D kutular için IP67 su geçirmez kauçuk O-ring conta kanalı (groove) genişlik ve derinliğini hesaplar.
-- **`/dlq`**: Başarısız olan agent alt görevlerini Dead Letter Queue (DLQ) havuzunda toplar ve tek tıkla yeniden dener.
-- **`/cost-forecast`**: Günlük LLM harcama trendine göre haftalık ve aylık token maliyet tahminini ($) çıkarır.
-- **`/stencil`**: PCB SMT krem lehim stensil (stencil) folyo kalınlığını (µm) ve lehim macunu hacmini ($mm^3$) hesaplar.
-- **`/bootloader-check`**: Gömülü sistem bootloader flash adres ofsetlerini ve vektör tablosu hizalamasını denetler.
-- **`/cable-gland`**: 3D kutu harici kablo çıkışları için PG7/PG9/M12 su geçirmez rekor montaj delik çaplarını hesaplar.
-- **`/agent-health`**: Tüm 5 alt paketin ve 60+ modülün anlık sağlık durumunu ve icra başarım skorunu izler.
-- **`/token-count <text>`**: İstem metnindeki BPE token sayısını hesaplar ve model katmanlarına göre maliyeti tahmin eder.
-- **`/dspy`**: DSPy tarzı otonom prompt iyileştirici ve few-shot başarım örnek seti derleyicisi.
-- **`/fsm`**: Alt agent sonlu durum makinesi (FSM) durum takibi ve hata anında otonom durum geri alma (rollback).
-- **`/genetic-hw`**: Donanım, PCB yol uzunluğu, termal ısınma ve BOM maliyetini 50 jenerasyonda optimize eden genetik algoritma.
-- **`/report`**: Tüm projenin eksiksiz PDF/Markdown mühendislik raporunu çıkarır.
-
-### 🛡️ Mimari Dayanıklılık, Güvenlik & Altyapı Komutları
-- **`/voice <prompt>`**: Atölyede eller serbest sesli mühendislik komutu çalıştırır.
-- **`/graph <query>`**: Donanım Bilgi Grafiğinde bileşen ilişkilerini sorgular.
-- **`/reflect <task>`**: Görevi otonom hata eleştirisi ve yeniden deneme döngüsü ile çalıştırır.
-- **`/cost <prompt>`**: Görevi en ucuz yetenekli modele dinamik yönlendirir.
-- **`/guard <code>`**: Üretilen C++/CAD kodunu diske yazılmadan önce güvenlik filtrenizden geçirir.
-- **`/reload-plugins`**: `plugins/` klasöründeki özel Python eklentilerini sıcak yükler.
-- **`/worker`**: Asenkron arka plan Worker kuyruğu durumunu görüntüler.
-- **`/ratelimit`**: LLM API Token Bucket rate limiter durumunu görüntüler.
-- **`/checkpoint`**: Sistem durumunun diske Snapshot Checkpoint kaydını alır.
-- **`/restore`**: Sistem durumunu Snapshot Checkpoint kaydından geri yükler.
-- **`/metrics`**: Prometheus & Grafana izleme uç noktasını sunar.
-- **`/replay`**: Zaman yolculuklu hata ayıklama adım kaydını yeniden oynatır.
+### 🛡️ Reliability, Security & Infrastructure Commands
+- **`/voice <prompt>`**: Hands-free voice assistant workbench listener.
+- **`/graph <query>`**: Queries Hardware Knowledge Graph for MCU/sensor relationships.
+- **`/reflect <task>`**: Executes task with self-reflective critique loop.
+- **`/cost <prompt>`**: Routes task to lowest-cost capable model.
+- **`/guard <code>`**: Sanitizes code before writing to disk.
+- **`/reload-plugins`**: Hot-reloads custom Python plugins from `plugins/`.
+- **`/worker`**: Monitors async background worker queue.
+- **`/ratelimit`**: Monitors LLM API token bucket rate limiter.
+- **`/circuit-breaker`**: Monitors API failure fallback circuit breaker status.
+- **`/budget`**: Tracks monthly token expenditure dollar budget.
+- **`/cost-forecast`**: Forecasts monthly token cost burn rate.
+- **`/dspy`**: Compiles DSPy-style prompt optimization with few-shot exemplars.
+- **`/fsm`**: Monitors agent Finite State Machine and triggers rollback.
+- **`/ensemble`**: Aggregates multi-model responses using majority voting.
+- **`/prune <text>`**: Prunes prompt context for 60% token savings.
+- **`/compact-memory`**: Compacts SQLite memory logs and vector store.
+- **`/agent-health`**: Displays real-time health scores for all 5 sub-packages.
+- **`/token-count <text>`**: Counts BPE tokens and estimates prompt cost.
+- **`/theme <name>`**: Switches CLI color palette (cyberpunk, matrix, dracula).
