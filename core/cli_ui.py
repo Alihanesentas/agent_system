@@ -176,6 +176,15 @@ def render_docs_ui(category: Optional[str] = None):
             "🔌 Model Context Protocol (MCP) Mode & Server",
             "• `/mcp-mode <on|off>`: Toggle between Direct Native Execution (fastest, 0% token overhead) and MCP Stdio Protocol.\n"
             "• `/mcp`: Display MCP Server configuration guide for Claude Desktop & Cursor."
+        ),
+        "auto": (
+            "🤖 Otonom Hedef Döngüsü & 5 Katmanlı Mimari",
+            "• `/auto <hedef>`: Fully autonomous goal execution loop (Auto-Plan -> HW -> SW -> Thermal -> CAD -> Build).\n"
+            "• `/layers <hedef>`: Execute task via explicit 5-Layer Architecture Engine."
+        ),
+        "tree": (
+            "🌲 Agent Ağaç Hiyerarşisi & Canlı Simülasyon",
+            "• `/tree [hedef]`: Display static 5-layer agent tree blueprint or launch live interactive simulation."
         )
     }
 
