@@ -74,6 +74,9 @@ from core.infra.self_reflection import run_with_self_reflection
 from core.engine.cost_router import route_task_to_optimal_model
 from core.infra.guardrails import sanitize_and_verify_code
 from core.infra.plugin_loader import discover_and_reload_plugins
+from core.hardware.mcu_selector import recommend_mcu_for_project
+from core.software.linter import format_code_snippet
+from core.infra.theme_manager import set_cli_theme
 
 class Colors:
     CYAN = '\033[96m'
@@ -213,6 +216,9 @@ def print_help():
   {Colors.GREEN}/cost <prompt>{Colors.RESET}                -> Multi-model dynamic cost-optimizer router check
   {Colors.GREEN}/guard <code>{Colors.RESET}                -> Real-time output guardrail & syntax filter
   {Colors.GREEN}/reload-plugins{Colors.RESET}             -> Hot-reload custom Python plugins from plugins/
+  {Colors.GREEN}/mcu <req>{Colors.RESET}                   -> Multi-MCU selector & spec recommender engine
+  {Colors.GREEN}/lint <code>{Colors.RESET}                -> Auto-format & lint C++/Python code snippet
+  {Colors.GREEN}/theme <name>{Colors.RESET}               -> Switch CLI color palette (cyberpunk, matrix, dracula)
 {Colors.BOLD}{Colors.YELLOW}  ── System ──{Colors.RESET}
   {Colors.GREEN}/agent <name>{Colors.RESET}               -> Switch sub-agent (orchestrator, planner, software, electronics, reviewer)
   {Colors.GREEN}/model <name>{Colors.RESET}               -> Switch model (gpt-4o, gpt-4o-mini, claude-3-5-sonnet, gemini-1.5-flash)
@@ -845,6 +851,22 @@ def start_interactive_shell(default_agent: str = "orchestrator", default_model: 
                     res = discover_and_reload_plugins()
                     print(f"{Colors.CYAN}--- HOT-RELOADABLE PLUGINS ---{Colors.RESET}")
                     print(f"  Loaded Plugins: {res['loaded_plugins_count']} ({', '.join(res['loaded_plugins']) or 'None'})\n")
+                elif cmd == "/mcu":
+                    req_in = " ".join(parts[1:]) if len(parts) > 1 else "Wireless BLE wearable with low power"
+                    res = recommend_mcu_for_project(req_in)
+                    print(f"{Colors.CYAN}--- MULTI-MCU SELECTOR RECOMMENDER ---{Colors.RESET}")
+                    print(f"  Recommended MCU: {res['recommended_mcu']}")
+                    print(f"  CPU: {res['specs']['cpu']} | SRAM: {res['specs']['sram']} | Price: ${res['specs']['price_usd']}\n")
+                elif cmd == "/lint":
+                    c_in = " ".join(parts[1:]) if len(parts) > 1 else "void setup() { Serial.begin(115200); }"
+                    res = format_code_snippet(c_in)
+                    print(f"{Colors.CYAN}--- AUTO-FORMATTER & LINTER ---{Colors.RESET}")
+                    print(f"  Status: {res['status'].upper()} | Lines Formatted: {res['formatted_lines']}\n")
+                elif cmd == "/theme":
+                    t_in = parts[1] if len(parts) > 1 else "cyberpunk"
+                    res = set_cli_theme(t_in)
+                    print(f"{Colors.CYAN}--- CLI THEME SWITCHER ---{Colors.RESET}")
+                    print(f"  Active Theme: {res.get('active_theme', t_in).upper()}\n")
                 # --- Component & Datasheet Tools ---
                 elif cmd == "/datasheet":
                     if len(parts) > 1:

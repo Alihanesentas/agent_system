@@ -2,10 +2,10 @@
 Core Architectural Package Entrypoint.
 Provides backward-compatible re-exports for all sub-packages:
 - core.engine: Multi-Agent Pipeline, DAG Parallel Executor & Cost Router
-- core.hardware: KiCad, SPICE, Pinout, Thermal, DRC, RF & Auto-Router
-- core.software: Firmware, Unity Tests, Self-Healing, Edge AI & HIL Testing
-- core.production: Mechanical CAD, BOM Optimizer & Harness Sizer
-- core.infra: RAG, Memory, Cache, Telemetry, Voice, Knowledge Graph, Guardrails & Plugin Loader
+- core.hardware: KiCad, SPICE, Pinout, Thermal, DRC, RF, Auto-Router & MCU Selector
+- core.software: Firmware, Unity Tests, Self-Healing, Edge AI, HIL Testing & Linter
+- core.production: Mechanical CAD, BOM Optimizer, Harness Sizer & Report Generator
+- core.infra: RAG, Memory, Cache, Telemetry, Voice, Knowledge Graph, Guardrails, Plugins, Theme Manager & Autocomplete
 """
 
 from core.engine.runner import run_agent_task
@@ -29,6 +29,7 @@ from core.hardware.flasher import flash_firmware, read_serial_monitor
 from core.hardware.emc_compliance import audit_emc_fcc_compliance
 from core.hardware.vision import encode_image_to_base64
 from core.hardware.autorouter import auto_route_pcb_netlist
+from core.hardware.mcu_selector import recommend_mcu_for_project
 
 from core.software.executor import execute_command, compile_c, compile_cpp
 from core.software.self_heal import auto_compile_and_fix
@@ -37,6 +38,7 @@ from core.software.finetune import estimate_lora_vram, export_finetuning_dataset
 from core.software.ota_builder import generate_ota_update_manifest
 from core.software.embedded_test_gen import generate_unity_c_test
 from core.software.hil_testing import run_hil_hardware_test
+from core.software.linter import format_code_snippet
 
 from core.production.mechanical import generate_openscad_enclosure, recommend_slicer_settings
 from core.production.battery import calculate_battery_lifespan
@@ -45,6 +47,7 @@ from core.production.cart_builder import build_distributor_cart_payload
 from core.production.gantt_planner import generate_project_gantt_chart
 from core.production.harness import calculate_wire_harness
 from core.production.project_gen import create_multidisciplinary_project
+from core.production.report_generator import generate_project_markdown_report
 
 from core.infra.profile import load_user_profile, save_user_profile, build_personalized_system_prompt
 from core.infra.cache import get_cache_metrics
@@ -57,3 +60,4 @@ from core.infra.knowledge_graph import global_knowledge_graph
 from core.infra.self_reflection import run_with_self_reflection
 from core.infra.guardrails import sanitize_and_verify_code
 from core.infra.plugin_loader import discover_and_reload_plugins
+from core.infra.theme_manager import set_cli_theme

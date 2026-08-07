@@ -115,6 +115,9 @@ Katman 5 (Persistence & Infrastructure): ChromaDB RAG Engine, SQLite Proje Hafı
 - **`/bom-opt`**: BOM maliyet sürücülerini ve 100/1000 adet üretim adımlarını optimize eder.
 - **`/gantt`**: Multidisipliner projenin Mermaid Gantt zaman çizelgesini üretir.
 - **`/create-project <name>`**: Birleşik proje dizin yapısını (firmware, hw, cad, docs) oluşturur.
+- **`/mcu <gereksinim>`**: Proje gereksinimlerine göre en uygun mikrodenetleyiciyi (ESP32-S3, STM32F4, RP2040, nRF52840, Teensy 4.1) önerir.
+- **`/lint <code>`**: Üretilen C++/Python kod parçalarını otomatik biçimlendirir ve sentaks düzenlemesi yapar.
+- **`/theme <tema>`**: CLI renk paletini dinamik olarak değiştirir (cyberpunk, matrix, dracula, solarized).
 - **`/report`**: Tüm projenin eksiksiz PDF/Markdown mühendislik raporunu çıkarır.
 
 ### 🛡️ Mimari Dayanıklılık, Güvenlik & Altyapı Komutları
