@@ -8,14 +8,11 @@
 # ──────────────────────────────────────────────────────────────────────
 
 ## Güç Elektroniği
-- [ ] core/hardware/psu_ripple.py           → Güç kaynağı ripple/noise, filtre kapasitör boyutlandırma | def analyze_psu_ripple(**kwargs) -> Dict
 
 ## Analog & Sinyal İşleme
 - [ ] core/hardware/dac_output.py           → DAC çıkış tampon, settling time | def design_dac_output(**kwargs) -> Dict
 
 ## Dijital & Haberleşme
-- [ ] core/hardware/spi_timing.py           → SPI bus timing, clock phase/polarity | def analyze_spi_timing(**kwargs) -> Dict
-- [ ] core/hardware/usb_impedance.py        → USB 2.0/3.0 diferansiyel empedans kontrolü | def check_usb_impedance(**kwargs) -> Dict
 - [ ] core/hardware/ethernet_magnetics.py   → Ethernet magnetics seçimi, PoE güç hesabı | def design_ethernet_interface(**kwargs) -> Dict
 - [ ] core/hardware/lvds_serdes.py          → LVDS/SerDes sinyal bütünlüğü | def analyze_lvds_signal(**kwargs) -> Dict
 
@@ -31,8 +28,6 @@
 - [ ] core/hardware/pcb_thermal_relief.py   → Thermal relief pad pattern, spoke hesabı | def calculate_thermal_relief(**kwargs) -> Dict
 
 ## Koruma & Güvenlik
-- [ ] core/hardware/fuse_sizing.py          → Sigorta boyutlandırma (I²t), PTC fuse | def calculate_fuse_sizing(**kwargs) -> Dict
-- [ ] core/hardware/reverse_polarity.py     → Ters polarite koruma devresi | def design_reverse_polarity_protection(**kwargs) -> Dict
 
 
 # ──────────────────────────────────────────────────────────────────────
@@ -40,25 +35,20 @@
 # ──────────────────────────────────────────────────────────────────────
 
 ## RTOS & Çekirdek
-- [ ] core/software/mutex_deadlock.py       → Mutex deadlock tespit, priority inversion | def detect_mutex_deadlock(**kwargs) -> Dict
 - [ ] core/software/scheduler_sim.py        → Rate Monotonic / EDF zamanlama simülasyonu | def simulate_scheduler(**kwargs) -> Dict
 
 ## Haberleşme Protokolleri
-- [ ] core/software/protobuf_gen.py         → Protocol Buffers schema → C struct | def generate_protobuf_schema(**kwargs) -> Dict
 - [ ] core/software/zigbee_mesh.py          → Zigbee mesh topolojisi, routing table | def design_zigbee_mesh(**kwargs) -> Dict
 
 ## Güvenlik & Kriptografi
-- [ ] core/software/secure_boot.py          → Secure boot chain konfigürasyon üreteci | def configure_secure_boot(**kwargs) -> Dict
 - [ ] core/software/cert_manager.py         → X.509 sertifika zinciri, TLS mutual auth | def generate_cert_config(**kwargs) -> Dict
 
 ## Veri & Depolama
-- [ ] core/software/fatfs_config.py         → FAT/LittleFS konfigürasyonu, wear leveling | def configure_filesystem(**kwargs) -> Dict
 - [ ] core/software/eeprom_wear.py          → EEPROM/Flash wear leveling ömür analizi | def analyze_eeprom_wear(**kwargs) -> Dict
 - [ ] core/software/log_framework.py        → Gömülü log framework (severity, circular) | def generate_log_framework(**kwargs) -> Dict
 
 ## Test & Kalite
 - [ ] core/software/unit_test_scaffold.py   → Unity/CMock C unit test scaffold üreteci | def generate_unit_test_scaffold(**kwargs) -> Dict
-- [ ] core/software/misra_checker.py        → MISRA-C:2012 kural ihlali analizi | def check_misra_compliance(**kwargs) -> Dict
 - [ ] core/software/code_size_analyzer.py   → .map file parser, RAM/ROM/Flash istatistik | def analyze_code_size(**kwargs) -> Dict
 - [ ] core/software/firmware_diff.py        → İki firmware binary section-level diff | def diff_firmware_binaries(**kwargs) -> Dict
 
@@ -70,10 +60,8 @@
 # ──────────────────────────────────────────────────────────────────────
 
 ## 3D Baskı & İmalat
-- [ ] core/production/print_settings.py     → Malzeme bazlı optimum baskı ayarları | def recommend_print_settings(**kwargs) -> Dict
 - [ ] core/production/injection_mold.py     → Enjeksiyon kalıp parametreleri (shrinkage) | def estimate_injection_mold(**kwargs) -> Dict
 - [ ] core/production/cnc_feedrate.py       → CNC freze besleme hızı, devir hesabı | def calculate_cnc_feedrate(**kwargs) -> Dict
-- [ ] core/production/sheet_metal.py        → Sac metal bükme (K-factor, bend allowance) | def calculate_sheet_metal_bend(**kwargs) -> Dict
 
 ## Mekanik Analiz
 - [ ] core/production/beam_stress.py        → Kiriş eğilme moment, kesme, sehim | def analyze_beam_stress(**kwargs) -> Dict
@@ -96,8 +84,6 @@
 # ──────────────────────────────────────────────────────────────────────
 
 ## Backend & API
-- [ ] core/computer/rate_limit_design.py    → API rate limiting stratejisi tasarımı | def design_rate_limiter(**kwargs) -> Dict
-- [ ] core/computer/websocket_handler.py    → WebSocket event handler scaffold | def generate_websocket_handler(**kwargs) -> Dict
 
 ## Veritabanı
 - [ ] core/computer/nosql_model.py          → NoSQL veri modeli tasarımı | def design_nosql_model(**kwargs) -> Dict
@@ -148,8 +134,8 @@
 # INFRA — Altyapı & Utility (10 yeni modül)
 # ──────────────────────────────────────────────────────────────────────
 
-- [ ] core/infra/retry_policy.py            → Konfigüre edilebilir retry policy | def execute_with_retry(**kwargs) -> Dict
 - [ ] core/infra/feature_flags.py           → Feature flag yönetimi (on/off, rollout) | def check_feature_flag(**kwargs) -> Dict
+
 
 - [ ] core/infra/audit_logger.py            → Immutable audit log (compliance ready) | def log_audit_event(**kwargs) -> Dict
 - [ ] core/infra/config_validator.py        → YAML/JSON/TOML schema validation | def validate_config(**kwargs) -> Dict

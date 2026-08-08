@@ -62,6 +62,11 @@ Layer 5 (Persistence & Infrastructure): ChromaDB RAG Engine, SQLite Long-Term Me
   - `uart_config.py`: `/uart-config` UART Baud Rate Clock Divider & Error % Calculator
   - `wheatstone_bridge.py`: `/wheatstone-bridge` Wheatstone Bridge & Strain Gauge Calculator
   - `pcb_cost_estimator.py`: `/pcb-cost` PCB Fabrication & SMT Assembly Batch Cost Estimator
+  - `psu_ripple.py`: `/psu-ripple` Power Supply Voltage Ripple & Filter Capacitor Calculator
+  - `spi_timing.py`: `/spi-timing` SPI Bus Clock Timing, Mode (0-3) & Setup/Hold Analyzer
+  - `usb_impedance.py`: `/usb-impedance` USB 2.0/3.0 Differential Pair 90Ω Impedance Checker
+  - `fuse_sizing.py`: `/fuse-sizing` Electric Fuse Sizing & Inrush Energy Melting Integral I²t Calculator
+  - `reverse_polarity.py`: `/reverse-polarity` Reverse Polarity Protection Circuit Topology Designer
 - **`core/computer/`**: Full-Stack Web, Microservices, Frontend & Computer Science Engines
   - `web_stack.py`: `/web-stack` Full-Stack FastAPI / Express REST API Generator
   - `microservices.py`: `/proto` gRPC Protobuf3 & Message Queue Bus Generator
@@ -74,6 +79,8 @@ Layer 5 (Persistence & Infrastructure): ChromaDB RAG Engine, SQLite Long-Term Me
   - `terraform_gen.py`: `/terraform-gen` AWS Terraform IaC Module Generator
   - `auth_flow.py`: `/auth-flow` OAuth2 / JWT Authentication & RBAC Middleware Generator
   - `nginx_config.py`: `/nginx-gen` Nginx Reverse Proxy, TLS 1.3 & Rate Limit Config Generator
+  - `rate_limit_design.py`: `/rate-limiter` API Rate Limiter & Token Bucket Strategy Generator
+  - `websocket_handler.py`: `/websocket` Real-Time WebSocket Connection Manager & Broadcast Generator
 - **`core/software/`**: Firmware, Testing, DevOps & Container Engines
   - `executor.py`: Shell Runner for gcc / make / platformio
   - `docker_k8s.py`: `/docker-gen` Dockerfile & Kubernetes Deployment Manifest Generator
@@ -88,6 +95,11 @@ Layer 5 (Persistence & Infrastructure): ChromaDB RAG Engine, SQLite Long-Term Me
   - `isr_latency.py`: `/isr-latency` NVIC Interrupt Latency, WCET & Max Frequency Analyzer
   - `memory_pool.py`: `/memory-pool` Static Fixed-Block Embedded Memory Pool Designer
   - `ring_buffer.py`: `/ring-buffer` Lock-Free Circular Ring Buffer Sizer & C Code Generator
+  - `mutex_deadlock.py`: `/mutex-deadlock` RTOS Mutex Deadlock & Priority Inversion Detector
+  - `protobuf_gen.py`: `/protobuf-gen` Protocol Buffers Proto3 Schema & Nanopb C Struct Generator
+  - `secure_boot.py`: `/secure-boot` Embedded Secure Boot V2 & Flash Encryption Configurator
+  - `fatfs_config.py`: `/fatfs-config` Embedded FATFS / LittleFS Wear Leveling Configurator
+  - `misra_checker.py`: `/misra-checker` MISRA-C:2012 Safety-Critical Static Compliance Analyzer
 - **`core/production/`**: Mechanical CAD & Manufacturing
   - `print_cost.py`: `/print-cost` 3D Printing Manufacturing Cost Estimator
   - `motor_sizing.py`: `/motor-size` Motor Torque & Power Sizing Engine
@@ -97,12 +109,16 @@ Layer 5 (Persistence & Infrastructure): ChromaDB RAG Engine, SQLite Long-Term Me
   - `heatsink_design.py`: `/heatsink` Finned Aluminum Heatsink Dimensioning Engine
   - `tolerance_stack.py`: `/tolerance-stack` Worst-Case & RSS 3-Sigma Tolerance Stack-Up Analyzer
   - `bearing_life.py`: `/bearing-life` ISO 281 Ball & Roller Bearing L10 & L10h Life Calculator
+  - `print_settings.py`: `/slicer-settings` 3D Printer Material Slicer Parameter Recommender
+  - `sheet_metal.py`: `/sheet-metal` Sheet Metal Bend Allowance (BA) & Deduction (BD) Calculator
 - **`core/engine/`**: Orchestration & Reasoning
   - `chain_of_thought.py`: `/cot` Chain-of-Thought / Tree-of-Thought Reasoning Framework
 - **`core/infra/`**: Infrastructure & Systems
   - `health_check.py`: `/health-probe` Service Health Probe Engine
   - `cron_scheduler.py`: `/cron-schedule` Periodic Background Cron Task Scheduler
   - `env_manager.py`: `/env-manager` Environment Variable & Secret Key Manager (.env)
+  - `retry_policy.py`: `/retry-policy` Exponential Backoff & Jitter Retry Policy Engine
+
 
 
 

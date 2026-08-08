@@ -55,9 +55,13 @@ ENGINE_REGISTRY: Dict[str, Dict[str, Any]] = {
     "mosfet_driver": {"module": "core.hardware.mosfet_driver", "func": "design_mosfet_driver", "description": "High/Low-side MOSFET gate driver & switching loss sizer"},
     "analog_filter": {"module": "core.hardware.filter_design", "func": "design_analog_filter", "description": "Active & passive analog Sallen-Key filter designer"},
     "current_sense": {"module": "core.hardware.current_sense", "func": "design_current_sense", "description": "Shunt resistor & INA current sense circuit designer"},
-    "uart_config": {"module": "core.hardware.uart_config", "func": "configure_uart", "description": "UART baud rate, clock divider & error % calculator"},
     "wheatstone_bridge": {"module": "core.hardware.wheatstone_bridge", "func": "calculate_wheatstone_bridge", "description": "Wheatstone bridge & strain gauge load cell calculator"},
     "pcb_cost": {"module": "core.hardware.pcb_cost_estimator", "func": "estimate_pcb_cost", "description": "PCB fabrication & SMT assembly cost estimator"},
+    "psu_ripple": {"module": "core.hardware.psu_ripple", "func": "analyze_psu_ripple", "description": "Power supply output voltage ripple & filter capacitor calculator"},
+    "spi_timing": {"module": "core.hardware.spi_timing", "func": "analyze_spi_timing", "description": "SPI bus timing, clock phase/polarity & setup/hold time analyzer"},
+    "usb_impedance": {"module": "core.hardware.usb_impedance", "func": "check_usb_impedance", "description": "USB 2.0 / USB 3.0 differential impedance checker (90Ω)"},
+    "fuse_sizing": {"module": "core.hardware.fuse_sizing", "func": "calculate_fuse_sizing", "description": "Electric fuse sizing & melting integral I²t calculator"},
+    "reverse_polarity": {"module": "core.hardware.reverse_polarity", "func": "design_reverse_polarity_protection", "description": "Reverse polarity protection circuit designer"},
     
     # ── Software & Firmware ──
     "bootloader": {"module": "core.software.bootloader_checker", "func": "audit_bootloader_config", "description": "Bootloader integrity checker"},
@@ -82,6 +86,11 @@ ENGINE_REGISTRY: Dict[str, Dict[str, Any]] = {
     "isr_latency": {"module": "core.software.isr_latency", "func": "analyze_isr_latency", "description": "ISR latency & nested interrupt analyzer"},
     "memory_pool": {"module": "core.software.memory_pool", "func": "design_memory_pool", "description": "Static fixed-block embedded memory pool designer"},
     "ring_buffer": {"module": "core.software.ring_buffer", "func": "design_ring_buffer", "description": "Lock-free circular ring buffer sizer & C code generator"},
+    "mutex_deadlock": {"module": "core.software.mutex_deadlock", "func": "detect_mutex_deadlock", "description": "RTOS mutex deadlock & priority inversion detector"},
+    "protobuf_gen": {"module": "core.software.protobuf_gen", "func": "generate_protobuf_schema", "description": "Protocol Buffers proto3 schema & C struct generator"},
+    "secure_boot": {"module": "core.software.secure_boot", "func": "configure_secure_boot", "description": "Embedded secure boot & flash encryption configurator"},
+    "fatfs_config": {"module": "core.software.fatfs_config", "func": "configure_filesystem", "description": "Embedded FATFS / LittleFS wear leveling configurator"},
+    "misra_checker": {"module": "core.software.misra_checker", "func": "check_misra_compliance", "description": "MISRA-C:2012 / MISRA C++ static compliance analyzer"},
     
     # ── Production & Mechanical ──
     "enclosure": {"module": "core.production.mechanical", "func": "generate_openscad_enclosure", "description": "3D enclosure generator"},
@@ -104,6 +113,8 @@ ENGINE_REGISTRY: Dict[str, Dict[str, Any]] = {
     "heatsink": {"module": "core.production.heatsink_design", "func": "design_heatsink", "description": "Aluminum finned heatsink dimensioning engine"},
     "tolerance_stack": {"module": "core.production.tolerance_stack", "func": "analyze_tolerance_stack", "description": "Tolerance stack-up analysis engine (Worst-Case & RSS)"},
     "bearing_life": {"module": "core.production.bearing_life", "func": "calculate_bearing_life", "description": "ISO 281 ball & roller bearing L10 life calculator"},
+    "print_settings": {"module": "core.production.print_settings", "func": "recommend_print_settings", "description": "3D printer material slicer profile & parameter recommender"},
+    "sheet_metal": {"module": "core.production.sheet_metal", "func": "calculate_sheet_metal_bend", "description": "Sheet metal bend allowance & K-factor flat pattern calculator"},
     
     # ── Infrastructure ──
     "cost_forecast": {"module": "core.infra.cost_forecast", "func": "forecast_token_costs", "description": "Token cost forecast"},
@@ -116,6 +127,7 @@ ENGINE_REGISTRY: Dict[str, Dict[str, Any]] = {
     "health_check": {"module": "core.infra.health_check", "func": "run_health_check", "description": "Service health probe runner"},
     "cron_scheduler": {"module": "core.infra.cron_scheduler", "func": "schedule_cron_job", "description": "Background cron task scheduler"},
     "env_manager": {"module": "core.infra.env_manager", "func": "manage_env_config", "description": "Environment variable & secret key manager (.env)"},
+    "retry_policy": {"module": "core.infra.retry_policy", "func": "execute_with_retry", "description": "Configurable exponential backoff & jitter retry policy engine"},
     
     # ── Computer / Web ──
     "web_api": {"module": "core.computer.web_stack", "func": "generate_web_api_architecture", "description": "REST API scaffold generator"},
@@ -129,13 +141,15 @@ ENGINE_REGISTRY: Dict[str, Dict[str, Any]] = {
     "terraform_gen": {"module": "core.computer.terraform_gen", "func": "generate_terraform_module", "description": "Terraform IaC module generator"},
     "auth_flow": {"module": "core.computer.auth_flow", "func": "generate_auth_flow", "description": "OAuth2, JWT & API key authentication strategy generator"},
     "nginx_gen": {"module": "core.computer.nginx_config", "func": "generate_nginx_config", "description": "Nginx reverse proxy, SSL & rate limit config generator"},
+    "rate_limiter": {"module": "core.computer.rate_limit_design", "func": "design_rate_limiter", "description": "API rate limiter & token bucket strategy generator"},
+    "websocket": {"module": "core.computer.websocket_handler", "func": "generate_websocket_handler", "description": "Real-time WebSocket connection manager & handler generator"},
 }
 
 # ─── KEYWORD ALIASES ─────────────────────────────────────────────────────────
 # Maps natural language keywords to ENGINE_REGISTRY keys for fuzzy matching
 KEYWORD_ALIASES: Dict[str, List[str]] = {
     "pinout": ["pin", "gpio", "strapping", "pin conflict", "pin mapping"],
-    "thermal": ["heat", "temperature", "thermal", "heatsink", "soğutucu", "ısı", "sıcaklık"],
+    "thermal": ["heat", "temperature", "heatsink", "soğutucu", "ısı", "sıcaklık"],
     "trace_width": ["trace", "pcb trace", "copper width", "drc"],
     "impedance": ["impedance", "impedans", "ohm", "microstrip", "stripline"],
     "mcu_select": ["mcu", "microcontroller", "esp32", "stm32", "rp2040", "nrf52", "mikrodenetleyici"],
@@ -160,6 +174,11 @@ KEYWORD_ALIASES: Dict[str, List[str]] = {
     "uart_config": ["uart", "baud rate", "parity", "usart"],
     "wheatstone_bridge": ["wheatstone", "strain gauge", "load cell", "köprü"],
     "pcb_cost": ["pcb cost", "pcb manufacturing cost", "smt cost"],
+    "psu_ripple": ["psu ripple", "power supply ripple", "ripple voltage"],
+    "spi_timing": ["spi timing", "spi bus", "cpol", "cpha"],
+    "usb_impedance": ["usb impedance", "usb 90 ohm", "differential microstrip"],
+    "fuse_sizing": ["fuse", "fuse sizing", "melting integral", "i2t"],
+    "reverse_polarity": ["reverse polarity", "reverse protection", "ideal diode"],
     "bootloader": ["bootloader", "boot", "vector table", "flash offset"],
     "stack_guard": ["stack", "freertos", "rtos task", "stack overflow"],
     "power_profile": ["power", "current", "sleep", "deep sleep", "mA", "güç", "batarya ömrü"],
@@ -176,6 +195,11 @@ KEYWORD_ALIASES: Dict[str, List[str]] = {
     "isr_latency": ["isr", "interrupt latency", "nvic", "wcet"],
     "memory_pool": ["memory pool", "static memory", "fixed block"],
     "ring_buffer": ["ring buffer", "circular buffer", "dma buffer", "lock free"],
+    "mutex_deadlock": ["deadlock", "mutex deadlock", "priority inversion"],
+    "protobuf_gen": ["protobuf", "proto3", "nanopb"],
+    "secure_boot": ["secure boot", "flash encryption", "root of trust"],
+    "fatfs_config": ["fatfs", "littlefs", "wear leveling"],
+    "misra_checker": ["misra", "misra-c", "safety critical"],
     "enclosure": ["enclosure", "box", "case", "kutu", "3d print", "openscad"],
     "snap_fit": ["snap", "clip", "klips", "cantilever"],
     "gasket": ["gasket", "o-ring", "seal", "conta", "ip67", "waterproof", "su geçirmez"],
@@ -191,6 +215,8 @@ KEYWORD_ALIASES: Dict[str, List[str]] = {
     "heatsink": ["heatsink", "thermal resistance", "soğutucu kanatçık"],
     "tolerance_stack": ["tolerance stack", "tolerance analysis", "worst case", "rss"],
     "bearing_life": ["bearing", "bearing life", "l10", "rulman ömrü"],
+    "print_settings": ["slicer settings", "nozzle temperature", "print speed"],
+    "sheet_metal": ["sheet metal", "bend allowance", "k-factor"],
     "web_api": ["api", "rest", "fastapi", "express", "backend"],
     "react": ["react", "frontend", "component", "tsx", "jsx"],
     "edge_ai": ["tinyml", "edge ai", "model deploy", "quantization"],
@@ -200,7 +226,10 @@ KEYWORD_ALIASES: Dict[str, List[str]] = {
     "terraform_gen": ["terraform", "iac", "hcl", "aws infrastructure"],
     "auth_flow": ["auth", "jwt", "oauth2", "authentication"],
     "nginx_gen": ["nginx", "reverse proxy", "ssl", "tls"],
+    "rate_limiter": ["rate limit", "token bucket", "sliding window"],
+    "websocket": ["websocket", "ws", "connection manager", "real-time"],
     "env_manager": ["env", "environment variables", "secret key", "secret rotation"],
+    "retry_policy": ["retry policy", "exponential backoff", "jitter"],
     "cost_forecast": ["cost", "maliyet", "token cost", "api cost"],
     "agent_health": ["health", "sağlık", "system status", "sistem durumu"],
 }

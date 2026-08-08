@@ -155,9 +155,29 @@ from core.software.ble_gatt import generate_ble_gatt_profile
 from core.software.lorawan_params import calculate_lorawan_params
 from core.software.crypto_engine import design_crypto_params
 from core.software.fir_iir_filter import design_digital_filter
+from core.hardware.psu_ripple import analyze_psu_ripple
+from core.hardware.spi_timing import analyze_spi_timing
+from core.hardware.usb_impedance import check_usb_impedance
+from core.hardware.fuse_sizing import calculate_fuse_sizing
+from core.hardware.reverse_polarity import design_reverse_polarity_protection
 from core.software.isr_latency import analyze_isr_latency
 from core.software.memory_pool import design_memory_pool
 from core.software.ring_buffer import design_ring_buffer
+from core.software.mutex_deadlock import detect_mutex_deadlock
+from core.software.protobuf_gen import generate_protobuf_schema
+from core.software.secure_boot import configure_secure_boot
+from core.software.fatfs_config import configure_filesystem
+from core.software.misra_checker import check_misra_compliance
+from core.production.tolerance_stack import analyze_tolerance_stack
+from core.production.bearing_life import calculate_bearing_life
+from core.production.print_settings import recommend_print_settings
+from core.production.sheet_metal import calculate_sheet_metal_bend
+from core.computer.auth_flow import generate_auth_flow
+from core.computer.nginx_config import generate_nginx_config
+from core.computer.rate_limit_design import design_rate_limiter
+from core.computer.websocket_handler import generate_websocket_handler
+from core.infra.env_manager import manage_env_config
+from core.infra.retry_policy import execute_with_retry
 from core.production.print_cost import estimate_3d_print_cost
 from core.production.motor_sizing import size_motor
 from core.production.bolt_torque import calculate_bolt_torque
@@ -319,6 +339,11 @@ def print_commands(category: str = None):
         print(f"  {Colors.GREEN}/uart-config{Colors.RESET}              -> Calculate UART baud rate clock dividers & baud error %")
         print(f"  {Colors.GREEN}/wheatstone-bridge{Colors.RESET}        -> Calculate Wheatstone bridge output voltage & strain gauge sensitivity")
         print(f"  {Colors.GREEN}/pcb-cost{Colors.RESET}                 -> Estimate bare board PCB fab & SMT assembly batch cost")
+        print(f"  {Colors.GREEN}/psu-ripple{Colors.RESET}               -> Calculate power supply output voltage ripple & filter capacitor C_out")
+        print(f"  {Colors.GREEN}/spi-timing{Colors.RESET}               -> Analyze SPI bus clock timing, mode (0-3) & setup/hold margins")
+        print(f"  {Colors.GREEN}/usb-impedance{Colors.RESET}            -> Audit USB 2.0 / 3.0 differential pair impedance (90Ω ± 10%)")
+        print(f"  {Colors.GREEN}/fuse-sizing{Colors.RESET}              -> Size fuse current rating & inrush energy melting integral I²t")
+        print(f"  {Colors.GREEN}/reverse-polarity{Colors.RESET}         -> Compare reverse polarity protection (Schottky vs P-FET vs Ideal Diode)")
         print(f"  {Colors.GREEN}/rf [freq_mhz]{Colors.RESET}              -> Calculate PCB antenna dimensions & 50Ω matching")
         print(f"  {Colors.GREEN}/genetic-hw{Colors.RESET}                 -> Multi-objective Pareto genetic hardware optimizer\n")
 
@@ -345,6 +370,11 @@ def print_commands(category: str = None):
         print(f"  {Colors.GREEN}/isr-latency{Colors.RESET}              -> Calculate NVIC interrupt latency, WCET & max trigger frequency")
         print(f"  {Colors.GREEN}/memory-pool{Colors.RESET}              -> Design deterministic O(1) static fixed-block memory pools")
         print(f"  {Colors.GREEN}/ring-buffer{Colors.RESET}              -> Design lock-free circular ring buffers with power-of-2 masks")
+        print(f"  {Colors.GREEN}/mutex-deadlock{Colors.RESET}           -> Detect RTOS mutex deadlock cycle & priority inversion risks")
+        print(f"  {Colors.GREEN}/protobuf-gen{Colors.RESET}             -> Generate Protocol Buffers proto3 schemas & C nanopb struct headers")
+        print(f"  {Colors.GREEN}/secure-boot{Colors.RESET}              -> Generate Secure Boot V2 ECDSA signing key & flash encryption configs")
+        print(f"  {Colors.GREEN}/fatfs-config{Colors.RESET}             -> Configure LittleFS / FATFS wear leveling sector layout")
+        print(f"  {Colors.GREEN}/misra-checker{Colors.RESET}            -> Audit C code for MISRA-C:2012 safety-critical compliance rules")
         print(f"  {Colors.GREEN}/watchdog{Colors.RESET}                   -> Firmware CPU panic crash dump & watchdog reset analyzer")
         print(f"  {Colors.GREEN}/power <code>{Colors.RESET}                -> Firmware energy consumption & battery life profiler\n")
 
@@ -358,6 +388,8 @@ def print_commands(category: str = None):
         print(f"  {Colors.GREEN}/graphql-gen [type]{Colors.RESET}          -> Generate GraphQL SDL schemas & resolver stubs")
         print(f"  {Colors.GREEN}/auth-flow{Colors.RESET}                -> Generate OAuth2 / JWT authentication & RBAC middleware")
         print(f"  {Colors.GREEN}/nginx-gen{Colors.RESET}                 -> Generate production Nginx reverse proxy, SSL & rate limits")
+        print(f"  {Colors.GREEN}/rate-limiter{Colors.RESET}             -> Design API rate limiting token bucket capacity & Redis Lua scripts")
+        print(f"  {Colors.GREEN}/websocket{Colors.RESET}                -> Generate real-time WebSocket connection manager & broadcast handlers")
         print(f"  {Colors.GREEN}/ci-cd [provider]{Colors.RESET}            -> Generate GitHub Actions / GitLab CI workflow YAML pipelines")
         print(f"  {Colors.GREEN}/sql-gen [table]{Colors.RESET}             -> Generate PostgreSQL / SQLite DDL schemas & indexes")
         print(f"  {Colors.GREEN}/terraform-gen [mod]{Colors.RESET}          -> Generate AWS Terraform IaC HCL infrastructure modules")
@@ -384,6 +416,8 @@ def print_commands(category: str = None):
         print(f"  {Colors.GREEN}/heatsink{Colors.RESET}                   -> Calculate aluminum finned heatsink thermal resistance Rth & volume")
         print(f"  {Colors.GREEN}/tolerance-stack{Colors.RESET}            -> Calculate Worst-Case & RSS 3-sigma statistical tolerance stack-up")
         print(f"  {Colors.GREEN}/bearing-life{Colors.RESET}               -> Calculate ISO 281 ball & roller bearing L10 & L10h lifespan")
+        print(f"  {Colors.GREEN}/slicer-settings{Colors.RESET}           -> Recommend 3D printing slicer parameters for PLA/ABS/PETG/TPU")
+        print(f"  {Colors.GREEN}/sheet-metal{Colors.RESET}              -> Calculate sheet metal bend allowance (BA) & deduction (BD) flat pattern")
         print(f"  {Colors.GREEN}/slicer <material>{Colors.RESET}          -> Recommend 3D printing slicer settings (PLA/ABS/PETG/TPU)")
         print(f"  {Colors.GREEN}/bom-opt{Colors.RESET}                     -> Analyze BOM cost drivers & production quantity tiers")
         print(f"  {Colors.GREEN}/supply-risk{Colors.RESET}                 -> Multi-vendor BOM stock availability & EOL risk alert")
@@ -398,6 +432,8 @@ def print_commands(category: str = None):
         print(f"  {Colors.GREEN}/health-probe{Colors.RESET}              -> Run synthetic health checks across system DBs & services")
         print(f"  {Colors.GREEN}/cron-schedule{Colors.RESET}             -> Schedule periodic background cron tasks")
         print(f"  {Colors.GREEN}/env-manager{Colors.RESET}               -> Audit environment variables & check required production secrets")
+        print(f"  {Colors.GREEN}/retry-policy{Colors.RESET}              -> Configure exponential backoff & randomized jitter retry policy")
+
 
 
 
@@ -1465,6 +1501,67 @@ def start_interactive_shell(default_agent: str = "orchestrator", default_model: 
                     res = manage_env_config()
                     print(f"{Colors.CYAN}--- ENVIRONMENT VARIABLE & SECRET KEY MANAGER ---{Colors.RESET}")
                     print(f"  Audit Pass: {res['audit_pass']} | Found: {len(res['found_keys'])} | Missing: {len(res['missing_keys'])}\n")
+                elif cmd == "/psu-ripple":
+                    res = analyze_psu_ripple()
+                    print(f"{Colors.CYAN}--- POWER SUPPLY RIPPLE & FILTER CAPACITOR CALCULATOR ---{Colors.RESET}")
+                    print(f"  V_out: {res['v_out_v']}V | Target Ripple: {res['target_ripple_mv']}mV | Min C_out: {res['min_capacitance_uf']} uF | ESR Ripple: {res['esr_ripple_mv']} mV\n")
+                elif cmd == "/spi-timing":
+                    res = analyze_spi_timing()
+                    print(f"{Colors.CYAN}--- SPI BUS TIMING & MODE ANALYZER ---{Colors.RESET}")
+                    print(f"  Clock: {res['clock_freq_mhz']} MHz | Mode: {res['spi_mode']} (CPOL={res['cpol']}, CPHA={res['cpha']}) | Setup Margin: {res['setup_time_margin_ns']} ns\n")
+                elif cmd == "/usb-impedance":
+                    res = check_usb_impedance()
+                    print(f"{Colors.CYAN}--- USB DIFFERENTIAL IMPEDANCE CHECKER (90Ω) ---{Colors.RESET}")
+                    print(f"  Width: {res['trace_width_mm']}mm | Space: {res['pair_spacing_mm']}mm | Calculated Z_diff: {res['calculated_z_diff_ohms']} Ω ({res['usb_compliance']})\n")
+                elif cmd == "/fuse-sizing":
+                    res = calculate_fuse_sizing()
+                    print(f"{Colors.CYAN}--- FUSE SIZING & MELTING INTEGRAL I²t CALCULATOR ---{Colors.RESET}")
+                    print(f"  I_nom: {res['normal_operating_current_a']}A | Rec Fuse: {res['recommended_fuse_rating_a']}A | Standard: {res['nearest_standard_fuse_a']}A | Min I²t: {res['min_required_fuse_i2t_a2s']} A²s\n")
+                elif cmd == "/reverse-polarity":
+                    res = design_reverse_polarity_protection()
+                    print(f"{Colors.CYAN}--- REVERSE POLARITY PROTECTION CIRCUIT DESIGNER ---{Colors.RESET}")
+                    print(f"  Topology: {res['description']} | V_drop: {res['voltage_drop_mv']} mV | Power Loss: {res['power_loss_w']} W | Efficiency: {res['efficiency_pct']}%\n")
+                elif cmd == "/mutex-deadlock":
+                    res = detect_mutex_deadlock()
+                    print(f"{Colors.CYAN}--- RTOS MUTEX DEADLOCK & PRIORITY INVERSION DETECTOR ---{Colors.RESET}")
+                    print(f"  Deadlock Risk: {res['deadlock_risk_detected']} | Severity: {res['deadlock_severity']} | Recommendation: {res['prevention_recommendation']}\n")
+                elif cmd == "/protobuf-gen":
+                    res = generate_protobuf_schema()
+                    print(f"{Colors.CYAN}--- PROTOCOL BUFFERS PROTO3 SCHEMA GENERATOR ---{Colors.RESET}")
+                    print(f"  Message: {res['message_name']} | Fields: {res['field_count']} | Rec: {res['recommended_library']}\n")
+                elif cmd == "/secure-boot":
+                    res = configure_secure_boot()
+                    print(f"{Colors.CYAN}--- EMBEDDED SECURE BOOT & FLASH ENCRYPTION CONFIGURATOR ---{Colors.RESET}")
+                    print(f"  MCU: {res['mcu_family']} | Version: {res['secure_boot_version']} | Mode: {res['flash_encryption_mode']}\n")
+                elif cmd == "/fatfs-config":
+                    res = configure_filesystem()
+                    print(f"{Colors.CYAN}--- EMBEDDED FATFS / LITTLEFS WEAR LEVELING CONFIGURATOR ---{Colors.RESET}")
+                    print(f"  Filesystem: {res['filesystem']} | Flash: {res['flash_size_mb']}MB | Blocks: {res['total_blocks']} | Est. Endurance: {res['theoretical_write_endurance_gb']} GB\n")
+                elif cmd == "/misra-checker":
+                    res = check_misra_compliance()
+                    print(f"{Colors.CYAN}--- MISRA-C:2012 SAFETY-CRITICAL STATIC COMPLIANCE ---{Colors.RESET}")
+                    print(f"  Standard: {res['misra_standard']} | Violations: {res['violations_found']} | Status: {res['compliance_status']}\n")
+                elif cmd == "/slicer-settings":
+                    res = recommend_print_settings()
+                    print(f"{Colors.CYAN}--- 3D PRINTER MATERIAL SLICER PARAMETER RECOMMENDER ---{Colors.RESET}")
+                    print(f"  Material: {res['material']} | Nozzle: {res['nozzle_temperature_c']}°C | Bed: {res['bed_temperature_c']}°C | Speed: {res['print_speed_mm_s']} mm/s\n")
+                elif cmd == "/sheet-metal":
+                    res = calculate_sheet_metal_bend()
+                    print(f"{Colors.CYAN}--- SHEET METAL BEND ALLOWANCE & FLAT PATTERN CALCULATOR ---{Colors.RESET}")
+                    print(f"  Thickness: {res['sheet_thickness_mm']}mm | Radius: {res['bend_radius_mm']}mm | Bend Allowance (BA): {res['bend_allowance_mm']} mm | Deduction (BD): {res['bend_deduction_mm']} mm\n")
+                elif cmd == "/rate-limiter":
+                    res = design_rate_limiter()
+                    print(f"{Colors.CYAN}--- API RATE LIMITER & TOKEN BUCKET STRATEGY GENERATOR ---{Colors.RESET}")
+                    print(f"  Rate: {res['requests_per_minute']} req/min | Refill: {res['refill_rate_per_sec']} tokens/s | Burst: {res['burst_capacity']} | Strategy: {res['strategy']}\n")
+                elif cmd == "/websocket":
+                    res = generate_websocket_handler()
+                    print(f"{Colors.CYAN}--- REAL-TIME WEBSOCKET CONNECTION MANAGER & HANDLER ---{Colors.RESET}")
+                    print(f"  Endpoint: {res['endpoint']} | Heartbeat Interval: {res['heartbeat_interval_sec']} s\n")
+                elif cmd == "/retry-policy":
+                    res = execute_with_retry()
+                    print(f"{Colors.CYAN}--- EXPONENTIAL BACKOFF RETRY POLICY ENGINE ---{Colors.RESET}")
+                    print(f"  Max Retries: {res['max_retries']} | Initial Delay: {res['initial_delay_sec']}s | Backoff Factor: {res['backoff_factor']} | Max Wait: {res['total_max_wait_time_sec']}s\n")
+
 
 
                 # ─── LLM SMART DISPATCH & FALLBACK ───

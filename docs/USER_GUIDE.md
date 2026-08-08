@@ -102,6 +102,11 @@ For specific, one-off engineering queries, you can invoke any of the 58+ symboli
 - `/uart-config`: Calculates UART baud rate integer/fractional clock dividers and baud error percentage.
 - `/wheatstone-bridge`: Calculates Wheatstone bridge strain gauge differential output voltage (mV) and sensitivity.
 - `/pcb-cost`: Estimates bare board PCB fabrication and SMT component placement batch cost ($).
+- `/psu-ripple`: Calculates power supply output voltage ripple (mV), min C_out (uF), and ESR ripple contribution.
+- `/spi-timing`: Analyzes SPI bus clock frequency, mode (0-3), and setup/hold time margins (ns).
+- `/usb-impedance`: Audits USB 2.0 / 3.0 differential pair microstrip impedance (90Ω ± 10%).
+- `/fuse-sizing`: Calculates fuse current rating and inrush energy melting integral I²t (A²s).
+- `/reverse-polarity`: Compares reverse polarity protection topologies (Schottky vs P-FET vs Ideal Diode).
 - `/opamp`: Calculates Op-Amp gain (dB / V/V), feedback resistor values, input impedance, and 3dB bandwidth.
 - `/adc-snr`: Calculates ADC theoretical SNR, measured ENOB, LSB size (uV), quantization noise, and Nyquist bandwidth.
 - `/can-bus`: Calculates CAN bus bit timing segments (Prop/Phase1/Phase2/SJW), prescaler, and 120Ω termination.
@@ -117,6 +122,11 @@ For specific, one-off engineering queries, you can invoke any of the 58+ symboli
 - `/isr-latency`: Calculates NVIC interrupt entry latency, WCET (us), and max trigger frequency.
 - `/memory-pool`: Designs deterministic O(1) static fixed-block memory pools with alignment padding.
 - `/ring-buffer`: Designs lock-free circular ring buffers with power-of-two mask indexing and C headers.
+- `/mutex-deadlock`: Detects RTOS mutex cyclic lock dependency deadlocks and priority inversion risks.
+- `/protobuf-gen`: Generates Protocol Buffers proto3 schemas and nanopb ANSI C struct headers.
+- `/secure-boot`: Generates Secure Boot V2 ECDSA-P256 signing key configurations and eFuse burn commands.
+- `/fatfs-config`: Calculates LittleFS / FATFS sector layout, block count, and wear leveling write endurance.
+- `/misra-checker`: Audits C/C++ source code for MISRA-C:2012 safety-critical compliance rule violations.
 - `/print-cost`: Estimates total 3D printing manufacturing cost (material, power, machine wear).
 - `/motor-size`: Sizes DC/BLDC/Stepper motor torque, RPM, and mechanical power.
 - `/bolt-torque`: Calculates metric bolt tightening torque (Nm) and preload force (kN) per VDI 2230.
@@ -125,10 +135,14 @@ For specific, one-off engineering queries, you can invoke any of the 58+ symboli
 - `/heatsink`: Calculates finned aluminum heatsink required thermal resistance Rth (°C/W) and volume.
 - `/tolerance-stack`: Calculates Worst-Case and Root-Sum-Square (RSS) 3-sigma statistical tolerance stack-up.
 - `/bearing-life`: Calculates ISO 281 ball and roller bearing L10 rating life (M-revs) and operating hours.
+- `/slicer-settings`: Recommends 3D printing slicer parameters (temperatures, speeds, fans) per material.
+- `/sheet-metal`: Calculates sheet metal Bend Allowance (BA in mm) and Bend Deduction (BD in mm) flat patterns.
 - `/rest-gen`: Generates FastAPI / Express CRUD REST API router scaffolds.
 - `/graphql-gen`: Generates GraphQL SDL schemas and query/mutation resolver stubs.
 - `/auth-flow`: Generates OAuth2 / JWT authentication, signing algorithms, and RBAC middleware code.
 - `/nginx-gen`: Generates production Nginx reverse proxy configs with SSL TLS 1.3 and rate limiting.
+- `/rate-limiter`: Calculates API rate limiting token bucket capacity and Redis Lua scripts.
+- `/websocket`: Generates real-time WebSocket connection manager and broadcast handler boilerplate.
 - `/ci-cd`: Generates GitHub Actions / GitLab CI workflow YAML pipelines.
 - `/sql-gen`: Generates PostgreSQL / SQLite DDL table schemas and indexes.
 - `/terraform-gen`: Generates AWS Terraform IaC module HCL configurations.
@@ -136,6 +150,8 @@ For specific, one-off engineering queries, you can invoke any of the 58+ symboli
 - `/health-probe`: Runs synthetic health probe checks across background DBs, workers, and services.
 - `/cron-schedule`: Schedules periodic background cron jobs.
 - `/env-manager`: Audits environment variables and checks required production secret keys (.env).
+- `/retry-policy`: Configures exponential backoff retry schedules with randomized full jitter.
+
 
 - `/cad <L> <W> <H>`: Generates parametric OpenSCAD 3D enclosure script.
 - `/fasteners [M2-M4]`: Sizes 3D printed screw boss pilot holes and outer wall OD.
