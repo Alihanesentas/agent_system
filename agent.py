@@ -160,6 +160,13 @@ from core.hardware.spi_timing import analyze_spi_timing
 from core.hardware.usb_impedance import check_usb_impedance
 from core.hardware.fuse_sizing import calculate_fuse_sizing
 from core.hardware.reverse_polarity import design_reverse_polarity_protection
+from core.hardware.dac_output import design_dac_output
+from core.hardware.ethernet_magnetics import design_ethernet_interface
+from core.hardware.lvds_serdes import analyze_lvds_signal
+from core.hardware.sensor_interface import design_sensor_interface
+from core.hardware.thermocouple import design_thermocouple_interface
+from core.hardware.crosstalk_analysis import analyze_pcb_crosstalk
+from core.hardware.impedance_calculator import calculate_trace_impedance_advanced
 from core.software.isr_latency import analyze_isr_latency
 from core.software.memory_pool import design_memory_pool
 from core.software.ring_buffer import design_ring_buffer
@@ -168,10 +175,19 @@ from core.software.protobuf_gen import generate_protobuf_schema
 from core.software.secure_boot import configure_secure_boot
 from core.software.fatfs_config import configure_filesystem
 from core.software.misra_checker import check_misra_compliance
+from core.software.scheduler_sim import simulate_scheduler
+from core.software.zigbee_mesh import design_zigbee_mesh
+from core.software.cert_manager import generate_cert_config
+from core.software.eeprom_wear import analyze_eeprom_wear
+from core.software.fft_analyzer import analyze_fft_params
 from core.production.tolerance_stack import analyze_tolerance_stack
 from core.production.bearing_life import calculate_bearing_life
 from core.production.print_settings import recommend_print_settings
 from core.production.sheet_metal import calculate_sheet_metal_bend
+from core.production.injection_mold import estimate_injection_mold
+from core.production.cnc_feedrate import calculate_cnc_feedrate
+from core.production.beam_stress import analyze_beam_stress
+
 from core.computer.auth_flow import generate_auth_flow
 from core.computer.nginx_config import generate_nginx_config
 from core.computer.rate_limit_design import design_rate_limiter
@@ -1561,6 +1577,67 @@ def start_interactive_shell(default_agent: str = "orchestrator", default_model: 
                     res = execute_with_retry()
                     print(f"{Colors.CYAN}--- EXPONENTIAL BACKOFF RETRY POLICY ENGINE ---{Colors.RESET}")
                     print(f"  Max Retries: {res['max_retries']} | Initial Delay: {res['initial_delay_sec']}s | Backoff Factor: {res['backoff_factor']} | Max Wait: {res['total_max_wait_time_sec']}s\n")
+                elif cmd == "/dac-output":
+                    res = design_dac_output()
+                    print(f"{Colors.CYAN}--- DAC OUTPUT BUFFER & SETTLING TIME DESIGNER ---{Colors.RESET}")
+                    print(f"  Bits: {res['dac_resolution_bits']} | LSB: {res['lsb_voltage_mv']} mV | Max Settling Time: {res['max_allowable_settling_time_ns']} ns | Required Slew Rate: {res['required_opamp_slew_rate_v_us']} V/us\n")
+                elif cmd == "/ethernet-mag":
+                    res = design_ethernet_interface()
+                    print(f"{Colors.CYAN}--- ETHERNET MAGNETICS & POE INTERFACE DESIGNER ---{Colors.RESET}")
+                    print(f"  Speed: {res['ethernet_speed_mbps']} Mbps | Turns Ratio: {res['turns_ratio']} | Termination: {res['bob_smith_termination_resistors_ohms']} Ω | PoE Power: {res['poe_max_power_w']} W\n")
+                elif cmd == "/lvds-serdes":
+                    res = analyze_lvds_signal()
+                    print(f"{Colors.CYAN}--- LVDS / SERDES DIFFERENTIAL SIGNAL INTEGRITY ---{Colors.RESET}")
+                    print(f"  Data Rate: {res['data_rate_mbps']} Mbps | Swing V_OD: {res['differential_swing_vod_mv']} mV | UI: {res['unit_interval_ui_ps']} ps | Compliance: {res['compliance']}\n")
+                elif cmd == "/sensor-interface":
+                    res = design_sensor_interface()
+                    print(f"{Colors.CYAN}--- ANALOG & DIGITAL SENSOR INTERFACE DESIGNER ---{Colors.RESET}")
+                    print(f"  Sensor: {res['sensor_type']} | Excitation: {res['excitation_current_ua']} uA | PGA Gain: {res['pga_gain']}x | Anti-Aliasing f_c: {res['anti_aliasing_fc_hz']} Hz\n")
+                elif cmd == "/thermocouple":
+                    res = design_thermocouple_interface()
+                    print(f"{Colors.CYAN}--- THERMOCOUPLE COLD JUNCTION COMPENSATION (CJC) ---{Colors.RESET}")
+                    print(f"  Type: {res['thermocouple_type']} | Seebeck: {res['seebeck_coefficient_uv_c']} uV/°C | EMF: {res['differential_emf_mv']} mV | Rec Converter: {res['recommended_converter_ic']}\n")
+                elif cmd == "/crosstalk":
+                    res = analyze_pcb_crosstalk()
+                    print(f"{Colors.CYAN}--- PCB TRACE CROSSTALK & GUARD TRACE ANALYZER ---{Colors.RESET}")
+                    print(f"  Spacing: {res['trace_spacing_mm']}mm | 3W Compliant: {res['is_3w_rule_compliant']} | NEXT: {res['next_crosstalk_db']} dB ({res['crosstalk_status']})\n")
+                elif cmd == "/impedance-adv":
+                    res = calculate_trace_impedance_advanced()
+                    print(f"{Colors.CYAN}--- ADVANCED PCB IMPEDANCE CALCULATOR (IPC-2141) ---{Colors.RESET}")
+                    print(f"  Topology: {res['description']} | Width: {res['trace_width_mm']}mm | Z0: {res['characteristic_impedance_z0_ohms']} Ω\n")
+                elif cmd == "/scheduler-sim":
+                    res = simulate_scheduler()
+                    print(f"{Colors.CYAN}--- RTOS RATE MONOTONIC & EDF SCHEDULER SIMULATOR ---{Colors.RESET}")
+                    print(f"  CPU Load: {res['total_cpu_utilization_pct']}% | RMS Bound: {res['rms_utilization_bound_pct']}% | RMS Schedulable: {res['rms_schedulable']} | EDF Schedulable: {res['edf_schedulable']}\n")
+                elif cmd == "/zigbee-mesh":
+                    res = design_zigbee_mesh()
+                    print(f"{Colors.CYAN}--- ZIGBEE 3.0 / THREAD WIRELESS MESH DESIGNER ---{Colors.RESET}")
+                    print(f"  Nodes: {res['total_nodes']} | Routers: {res['router_nodes']} | End Devices: {res['end_device_nodes']} | RAM Footprint: {res['estimated_routing_table_ram_bytes']} B\n")
+                elif cmd == "/cert-manager":
+                    res = generate_cert_config()
+                    print(f"{Colors.CYAN}--- X.509 CERTIFICATE CHAIN & TLS MTLS CONFIGURATOR ---{Colors.RESET}")
+                    print(f"  Common Name: {res['common_name']} | Algorithm: {res['key_algorithm']} | TLS: {res['tls_version']} | Compliance: {res['security_compliance']}\n")
+                elif cmd == "/eeprom-wear":
+                    res = analyze_eeprom_wear()
+                    print(f"{Colors.CYAN}--- EEPROM / FLASH WEAR LEVELING ENDURANCE ANALYZER ---{Colors.RESET}")
+                    print(f"  Writes/Day: {res['writes_per_day']} | Slots: {res['available_circular_slots']} | Single Cell: {res['single_address_lifespan_days']} days | Leveled Life: {res['wear_leveled_lifespan_years']} years\n")
+                elif cmd == "/fft-analyzer":
+                    res = analyze_fft_params()
+                    print(f"{Colors.CYAN}--- FFT FREQUENCY RESOLUTION & WINDOWING ANALYZER ---{Colors.RESET}")
+                    print(f"  Sample Rate: {res['sample_rate_hz']} Hz | FFT Size: {res['fft_size']} | Nyquist: {res['nyquist_frequency_hz']} Hz | Bin Resolution: {res['frequency_bin_resolution_hz']} Hz\n")
+                elif cmd == "/injection-mold":
+                    res = estimate_injection_mold()
+                    print(f"{Colors.CYAN}--- PLASTIC INJECTION MOLDING SHRINKAGE & TOOLING ---{Colors.RESET}")
+                    print(f"  Material: {res['material']} | Shrinkage: {res['material_shrinkage_pct']}% | Clamp Force: {res['required_clamp_force_tons']} Tons | Cooling: {res['estimated_cooling_time_sec']}s\n")
+                elif cmd == "/cnc-feedrate":
+                    res = calculate_cnc_feedrate()
+                    print(f"{Colors.CYAN}--- CNC MILLING SPINDLE SPEED & FEED RATE CALCULATOR ---{Colors.RESET}")
+                    print(f"  Tool Dia: {res['tool_diameter_mm']}mm | Spindle: {res['spindle_speed_rpm']} RPM | Feed Rate: {res['feed_rate_mm_min']} mm/min | MRR: {res['material_removal_rate_mrr_cm3_min']} cm³/min\n")
+                elif cmd == "/beam-stress":
+                    res = analyze_beam_stress()
+                    print(f"{Colors.CYAN}--- STRUCTURAL BEAM BENDING STRESS & DEFLECTION ---{Colors.RESET}")
+                    print(f"  Section: {res['cross_section_mm']}mm | M_max: {res['max_bending_moment_nm']} Nm | Stress: {res['max_bending_stress_mpa']} MPa | Deflection: {res['max_deflection_mm']} mm | Safety Factor: {res['safety_factor']}\n")
+
 
 
 

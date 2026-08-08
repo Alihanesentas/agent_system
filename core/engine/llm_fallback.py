@@ -62,6 +62,13 @@ ENGINE_REGISTRY: Dict[str, Dict[str, Any]] = {
     "usb_impedance": {"module": "core.hardware.usb_impedance", "func": "check_usb_impedance", "description": "USB 2.0 / USB 3.0 differential impedance checker (90Ω)"},
     "fuse_sizing": {"module": "core.hardware.fuse_sizing", "func": "calculate_fuse_sizing", "description": "Electric fuse sizing & melting integral I²t calculator"},
     "reverse_polarity": {"module": "core.hardware.reverse_polarity", "func": "design_reverse_polarity_protection", "description": "Reverse polarity protection circuit designer"},
+    "dac_output": {"module": "core.hardware.dac_output", "func": "design_dac_output", "description": "DAC output buffer & settling time designer"},
+    "ethernet_magnetics": {"module": "core.hardware.ethernet_magnetics", "func": "design_ethernet_interface", "description": "Ethernet PHY magnetics & PoE interface designer"},
+    "lvds_serdes": {"module": "core.hardware.lvds_serdes", "func": "analyze_lvds_signal", "description": "LVDS / SerDes high-speed differential signal integrity analyzer"},
+    "sensor_interface": {"module": "core.hardware.sensor_interface", "func": "design_sensor_interface", "description": "Analog & digital sensor interface circuit designer"},
+    "thermocouple": {"module": "core.hardware.thermocouple", "func": "design_thermocouple_interface", "description": "Thermocouple cold junction compensation & type selector"},
+    "crosstalk_analysis": {"module": "core.hardware.crosstalk_analysis", "func": "analyze_pcb_crosstalk", "description": "PCB trace crosstalk (NEXT/FEXT) & guard trace analyzer"},
+    "impedance_calculator": {"module": "core.hardware.impedance_calculator", "func": "calculate_trace_impedance_advanced", "description": "Advanced PCB microstrip & stripline impedance calculator"},
     
     # ── Software & Firmware ──
     "bootloader": {"module": "core.software.bootloader_checker", "func": "audit_bootloader_config", "description": "Bootloader integrity checker"},
@@ -91,6 +98,11 @@ ENGINE_REGISTRY: Dict[str, Dict[str, Any]] = {
     "secure_boot": {"module": "core.software.secure_boot", "func": "configure_secure_boot", "description": "Embedded secure boot & flash encryption configurator"},
     "fatfs_config": {"module": "core.software.fatfs_config", "func": "configure_filesystem", "description": "Embedded FATFS / LittleFS wear leveling configurator"},
     "misra_checker": {"module": "core.software.misra_checker", "func": "check_misra_compliance", "description": "MISRA-C:2012 / MISRA C++ static compliance analyzer"},
+    "scheduler_sim": {"module": "core.software.scheduler_sim", "func": "simulate_scheduler", "description": "RTOS rate monotonic & EDF scheduler simulator"},
+    "zigbee_mesh": {"module": "core.software.zigbee_mesh", "func": "design_zigbee_mesh", "description": "Zigbee 3.0 / Thread wireless mesh topology designer"},
+    "cert_manager": {"module": "core.software.cert_manager", "func": "generate_cert_config", "description": "X.509 certificate chain & TLS mTLS configurator"},
+    "eeprom_wear": {"module": "core.software.eeprom_wear", "func": "analyze_eeprom_wear", "description": "EEPROM / Flash wear leveling lifetime endurance analyzer"},
+    "fft_analyzer": {"module": "core.software.fft_analyzer", "func": "analyze_fft_params", "description": "FFT frequency resolution & windowing analyzer"},
     
     # ── Production & Mechanical ──
     "enclosure": {"module": "core.production.mechanical", "func": "generate_openscad_enclosure", "description": "3D enclosure generator"},
@@ -115,6 +127,10 @@ ENGINE_REGISTRY: Dict[str, Dict[str, Any]] = {
     "bearing_life": {"module": "core.production.bearing_life", "func": "calculate_bearing_life", "description": "ISO 281 ball & roller bearing L10 life calculator"},
     "print_settings": {"module": "core.production.print_settings", "func": "recommend_print_settings", "description": "3D printer material slicer profile & parameter recommender"},
     "sheet_metal": {"module": "core.production.sheet_metal", "func": "calculate_sheet_metal_bend", "description": "Sheet metal bend allowance & K-factor flat pattern calculator"},
+    "injection_mold": {"module": "core.production.injection_mold", "func": "estimate_injection_mold", "description": "Plastic injection molding shrinkage & tooling cost estimator"},
+    "cnc_feedrate": {"module": "core.production.cnc_feedrate", "func": "calculate_cnc_feedrate", "description": "CNC milling spindle speed & feed rate calculator"},
+    "beam_stress": {"module": "core.production.beam_stress", "func": "analyze_beam_stress", "description": "Structural beam bending stress & deflection calculator"},
+
     
     # ── Infrastructure ──
     "cost_forecast": {"module": "core.infra.cost_forecast", "func": "forecast_token_costs", "description": "Token cost forecast"},
@@ -179,6 +195,13 @@ KEYWORD_ALIASES: Dict[str, List[str]] = {
     "usb_impedance": ["usb impedance", "usb 90 ohm", "differential microstrip"],
     "fuse_sizing": ["fuse", "fuse sizing", "melting integral", "i2t"],
     "reverse_polarity": ["reverse polarity", "reverse protection", "ideal diode"],
+    "dac_output": ["dac", "dac output", "settling time", "reconstruction filter"],
+    "ethernet_magnetics": ["ethernet", "poe", "bob smith", "rj45 magnetics"],
+    "lvds_serdes": ["lvds", "serdes", "differential swing", "eye diagram"],
+    "sensor_interface": ["sensor interface", "pt100", "ntc", "anti-aliasing"],
+    "thermocouple": ["thermocouple", "cold junction", "seebeck", "max31855"],
+    "crosstalk_analysis": ["crosstalk", "next", "fext", "3w rule", "guard trace"],
+    "impedance_calculator": ["cpwg", "coplanar waveguide", "stripline impedance"],
     "bootloader": ["bootloader", "boot", "vector table", "flash offset"],
     "stack_guard": ["stack", "freertos", "rtos task", "stack overflow"],
     "power_profile": ["power", "current", "sleep", "deep sleep", "mA", "güç", "batarya ömrü"],
@@ -200,6 +223,11 @@ KEYWORD_ALIASES: Dict[str, List[str]] = {
     "secure_boot": ["secure boot", "flash encryption", "root of trust"],
     "fatfs_config": ["fatfs", "littlefs", "wear leveling"],
     "misra_checker": ["misra", "misra-c", "safety critical"],
+    "scheduler_sim": ["scheduler", "rate monotonic", "edf", "cpu utilization"],
+    "zigbee_mesh": ["zigbee", "mesh network", "thread mesh", "aodv"],
+    "cert_manager": ["cert", "openssl", "mtls", "x.509"],
+    "eeprom_wear": ["eeprom", "eeprom wear", "write cycles", "endurance"],
+    "fft_analyzer": ["fft", "nyquist", "frequency resolution", "spectrum"],
     "enclosure": ["enclosure", "box", "case", "kutu", "3d print", "openscad"],
     "snap_fit": ["snap", "clip", "klips", "cantilever"],
     "gasket": ["gasket", "o-ring", "seal", "conta", "ip67", "waterproof", "su geçirmez"],
@@ -217,6 +245,10 @@ KEYWORD_ALIASES: Dict[str, List[str]] = {
     "bearing_life": ["bearing", "bearing life", "l10", "rulman ömrü"],
     "print_settings": ["slicer settings", "nozzle temperature", "print speed"],
     "sheet_metal": ["sheet metal", "bend allowance", "k-factor"],
+    "injection_mold": ["injection mold", "mold shrinkage", "clamp force", "kalıp hesabı"],
+    "cnc_feedrate": ["cnc", "spindle speed", "feed rate", "mrr", "chip load"],
+    "beam_stress": ["beam stress", "bending moment", "deflection", "kiriş hesabı"],
+
     "web_api": ["api", "rest", "fastapi", "express", "backend"],
     "react": ["react", "frontend", "component", "tsx", "jsx"],
     "edge_ai": ["tinyml", "edge ai", "model deploy", "quantization"],

@@ -107,6 +107,13 @@ For specific, one-off engineering queries, you can invoke any of the 58+ symboli
 - `/usb-impedance`: Audits USB 2.0 / 3.0 differential pair microstrip impedance (90Ω ± 10%).
 - `/fuse-sizing`: Calculates fuse current rating and inrush energy melting integral I²t (A²s).
 - `/reverse-polarity`: Compares reverse polarity protection topologies (Schottky vs P-FET vs Ideal Diode).
+- `/dac-output`: Calculates DAC LSB voltage (mV), required Op-Amp slew rate (V/us), and settling time.
+- `/ethernet-mag`: Calculates 10/100/1000Base-T Ethernet magnetics, Bob Smith termination, and PoE power.
+- `/lvds-serdes`: Analyzes LVDS differential voltage swing (mV), common mode, and jitter budget.
+- `/sensor-interface`: Designs sensor signal conditioning (PT100/NTC) and anti-aliasing RC filter.
+- `/thermocouple`: Calculates Thermocouple Seebeck EMF (mV) and Cold Junction Compensation (CJC).
+- `/crosstalk`: Analyzes PCB trace crosstalk (NEXT/FEXT dB) and 3W rule compliance.
+- `/impedance-adv`: Calculates Microstrip/Stripline/CPWG trace impedance Z0 per IPC-2141.
 - `/opamp`: Calculates Op-Amp gain (dB / V/V), feedback resistor values, input impedance, and 3dB bandwidth.
 - `/adc-snr`: Calculates ADC theoretical SNR, measured ENOB, LSB size (uV), quantization noise, and Nyquist bandwidth.
 - `/can-bus`: Calculates CAN bus bit timing segments (Prop/Phase1/Phase2/SJW), prescaler, and 120Ω termination.
@@ -127,6 +134,11 @@ For specific, one-off engineering queries, you can invoke any of the 58+ symboli
 - `/secure-boot`: Generates Secure Boot V2 ECDSA-P256 signing key configurations and eFuse burn commands.
 - `/fatfs-config`: Calculates LittleFS / FATFS sector layout, block count, and wear leveling write endurance.
 - `/misra-checker`: Audits C/C++ source code for MISRA-C:2012 safety-critical compliance rule violations.
+- `/scheduler-sim`: Simulates Rate Monotonic (RMS) and EDF RTOS schedulability and CPU load limits.
+- `/zigbee-mesh`: Designs Zigbee 3.0 / Thread wireless mesh node topology and RAM routing table footprint.
+- `/cert-manager`: Generates X.509 CA root, client CSR certificates, and mTLS configuration commands.
+- `/eeprom-wear`: Calculates EEPROM / Flash wear leveling lifetime endurance (years) and write frequency.
+- `/fft-analyzer`: Calculates FFT frequency bin resolution (Hz), Nyquist frequency, and windowing loss.
 - `/print-cost`: Estimates total 3D printing manufacturing cost (material, power, machine wear).
 - `/motor-size`: Sizes DC/BLDC/Stepper motor torque, RPM, and mechanical power.
 - `/bolt-torque`: Calculates metric bolt tightening torque (Nm) and preload force (kN) per VDI 2230.
@@ -137,6 +149,10 @@ For specific, one-off engineering queries, you can invoke any of the 58+ symboli
 - `/bearing-life`: Calculates ISO 281 ball and roller bearing L10 rating life (M-revs) and operating hours.
 - `/slicer-settings`: Recommends 3D printing slicer parameters (temperatures, speeds, fans) per material.
 - `/sheet-metal`: Calculates sheet metal Bend Allowance (BA in mm) and Bend Deduction (BD in mm) flat patterns.
+- `/injection-mold`: Calculates injection molding material shrinkage (%), clamp force (Tons), and cooling time.
+- `/cnc-feedrate`: Calculates CNC milling spindle speed (RPM), table feed rate (mm/min), and MRR (cm³/min).
+- `/beam-stress`: Calculates structural beam bending moment (Nm), stress (MPa), deflection (mm), and safety factor.
+
 - `/rest-gen`: Generates FastAPI / Express CRUD REST API router scaffolds.
 - `/graphql-gen`: Generates GraphQL SDL schemas and query/mutation resolver stubs.
 - `/auth-flow`: Generates OAuth2 / JWT authentication, signing algorithms, and RBAC middleware code.

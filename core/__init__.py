@@ -65,6 +65,13 @@ from core.hardware.spi_timing import analyze_spi_timing
 from core.hardware.usb_impedance import check_usb_impedance
 from core.hardware.fuse_sizing import calculate_fuse_sizing
 from core.hardware.reverse_polarity import design_reverse_polarity_protection
+from core.hardware.dac_output import design_dac_output
+from core.hardware.ethernet_magnetics import design_ethernet_interface
+from core.hardware.lvds_serdes import analyze_lvds_signal
+from core.hardware.sensor_interface import design_sensor_interface
+from core.hardware.thermocouple import design_thermocouple_interface
+from core.hardware.crosstalk_analysis import analyze_pcb_crosstalk
+from core.hardware.impedance_calculator import calculate_trace_impedance_advanced
 
 from core.software.executor import execute_command, compile_c, compile_cpp
 from core.software.self_heal import auto_compile_and_fix
@@ -102,6 +109,11 @@ from core.software.protobuf_gen import generate_protobuf_schema
 from core.software.secure_boot import configure_secure_boot
 from core.software.fatfs_config import configure_filesystem
 from core.software.misra_checker import check_misra_compliance
+from core.software.scheduler_sim import simulate_scheduler
+from core.software.zigbee_mesh import design_zigbee_mesh
+from core.software.cert_manager import generate_cert_config
+from core.software.eeprom_wear import analyze_eeprom_wear
+from core.software.fft_analyzer import analyze_fft_params
 
 from core.computer.web_stack import generate_web_api_architecture
 from core.computer.microservices import generate_microservice_proto
@@ -144,6 +156,10 @@ from core.production.tolerance_stack import analyze_tolerance_stack
 from core.production.bearing_life import calculate_bearing_life
 from core.production.print_settings import recommend_print_settings
 from core.production.sheet_metal import calculate_sheet_metal_bend
+from core.production.injection_mold import estimate_injection_mold
+from core.production.cnc_feedrate import calculate_cnc_feedrate
+from core.production.beam_stress import analyze_beam_stress
+
 
 from core.engine.prompt_template import render_prompt_template
 from core.engine.chain_of_thought import run_chain_of_thought

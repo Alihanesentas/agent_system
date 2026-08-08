@@ -10,19 +10,12 @@
 ## Güç Elektroniği
 
 ## Analog & Sinyal İşleme
-- [ ] core/hardware/dac_output.py           → DAC çıkış tampon, settling time | def design_dac_output(**kwargs) -> Dict
 
 ## Dijital & Haberleşme
-- [ ] core/hardware/ethernet_magnetics.py   → Ethernet magnetics seçimi, PoE güç hesabı | def design_ethernet_interface(**kwargs) -> Dict
-- [ ] core/hardware/lvds_serdes.py          → LVDS/SerDes sinyal bütünlüğü | def analyze_lvds_signal(**kwargs) -> Dict
 
 ## Sensör & Ölçüm
-- [ ] core/hardware/sensor_interface.py     → Sıcaklık/basınç/ivme sensör arayüz devresi | def design_sensor_interface(**kwargs) -> Dict
-- [ ] core/hardware/thermocouple.py         → Termokupl tipi seçimi, cold junction komp. | def design_thermocouple_interface(**kwargs) -> Dict
 
 ## PCB İleri Seviye
-- [ ] core/hardware/crosstalk_analysis.py   → PCB crosstalk (NEXT/FEXT), guard trace | def analyze_pcb_crosstalk(**kwargs) -> Dict
-- [ ] core/hardware/impedance_calculator.py → Microstrip/Stripline/Coplanar empedans | def calculate_trace_impedance_advanced(**kwargs) -> Dict
 - [ ] core/hardware/panelization.py         → PCB panelizasyon yerleşim optimizasyonu | def optimize_pcb_panel(**kwargs) -> Dict
 - [ ] core/hardware/gerber_checker.py       → Gerber dosya bütünlük kontrolü | def validate_gerber_files(**kwargs) -> Dict
 - [ ] core/hardware/pcb_thermal_relief.py   → Thermal relief pad pattern, spoke hesabı | def calculate_thermal_relief(**kwargs) -> Dict
@@ -35,16 +28,12 @@
 # ──────────────────────────────────────────────────────────────────────
 
 ## RTOS & Çekirdek
-- [ ] core/software/scheduler_sim.py        → Rate Monotonic / EDF zamanlama simülasyonu | def simulate_scheduler(**kwargs) -> Dict
 
 ## Haberleşme Protokolleri
-- [ ] core/software/zigbee_mesh.py          → Zigbee mesh topolojisi, routing table | def design_zigbee_mesh(**kwargs) -> Dict
 
 ## Güvenlik & Kriptografi
-- [ ] core/software/cert_manager.py         → X.509 sertifika zinciri, TLS mutual auth | def generate_cert_config(**kwargs) -> Dict
 
 ## Veri & Depolama
-- [ ] core/software/eeprom_wear.py          → EEPROM/Flash wear leveling ömür analizi | def analyze_eeprom_wear(**kwargs) -> Dict
 - [ ] core/software/log_framework.py        → Gömülü log framework (severity, circular) | def generate_log_framework(**kwargs) -> Dict
 
 ## Test & Kalite
@@ -53,19 +42,16 @@
 - [ ] core/software/firmware_diff.py        → İki firmware binary section-level diff | def diff_firmware_binaries(**kwargs) -> Dict
 
 ## DSP & Kontrol
-- [ ] core/software/fft_analyzer.py         → FFT pencere, frekans çözünürlüğü, aliasing | def analyze_fft_params(**kwargs) -> Dict
 
 # ──────────────────────────────────────────────────────────────────────
 # PRODUCTION / MEKANİK (20 yeni modül)
 # ──────────────────────────────────────────────────────────────────────
 
 ## 3D Baskı & İmalat
-- [ ] core/production/injection_mold.py     → Enjeksiyon kalıp parametreleri (shrinkage) | def estimate_injection_mold(**kwargs) -> Dict
-- [ ] core/production/cnc_feedrate.py       → CNC freze besleme hızı, devir hesabı | def calculate_cnc_feedrate(**kwargs) -> Dict
 
 ## Mekanik Analiz
-- [ ] core/production/beam_stress.py        → Kiriş eğilme moment, kesme, sehim | def analyze_beam_stress(**kwargs) -> Dict
 - [ ] core/production/vibration_analysis.py → Doğal frekans, titreşim izolasyon | def analyze_vibration(**kwargs) -> Dict
+
 
 ## Termal & Akışkan
 - [ ] core/production/fan_selection.py      → Soğutma fanı seçimi (CFM, noise) | def select_cooling_fan(**kwargs) -> Dict
