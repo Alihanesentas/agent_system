@@ -55,6 +55,13 @@ Layer 5 (Persistence & Infrastructure): ChromaDB RAG Engine, SQLite Long-Term Me
   - `voltage_divider.py`: `/v-divider` Precision Resistor Voltage Divider Calculator
   - `i2c_pullup.py`: `/i2c-pullup` I2C Bus Pull-Up Resistor & Rise Time Calculator
   - `esd_protection.py`: `/esd` ESD Protection & TVS Diode Selector
+  - `ldo_thermal.py`: `/ldo-thermal` LDO Power Loss, Junction Temp & Efficiency Calculator
+  - `mosfet_driver.py`: `/mosfet-driver` MOSFET Gate Driver Peak Current & Loss Sizer
+  - `filter_design.py`: `/analog-filter` Active Sallen-Key Low-pass & High-pass Filter Designer
+  - `current_sense.py`: `/current-sense` Shunt Resistor & INA Current Sense Circuit Designer
+  - `uart_config.py`: `/uart-config` UART Baud Rate Clock Divider & Error % Calculator
+  - `wheatstone_bridge.py`: `/wheatstone-bridge` Wheatstone Bridge & Strain Gauge Calculator
+  - `pcb_cost_estimator.py`: `/pcb-cost` PCB Fabrication & SMT Assembly Batch Cost Estimator
 - **`core/computer/`**: Full-Stack Web, Microservices, Frontend & Computer Science Engines
   - `web_stack.py`: `/web-stack` Full-Stack FastAPI / Express REST API Generator
   - `microservices.py`: `/proto` gRPC Protobuf3 & Message Queue Bus Generator
@@ -65,6 +72,8 @@ Layer 5 (Persistence & Infrastructure): ChromaDB RAG Engine, SQLite Long-Term Me
   - `sql_schema_gen.py`: `/sql-gen` SQL DDL Schema & Migration Generator
   - `graphql_schema.py`: `/graphql-gen` GraphQL SDL Schema & Resolver Generator
   - `terraform_gen.py`: `/terraform-gen` AWS Terraform IaC Module Generator
+  - `auth_flow.py`: `/auth-flow` OAuth2 / JWT Authentication & RBAC Middleware Generator
+  - `nginx_config.py`: `/nginx-gen` Nginx Reverse Proxy, TLS 1.3 & Rate Limit Config Generator
 - **`core/software/`**: Firmware, Testing, DevOps & Container Engines
   - `executor.py`: Shell Runner for gcc / make / platformio
   - `docker_k8s.py`: `/docker-gen` Dockerfile & Kubernetes Deployment Manifest Generator
@@ -76,6 +85,9 @@ Layer 5 (Persistence & Infrastructure): ChromaDB RAG Engine, SQLite Long-Term Me
   - `lorawan_params.py`: `/lorawan` LoRaWAN Time-on-Air & Link Budget Calculator
   - `crypto_engine.py`: `/crypto` Embedded Crypto Accelerator Sizer
   - `fir_iir_filter.py`: `/digital-filter` FIR/IIR Digital Filter Tap Coefficient Generator
+  - `isr_latency.py`: `/isr-latency` NVIC Interrupt Latency, WCET & Max Frequency Analyzer
+  - `memory_pool.py`: `/memory-pool` Static Fixed-Block Embedded Memory Pool Designer
+  - `ring_buffer.py`: `/ring-buffer` Lock-Free Circular Ring Buffer Sizer & C Code Generator
 - **`core/production/`**: Mechanical CAD & Manufacturing
   - `print_cost.py`: `/print-cost` 3D Printing Manufacturing Cost Estimator
   - `motor_sizing.py`: `/motor-size` Motor Torque & Power Sizing Engine
@@ -83,11 +95,15 @@ Layer 5 (Persistence & Infrastructure): ChromaDB RAG Engine, SQLite Long-Term Me
   - `spring_design.py`: `/spring` Helical Compression Spring Designer
   - `gear_ratio.py`: `/gear-ratio` Spur & Planetary Gear Train Calculator
   - `heatsink_design.py`: `/heatsink` Finned Aluminum Heatsink Dimensioning Engine
+  - `tolerance_stack.py`: `/tolerance-stack` Worst-Case & RSS 3-Sigma Tolerance Stack-Up Analyzer
+  - `bearing_life.py`: `/bearing-life` ISO 281 Ball & Roller Bearing L10 & L10h Life Calculator
 - **`core/engine/`**: Orchestration & Reasoning
   - `chain_of_thought.py`: `/cot` Chain-of-Thought / Tree-of-Thought Reasoning Framework
 - **`core/infra/`**: Infrastructure & Systems
   - `health_check.py`: `/health-probe` Service Health Probe Engine
   - `cron_scheduler.py`: `/cron-schedule` Periodic Background Cron Task Scheduler
+  - `env_manager.py`: `/env-manager` Environment Variable & Secret Key Manager (.env)
+
 
 
   - `cloud_devops.py`: `/devops` AWS Terraform HCL & GitHub Actions CI/CD Pipeline

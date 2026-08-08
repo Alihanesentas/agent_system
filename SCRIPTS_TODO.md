@@ -8,17 +8,12 @@
 # ──────────────────────────────────────────────────────────────────────
 
 ## Güç Elektroniği
-- [ ] core/hardware/ldo_thermal.py          → LDO ısı, dropout voltaj, quiescent current | def analyze_ldo_thermal(**kwargs) -> Dict
-- [ ] core/hardware/mosfet_driver.py        → High/Low-side MOSFET sürücü, gate charge, switching loss | def design_mosfet_driver(**kwargs) -> Dict
 - [ ] core/hardware/psu_ripple.py           → Güç kaynağı ripple/noise, filtre kapasitör boyutlandırma | def analyze_psu_ripple(**kwargs) -> Dict
 
 ## Analog & Sinyal İşleme
-- [ ] core/hardware/filter_design.py        → Aktif/pasif filtre tasarımı (Butterworth, Chebyshev) | def design_analog_filter(**kwargs) -> Dict
 - [ ] core/hardware/dac_output.py           → DAC çıkış tampon, settling time | def design_dac_output(**kwargs) -> Dict
-- [ ] core/hardware/current_sense.py        → Shunt akım ölçüm devresi, INA amplifikatör | def design_current_sense(**kwargs) -> Dict
 
 ## Dijital & Haberleşme
-- [ ] core/hardware/uart_config.py          → UART baud rate, parity, hata oranı | def configure_uart(**kwargs) -> Dict
 - [ ] core/hardware/spi_timing.py           → SPI bus timing, clock phase/polarity | def analyze_spi_timing(**kwargs) -> Dict
 - [ ] core/hardware/usb_impedance.py        → USB 2.0/3.0 diferansiyel empedans kontrolü | def check_usb_impedance(**kwargs) -> Dict
 - [ ] core/hardware/ethernet_magnetics.py   → Ethernet magnetics seçimi, PoE güç hesabı | def design_ethernet_interface(**kwargs) -> Dict
@@ -26,12 +21,10 @@
 
 ## Sensör & Ölçüm
 - [ ] core/hardware/sensor_interface.py     → Sıcaklık/basınç/ivme sensör arayüz devresi | def design_sensor_interface(**kwargs) -> Dict
-- [ ] core/hardware/wheatstone_bridge.py    → Wheatstone köprü, strain gauge, load cell | def calculate_wheatstone_bridge(**kwargs) -> Dict
 - [ ] core/hardware/thermocouple.py         → Termokupl tipi seçimi, cold junction komp. | def design_thermocouple_interface(**kwargs) -> Dict
 
 ## PCB İleri Seviye
 - [ ] core/hardware/crosstalk_analysis.py   → PCB crosstalk (NEXT/FEXT), guard trace | def analyze_pcb_crosstalk(**kwargs) -> Dict
-- [ ] core/hardware/pcb_cost_estimator.py   → PCB üretim maliyet tahmini | def estimate_pcb_cost(**kwargs) -> Dict
 - [ ] core/hardware/impedance_calculator.py → Microstrip/Stripline/Coplanar empedans | def calculate_trace_impedance_advanced(**kwargs) -> Dict
 - [ ] core/hardware/panelization.py         → PCB panelizasyon yerleşim optimizasyonu | def optimize_pcb_panel(**kwargs) -> Dict
 - [ ] core/hardware/gerber_checker.py       → Gerber dosya bütünlük kontrolü | def validate_gerber_files(**kwargs) -> Dict
@@ -47,9 +40,7 @@
 # ──────────────────────────────────────────────────────────────────────
 
 ## RTOS & Çekirdek
-- [ ] core/software/isr_latency.py          → ISR latency analizi, nested interrupt | def analyze_isr_latency(**kwargs) -> Dict
 - [ ] core/software/mutex_deadlock.py       → Mutex deadlock tespit, priority inversion | def detect_mutex_deadlock(**kwargs) -> Dict
-- [ ] core/software/memory_pool.py          → Statik bellek havuzu boyutlandırma | def design_memory_pool(**kwargs) -> Dict
 - [ ] core/software/scheduler_sim.py        → Rate Monotonic / EDF zamanlama simülasyonu | def simulate_scheduler(**kwargs) -> Dict
 
 ## Haberleşme Protokolleri
@@ -63,7 +54,6 @@
 ## Veri & Depolama
 - [ ] core/software/fatfs_config.py         → FAT/LittleFS konfigürasyonu, wear leveling | def configure_filesystem(**kwargs) -> Dict
 - [ ] core/software/eeprom_wear.py          → EEPROM/Flash wear leveling ömür analizi | def analyze_eeprom_wear(**kwargs) -> Dict
-- [ ] core/software/ring_buffer.py          → Lock-free ring buffer boyutlandırma | def design_ring_buffer(**kwargs) -> Dict
 - [ ] core/software/log_framework.py        → Gömülü log framework (severity, circular) | def generate_log_framework(**kwargs) -> Dict
 
 ## Test & Kalite
@@ -81,14 +71,12 @@
 
 ## 3D Baskı & İmalat
 - [ ] core/production/print_settings.py     → Malzeme bazlı optimum baskı ayarları | def recommend_print_settings(**kwargs) -> Dict
-- [ ] core/production/tolerance_stack.py    → Tolerans yığılma analizi (worst case / RSS) | def analyze_tolerance_stack(**kwargs) -> Dict
 - [ ] core/production/injection_mold.py     → Enjeksiyon kalıp parametreleri (shrinkage) | def estimate_injection_mold(**kwargs) -> Dict
 - [ ] core/production/cnc_feedrate.py       → CNC freze besleme hızı, devir hesabı | def calculate_cnc_feedrate(**kwargs) -> Dict
 - [ ] core/production/sheet_metal.py        → Sac metal bükme (K-factor, bend allowance) | def calculate_sheet_metal_bend(**kwargs) -> Dict
 
 ## Mekanik Analiz
 - [ ] core/production/beam_stress.py        → Kiriş eğilme moment, kesme, sehim | def analyze_beam_stress(**kwargs) -> Dict
-- [ ] core/production/bearing_life.py       → Rulman ömür hesabı (L10, dinamik yük) | def calculate_bearing_life(**kwargs) -> Dict
 - [ ] core/production/vibration_analysis.py → Doğal frekans, titreşim izolasyon | def analyze_vibration(**kwargs) -> Dict
 
 ## Termal & Akışkan
@@ -108,7 +96,6 @@
 # ──────────────────────────────────────────────────────────────────────
 
 ## Backend & API
-- [ ] core/computer/auth_flow.py            → OAuth2/JWT/API Key auth flow config | def generate_auth_flow(**kwargs) -> Dict
 - [ ] core/computer/rate_limit_design.py    → API rate limiting stratejisi tasarımı | def design_rate_limiter(**kwargs) -> Dict
 - [ ] core/computer/websocket_handler.py    → WebSocket event handler scaffold | def generate_websocket_handler(**kwargs) -> Dict
 
@@ -118,9 +105,9 @@
 - [ ] core/computer/data_pipeline.py        → ETL/ELT data pipeline DAG tasarımı | def design_data_pipeline(**kwargs) -> Dict
 
 ## DevOps & Altyapı
-- [ ] core/computer/nginx_config.py         → Nginx reverse proxy, SSL config | def generate_nginx_config(**kwargs) -> Dict
 - [ ] core/computer/monitoring_stack.py     → Prometheus + Grafana config üreteci | def generate_monitoring_stack(**kwargs) -> Dict
 - [ ] core/computer/log_aggregation.py      → ELK/Loki log toplama pipeline config | def generate_log_pipeline(**kwargs) -> Dict
+
 
 ## Frontend & UI
 - [ ] core/computer/component_lib.py        → React/Vue/Svelte component scaffold | def generate_ui_component(**kwargs) -> Dict
@@ -161,7 +148,6 @@
 # INFRA — Altyapı & Utility (10 yeni modül)
 # ──────────────────────────────────────────────────────────────────────
 
-- [ ] core/infra/env_manager.py             → .env dosya yönetimi, secret rotation | def manage_env_config(**kwargs) -> Dict
 - [ ] core/infra/retry_policy.py            → Konfigüre edilebilir retry policy | def execute_with_retry(**kwargs) -> Dict
 - [ ] core/infra/feature_flags.py           → Feature flag yönetimi (on/off, rollout) | def check_feature_flag(**kwargs) -> Dict
 
