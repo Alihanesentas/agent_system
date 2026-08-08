@@ -161,11 +161,31 @@ Layer 5 (Persistence & Infrastructure): ChromaDB RAG Engine, SQLite Long-Term Me
 
 - **`core/engine/`**: Orchestration & Reasoning
   - `chain_of_thought.py`: `/cot` Chain-of-Thought / Tree-of-Thought Reasoning Framework
+  - `tool_registry.py`: `/tool-registry` Dynamic Tool Registration & Discovery Engine
+  - `agent_memory_index.py`: `/agent-memory` Vector-Based Agent Long-Term Memory Indexer
+  - `multi_model_router.py`: `/model-router` Multi-LLM Dynamic Model Router
+  - `eval_harness.py`: `/eval-harness` Agent Response Quality Evaluation Harness (Ragas)
+  - `conversation_brancher.py`: `/conversation-branch` Parallel Conversation Branching Engine
+  - `rollback_engine.py`: `/rollback-action` Transactional Agent Action Rollback Engine
+  - `ab_testing.py`: `/ab-testing` Prompt Engineering A/B Testing Framework
+  - `human_in_loop.py`: `/human-in-loop` Human-In-The-Loop Approval Gateway
+  - `streaming_output.py`: `/streaming-output` Token-by-Token Streaming Output Engine
+  - `context_window.py`: `/context-window` Context Window Summarization Engine
+  - `agent_sandbox.py`: `/agent-sandbox` Restricted Python Execution Sandbox
+  - `skill_composer.py`: `/skill-composer` Meta-Skill Composer & Workflow Pipeline
+  - `feedback_loop.py`: `/feedback-loop` User Feedback Collection & RLHF Pipeline
 - **`core/infra/`**: Infrastructure & Systems
   - `health_check.py`: `/health-probe` Service Health Probe Engine
   - `cron_scheduler.py`: `/cron-schedule` Periodic Background Cron Task Scheduler
   - `env_manager.py`: `/env-manager` Environment Variable & Secret Key Manager (.env)
   - `retry_policy.py`: `/retry-policy` Exponential Backoff & Jitter Retry Policy Engine
+  - `feature_flags.py`: `/feature-flags` Dynamic Feature Flag & Rollout Manager
+  - `audit_logger.py`: `/audit-logger` Immutable Audit Logging & Compliance Ledger
+  - `config_validator.py`: `/config-validator` YAML/JSON Config Schema Validator
+  - `file_watcher.py`: `/file-watcher` Real-Time File System Event Watcher
+  - `perf_benchmark.py`: `/perf-benchmark` Python Micro-Benchmark & Profiler Engine
+  - `data_anonymizer.py`: `/data-anonymizer` PII / GDPR / KVKK Data Anonymizer Engine
+
 
 
 

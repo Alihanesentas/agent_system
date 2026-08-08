@@ -182,6 +182,26 @@ For specific, one-off engineering queries, you can invoke any of the 58+ symboli
 - `/mobile-scaffold`: Generates Flutter BLoC / React Native Expo cross-platform mobile project scaffolding.
 - `/push-notification`: Generates FCM V1 HTTP JSON push payloads and APNs HTTP/2 notification headers.
 - `/app-signing`: Generates Java keytool Android release keystores and iOS Fastlane Match signing profiles.
+- `/tool-registry`: Registers dynamic tools into runtime registry with permission scopes.
+- `/agent-memory`: Indexes conversation text into vector HNSW long-term memory store.
+- `/model-router`: Dynamically routes prompt to optimal LLM model (Gemini Pro/Flash, Claude, GPT-4o).
+- `/eval-harness`: Evaluates RAG response faithfulness, relevance, and hallucination index.
+- `/conversation-branch`: Explores parallel conversation candidate solution branches.
+- `/rollback-action`: Executes atomic transactional rollback of agent actions.
+- `/ab-testing`: Runs prompt engineering A/B experiments and calculates statistical $p$-value.
+- `/human-in-loop`: Requests human authorization for high-risk operations (flashing, DB drop).
+- `/streaming-output`: Streams real-time token-by-token response chunks via Server-Sent Events (SSE).
+- `/context-window`: Truncates, compresses, and summarizes LLM context window tokens.
+- `/agent-sandbox`: Executes Python code inside restricted security sandbox with AST validation.
+- `/skill-composer`: Chains atomic symbolic engines into composite multi-step engineering pipelines.
+- `/feedback-loop`: Collects user feedback ratings and logs diffs for RLHF fine-tuning.
+- `/feature-flags`: Toggles dynamic feature flags and canary rollout rules.
+- `/audit-logger`: Writes immutable SHA-256 signed audit log entries for compliance.
+- `/config-validator`: Validates YAML/JSON configs against schema rules.
+- `/file-watcher`: Monitors project directory for real-time file system modifications.
+- `/perf-benchmark`: Runs micro-benchmarks measuring latency ($\mu s$) and throughput ($ops/sec$).
+- `/data-anonymizer`: Anonymizes PII data (emails, phones, IPs) per GDPR and KVKK standards.
+
 
 
 

@@ -195,10 +195,31 @@ from core.production.enclosure_ip import check_ip_rating_requirements
 
 from core.engine.prompt_template import render_prompt_template
 from core.engine.chain_of_thought import run_chain_of_thought
+from core.engine.tool_registry import register_tool
+from core.engine.agent_memory_index import index_agent_memory
+from core.engine.multi_model_router import route_to_best_model
+from core.engine.eval_harness import evaluate_agent_response
+from core.engine.conversation_brancher import branch_conversation
+from core.engine.rollback_engine import rollback_agent_action
+from core.engine.ab_testing import run_prompt_ab_test
+from core.engine.human_in_loop import request_human_approval
+from core.engine.streaming_output import stream_output
+from core.engine.context_window import manage_context_window
+from core.engine.agent_sandbox import execute_in_sandbox
+from core.engine.skill_composer import compose_skills
+from core.engine.feedback_loop import collect_feedback
+
 from core.infra.health_check import run_health_check
 from core.infra.cron_scheduler import schedule_cron_job
 from core.infra.env_manager import manage_env_config
 from core.infra.retry_policy import execute_with_retry
+from core.infra.feature_flags import check_feature_flag
+from core.infra.audit_logger import log_audit_event
+from core.infra.config_validator import validate_config
+from core.infra.file_watcher import watch_file_changes
+from core.infra.perf_benchmark import run_benchmark
+from core.infra.data_anonymizer import anonymize_data
+
 
 
 

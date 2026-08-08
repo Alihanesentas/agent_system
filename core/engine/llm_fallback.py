@@ -178,6 +178,28 @@ ENGINE_REGISTRY: Dict[str, Dict[str, Any]] = {
     "cron_scheduler": {"module": "core.infra.cron_scheduler", "func": "schedule_cron_job", "description": "Background cron task scheduler"},
     "env_manager": {"module": "core.infra.env_manager", "func": "manage_env_config", "description": "Environment variable & secret key manager (.env)"},
     "retry_policy": {"module": "core.infra.retry_policy", "func": "execute_with_retry", "description": "Configurable exponential backoff & jitter retry policy engine"},
+    "feature_flags": {"module": "core.infra.feature_flags", "func": "check_feature_flag", "description": "Feature flag & percentage rollout manager"},
+    "audit_logger": {"module": "core.infra.audit_logger", "func": "log_audit_event", "description": "Immutable audit logging & compliance ledger engine"},
+    "config_validator": {"module": "core.infra.config_validator", "func": "validate_config", "description": "YAML/JSON/TOML config schema validator"},
+    "file_watcher": {"module": "core.infra.file_watcher", "func": "watch_file_changes", "description": "Real-time file system watcher"},
+    "perf_benchmark": {"module": "core.infra.perf_benchmark", "func": "run_benchmark", "description": "Micro-benchmark & performance profiler engine"},
+    "data_anonymizer": {"module": "core.infra.data_anonymizer", "func": "anonymize_data", "description": "PII / GDPR / KVKK data anonymizer & masking engine"},
+    
+    # ── Engine & Orchestration ──
+    "tool_registry": {"module": "core.engine.tool_registry", "func": "register_tool", "description": "Dynamic tool registration & discovery engine"},
+    "agent_memory_index": {"module": "core.engine.agent_memory_index", "func": "index_agent_memory", "description": "Vector-based agent long-term memory indexer"},
+    "multi_model_router": {"module": "core.engine.multi_model_router", "func": "route_to_best_model", "description": "Multi-LLM dynamic model router"},
+    "eval_harness": {"module": "core.engine.eval_harness", "func": "evaluate_agent_response", "description": "Agent response quality evaluation harness"},
+    "conversation_brancher": {"module": "core.engine.conversation_brancher", "func": "branch_conversation", "description": "Parallel conversation branching engine"},
+    "rollback_engine": {"module": "core.engine.rollback_engine", "func": "rollback_agent_action", "description": "Transactional agent action rollback engine"},
+    "ab_testing": {"module": "core.engine.ab_testing", "func": "run_prompt_ab_test", "description": "Prompt engineering A/B testing framework"},
+    "human_in_loop": {"module": "core.engine.human_in_loop", "func": "request_human_approval", "description": "Human-in-the-loop approval gateway"},
+    "streaming_output": {"module": "core.engine.streaming_output", "func": "stream_output", "description": "Token-by-token streaming output engine"},
+    "context_window": {"module": "core.engine.context_window", "func": "manage_context_window", "description": "Context window summarization engine"},
+    "agent_sandbox": {"module": "core.engine.agent_sandbox", "func": "execute_in_sandbox", "description": "Restricted Python execution sandbox"},
+    "skill_composer": {"module": "core.engine.skill_composer", "func": "compose_skills", "description": "Meta-skill composer & workflow pipeline framework"},
+    "feedback_loop": {"module": "core.engine.feedback_loop", "func": "collect_feedback", "description": "User feedback collection & RLHF pipeline"},
+
     
     # ── Computer / Web ──
     "web_api": {"module": "core.computer.web_stack", "func": "generate_web_api_architecture", "description": "REST API scaffold generator"},
@@ -312,6 +334,26 @@ KEYWORD_ALIASES: Dict[str, List[str]] = {
     "mobile_scaffold": ["flutter app", "react native app", "expo", "bloc architecture"],
     "push_notification": ["fcm", "apns", "push notification", "firebase messaging"],
     "app_signing": ["keystore", "keytool", "ios provisioning", "app signing", "fastlane match"],
+    "feature_flags": ["feature flag", "canary rollout", "feature toggle"],
+    "audit_logger": ["audit log", "compliance log", "sha256 signature chain"],
+    "config_validator": ["config validation", "schema validator", "pydantic config"],
+    "file_watcher": ["file watcher", "fsevents", "inotify", "hot reload"],
+    "perf_benchmark": ["benchmark", "microbenchmark", "ops per second", "profiler"],
+    "data_anonymizer": ["anonymize", "pii", "kvkk", "gdpr", "data masking"],
+    "tool_registry": ["tool registry", "dynamic tool", "capability scope"],
+    "agent_memory_index": ["memory index", "vector memory", "long term memory", "hnsw"],
+    "multi_model_router": ["model router", "llm router", "model selection"],
+    "eval_harness": ["ragas", "eval harness", "hallucination index", "eval score"],
+    "conversation_brancher": ["branch conversation", "parallel branches", "tree search"],
+    "rollback_engine": ["rollback action", "undo action", "action rollback"],
+    "ab_testing": ["ab test", "prompt ab test", "prompt experiment"],
+    "human_in_loop": ["human in loop", "hitl approval", "approval gateway"],
+    "streaming_output": ["streaming output", "sse", "server sent events"],
+    "context_window": ["context window", "context compression", "context summarize"],
+    "agent_sandbox": ["exec sandbox", "ast safety", "python sandbox"],
+    "skill_composer": ["compose skills", "meta skill", "skill pipeline"],
+    "feedback_loop": ["collect feedback", "rlhf", "user rating"],
+
 
 
 

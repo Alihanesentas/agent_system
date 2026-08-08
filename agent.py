@@ -217,6 +217,26 @@ from core.computer.cqrs_scaffold import generate_cqrs_scaffold
 from core.computer.mobile_scaffold import generate_mobile_scaffold
 from core.computer.push_notification import generate_push_config
 from core.computer.app_signing import generate_app_signing_config
+from core.engine.tool_registry import register_tool
+from core.engine.agent_memory_index import index_agent_memory
+from core.engine.multi_model_router import route_to_best_model
+from core.engine.eval_harness import evaluate_agent_response
+from core.engine.conversation_brancher import branch_conversation
+from core.engine.rollback_engine import rollback_agent_action
+from core.engine.ab_testing import run_prompt_ab_test
+from core.engine.human_in_loop import request_human_approval
+from core.engine.streaming_output import stream_output
+from core.engine.context_window import manage_context_window
+from core.engine.agent_sandbox import execute_in_sandbox
+from core.engine.skill_composer import compose_skills
+from core.engine.feedback_loop import collect_feedback
+from core.infra.feature_flags import check_feature_flag
+from core.infra.audit_logger import log_audit_event
+from core.infra.config_validator import validate_config
+from core.infra.file_watcher import watch_file_changes
+from core.infra.perf_benchmark import run_benchmark
+from core.infra.data_anonymizer import anonymize_data
+
 
 
 
@@ -1789,6 +1809,83 @@ def start_interactive_shell(default_agent: str = "orchestrator", default_model: 
                     res = generate_app_signing_config()
                     print(f"{Colors.CYAN}--- ANDROID KEYSTORE & IOS APP SIGNING CONFIGURATOR ---{Colors.RESET}")
                     print(f"  Alias: {res['key_alias']} | Keystore: {res['keystore_filename']} | iOS: {res['ios_provisioning']}\n")
+                elif cmd == "/tool-registry":
+                    res = register_tool()
+                    print(f"{Colors.CYAN}--- DYNAMIC TOOL REGISTRATION & DISCOVERY ---{Colors.RESET}")
+                    print(f"  Tool: {res['tool_name']} | Scope: {res['tool_schema']['permission_scope']} | Status: {res['registration_status']}\n")
+                elif cmd == "/agent-memory":
+                    res = index_agent_memory()
+                    print(f"{Colors.CYAN}--- VECTOR-BASED AGENT LONG-TERM MEMORY INDEXER ---{Colors.RESET}")
+                    print(f"  Mem ID: {res['memory_id']} | Category: {res['category']} | Dims: {res['vector_dimensions']} | Algo: {res['indexing_algorithm']}\n")
+                elif cmd == "/model-router":
+                    res = route_to_best_model()
+                    print(f"{Colors.CYAN}--- MULTI-LLM DYNAMIC MODEL ROUTER ---{Colors.RESET}")
+                    print(f"  Selected Model: {res['selected_model']} | Latency: {res['estimated_latency_ms']} ms | Reason: {res['routing_reason']}\n")
+                elif cmd == "/eval-harness":
+                    res = evaluate_agent_response()
+                    print(f"{Colors.CYAN}--- AGENT RESPONSE QUALITY EVALUATION HARNESS ---{Colors.RESET}")
+                    print(f"  Faithfulness: {res['faithfulness_score']} | Relevance: {res['answer_relevance_score']} | Hallucination: {res['hallucination_index']} | Score: {res['overall_quality_score']}\n")
+                elif cmd == "/conversation-branch":
+                    res = branch_conversation()
+                    print(f"{Colors.CYAN}--- PARALLEL CONVERSATION BRANCHING ENGINE ---{Colors.RESET}")
+                    print(f"  Parent Step: {res['parent_step']} | Active Branches: {res['active_branches_count']} | Strategy: {res['selection_strategy']}\n")
+                elif cmd == "/rollback-action":
+                    res = rollback_agent_action()
+                    print(f"{Colors.CYAN}--- TRANSACTIONAL AGENT ACTION ROLLBACK ---{Colors.RESET}")
+                    print(f"  Action ID: {res['action_id']} | Target: {res['target_resource']} | Rollback Executed: {res['rollback_executed']}\n")
+                elif cmd == "/ab-testing":
+                    res = run_prompt_ab_test()
+                    print(f"{Colors.CYAN}--- PROMPT ENGINEERING A/B TESTING FRAMEWORK ---{Colors.RESET}")
+                    print(f"  Test: {res['test_name']} | Delta: +{res['improvement_delta_pct']}% | p-value: {res['p_value']} | Winner: {res['winning_variant']}\n")
+                elif cmd == "/human-in-loop":
+                    res = request_human_approval()
+                    print(f"{Colors.CYAN}--- HUMAN-IN-THE-LOOP APPROVAL GATEWAY ---{Colors.RESET}")
+                    print(f"  Operation: {res['operation']} | Risk: {res['risk_level']} | Status: {res['approval_gateway_status']}\n")
+                elif cmd == "/streaming-output":
+                    res = stream_output()
+                    print(f"{Colors.CYAN}--- TOKEN-BY-TOKEN STREAMING OUTPUT ENGINE ---{Colors.RESET}")
+                    print(f"  Total Tokens: {res['total_tokens']} | Chunks: {res['chunk_count']} | Protocol: {res['protocol']}\n")
+                elif cmd == "/context-window":
+                    res = manage_context_window()
+                    print(f"{Colors.CYAN}--- CONTEXT WINDOW SUMMARIZATION ENGINE ---{Colors.RESET}")
+                    print(f"  Utilization: {res['utilization_pct']}% | Needs Summarization: {res['needs_summarization']} | Ratio: {res['compression_ratio']}\n")
+                elif cmd == "/agent-sandbox":
+                    res = execute_in_sandbox()
+                    print(f"{Colors.CYAN}--- RESTRICTED PYTHON EXECUTION SANDBOX ---{Colors.RESET}")
+                    print(f"  Security Level: {res['sandbox_security_level']} | Execution Time: {res['execution_time_sec']}s | Output: {res['stdout']}\n")
+                elif cmd == "/skill-composer":
+                    res = compose_skills()
+                    print(f"{Colors.CYAN}--- META-SKILL COMPOSER & WORKFLOW PIPELINE ---{Colors.RESET}")
+                    print(f"  Pipeline: {res['pipeline_name']} | Skills Chained: {res['atomic_skills_chained']} | Mode: {res['execution_mode']}\n")
+                elif cmd == "/feedback-loop":
+                    res = collect_feedback()
+                    print(f"{Colors.CYAN}--- USER FEEDBACK COLLECTION & RLHF PIPELINE ---{Colors.RESET}")
+                    print(f"  Task ID: {res['task_id']} | Rating: {res['rating_score']}/5 | Positive: {res['is_positive']} | RLHF Dataset: {res['rlhf_dataset_size']}\n")
+                elif cmd == "/feature-flags":
+                    res = check_feature_flag()
+                    print(f"{Colors.CYAN}--- DYNAMIC FEATURE FLAG & ROLLOUT MANAGER ---{Colors.RESET}")
+                    print(f"  Flag: {res['flag_name']} | Enabled: {res['is_enabled']} | Rollout: {res['rollout_percentage']}%\n")
+                elif cmd == "/audit-logger":
+                    res = log_audit_event()
+                    print(f"{Colors.CYAN}--- IMMUTABLE AUDIT LOGGING & COMPLIANCE LEDGER ---{Colors.RESET}")
+                    print(f"  Event: {res['event_type']} | Actor: {res['actor']} | Hash: {res['audit_hash_sha256'][:16]}... | Status: {res['tamper_evident_status']}\n")
+                elif cmd == "/config-validator":
+                    res = validate_config()
+                    print(f"{Colors.CYAN}--- CONFIG SCHEMA VALIDATOR ---{Colors.RESET}")
+                    print(f"  Schema: {res['schema_name']} | Valid: {res['is_valid']} | Verdict: {res['validation_verdict']}\n")
+                elif cmd == "/file-watcher":
+                    res = watch_file_changes()
+                    print(f"{Colors.CYAN}--- REAL-TIME FILE SYSTEM EVENT WATCHER ---{Colors.RESET}")
+                    print(f"  Watched Dir: {res['watched_directory']} | Watchers: {res['active_watchers_count']} | Engine: {res['watcher_engine']}\n")
+                elif cmd == "/perf-benchmark":
+                    res = run_benchmark()
+                    print(f"{Colors.CYAN}--- PYTHON MICRO-BENCHMARK & PROFILER ---{Colors.RESET}")
+                    print(f"  Function: {res['target_function']} | Latency: {res['latency_per_op_us']} µs/op | Ops/Sec: {res['ops_per_second']} | Rating: {res['performance_rating']}\n")
+                elif cmd == "/data-anonymizer":
+                    res = anonymize_data()
+                    print(f"{Colors.CYAN}--- PII / GDPR / KVKK DATA ANONYMIZER ---{Colors.RESET}")
+                    print(f"  PII Redacted: {res['pii_items_redacted']} | Compliance: {res['compliance_ready']} | Anonymized: {res['anonymized_text']}\n")
+
 
 
 
