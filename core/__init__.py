@@ -53,6 +53,13 @@ from core.hardware.opamp_circuit import calculate_opamp_circuit
 from core.hardware.adc_snr import analyze_adc_performance
 from core.hardware.can_bus import configure_can_bus
 from core.hardware.via_current import calculate_via_current
+from core.hardware.ldo_thermal import analyze_ldo_thermal
+from core.hardware.mosfet_driver import design_mosfet_driver
+from core.hardware.filter_design import design_analog_filter
+from core.hardware.current_sense import design_current_sense
+from core.hardware.uart_config import configure_uart
+from core.hardware.wheatstone_bridge import calculate_wheatstone_bridge
+from core.hardware.pcb_cost_estimator import estimate_pcb_cost
 
 from core.software.executor import execute_command, compile_c, compile_cpp
 from core.software.self_heal import auto_compile_and_fix
@@ -82,6 +89,9 @@ from core.software.ble_gatt import generate_ble_gatt_profile
 from core.software.lorawan_params import calculate_lorawan_params
 from core.software.crypto_engine import design_crypto_params
 from core.software.fir_iir_filter import design_digital_filter
+from core.software.isr_latency import analyze_isr_latency
+from core.software.memory_pool import design_memory_pool
+from core.software.ring_buffer import design_ring_buffer
 
 from core.computer.web_stack import generate_web_api_architecture
 from core.computer.microservices import generate_microservice_proto
@@ -92,6 +102,8 @@ from core.computer.ci_cd_pipeline import generate_ci_cd_pipeline
 from core.computer.sql_schema_gen import generate_sql_schema
 from core.computer.graphql_schema import generate_graphql_schema
 from core.computer.terraform_gen import generate_terraform_module
+from core.computer.auth_flow import generate_auth_flow
+from core.computer.nginx_config import generate_nginx_config
 
 from core.production.mechanical import generate_openscad_enclosure, recommend_slicer_settings
 from core.production.battery import calculate_battery_lifespan
@@ -116,11 +128,15 @@ from core.production.bolt_torque import calculate_bolt_torque
 from core.production.spring_design import design_spring
 from core.production.gear_ratio import calculate_gear_ratio
 from core.production.heatsink_design import design_heatsink
+from core.production.tolerance_stack import analyze_tolerance_stack
+from core.production.bearing_life import calculate_bearing_life
 
 from core.engine.prompt_template import render_prompt_template
 from core.engine.chain_of_thought import run_chain_of_thought
 from core.infra.health_check import run_health_check
 from core.infra.cron_scheduler import schedule_cron_job
+from core.infra.env_manager import manage_env_config
+
 
 
 

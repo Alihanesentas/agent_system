@@ -51,6 +51,13 @@ ENGINE_REGISTRY: Dict[str, Dict[str, Any]] = {
     "adc_snr": {"module": "core.hardware.adc_snr", "func": "analyze_adc_performance", "description": "ADC SNR & ENOB performance analyzer"},
     "can_bus": {"module": "core.hardware.can_bus", "func": "configure_can_bus", "description": "CAN bus bit timing & termination calculator"},
     "via_current": {"module": "core.hardware.via_current", "func": "calculate_via_current", "description": "PCB via current capacity & thermal array calculator"},
+    "ldo_thermal": {"module": "core.hardware.ldo_thermal", "func": "analyze_ldo_thermal", "description": "LDO regulator thermal & dropout analyzer"},
+    "mosfet_driver": {"module": "core.hardware.mosfet_driver", "func": "design_mosfet_driver", "description": "High/Low-side MOSFET gate driver & switching loss sizer"},
+    "analog_filter": {"module": "core.hardware.filter_design", "func": "design_analog_filter", "description": "Active & passive analog Sallen-Key filter designer"},
+    "current_sense": {"module": "core.hardware.current_sense", "func": "design_current_sense", "description": "Shunt resistor & INA current sense circuit designer"},
+    "uart_config": {"module": "core.hardware.uart_config", "func": "configure_uart", "description": "UART baud rate, clock divider & error % calculator"},
+    "wheatstone_bridge": {"module": "core.hardware.wheatstone_bridge", "func": "calculate_wheatstone_bridge", "description": "Wheatstone bridge & strain gauge load cell calculator"},
+    "pcb_cost": {"module": "core.hardware.pcb_cost_estimator", "func": "estimate_pcb_cost", "description": "PCB fabrication & SMT assembly cost estimator"},
     
     # ── Software & Firmware ──
     "bootloader": {"module": "core.software.bootloader_checker", "func": "audit_bootloader_config", "description": "Bootloader integrity checker"},
@@ -72,6 +79,9 @@ ENGINE_REGISTRY: Dict[str, Dict[str, Any]] = {
     "lorawan": {"module": "core.software.lorawan_params", "func": "calculate_lorawan_params", "description": "LoRaWAN airtime & link budget calculator"},
     "crypto": {"module": "core.software.crypto_engine", "func": "design_crypto_params", "description": "Crypto hardware accelerator throughput & key sizer"},
     "digital_filter": {"module": "core.software.fir_iir_filter", "func": "design_digital_filter", "description": "FIR/IIR digital filter tap coefficient generator"},
+    "isr_latency": {"module": "core.software.isr_latency", "func": "analyze_isr_latency", "description": "ISR latency & nested interrupt analyzer"},
+    "memory_pool": {"module": "core.software.memory_pool", "func": "design_memory_pool", "description": "Static fixed-block embedded memory pool designer"},
+    "ring_buffer": {"module": "core.software.ring_buffer", "func": "design_ring_buffer", "description": "Lock-free circular ring buffer sizer & C code generator"},
     
     # ── Production & Mechanical ──
     "enclosure": {"module": "core.production.mechanical", "func": "generate_openscad_enclosure", "description": "3D enclosure generator"},
@@ -92,6 +102,8 @@ ENGINE_REGISTRY: Dict[str, Dict[str, Any]] = {
     "spring_design": {"module": "core.production.spring_design", "func": "design_spring", "description": "Helical compression spring design engine"},
     "gear_ratio": {"module": "core.production.gear_ratio", "func": "calculate_gear_ratio", "description": "Gear train ratio & backlash calculator"},
     "heatsink": {"module": "core.production.heatsink_design", "func": "design_heatsink", "description": "Aluminum finned heatsink dimensioning engine"},
+    "tolerance_stack": {"module": "core.production.tolerance_stack", "func": "analyze_tolerance_stack", "description": "Tolerance stack-up analysis engine (Worst-Case & RSS)"},
+    "bearing_life": {"module": "core.production.bearing_life", "func": "calculate_bearing_life", "description": "ISO 281 ball & roller bearing L10 life calculator"},
     
     # ── Infrastructure ──
     "cost_forecast": {"module": "core.infra.cost_forecast", "func": "forecast_token_costs", "description": "Token cost forecast"},
@@ -103,6 +115,7 @@ ENGINE_REGISTRY: Dict[str, Dict[str, Any]] = {
     "chain_of_thought": {"module": "core.engine.chain_of_thought", "func": "run_chain_of_thought", "description": "Chain-of-thought reasoning framework"},
     "health_check": {"module": "core.infra.health_check", "func": "run_health_check", "description": "Service health probe runner"},
     "cron_scheduler": {"module": "core.infra.cron_scheduler", "func": "schedule_cron_job", "description": "Background cron task scheduler"},
+    "env_manager": {"module": "core.infra.env_manager", "func": "manage_env_config", "description": "Environment variable & secret key manager (.env)"},
     
     # ── Computer / Web ──
     "web_api": {"module": "core.computer.web_stack", "func": "generate_web_api_architecture", "description": "REST API scaffold generator"},
@@ -114,6 +127,8 @@ ENGINE_REGISTRY: Dict[str, Dict[str, Any]] = {
     "sql_gen": {"module": "core.computer.sql_schema_gen", "func": "generate_sql_schema", "description": "SQL DDL schema generator"},
     "graphql_gen": {"module": "core.computer.graphql_schema", "func": "generate_graphql_schema", "description": "GraphQL SDL schema & resolver generator"},
     "terraform_gen": {"module": "core.computer.terraform_gen", "func": "generate_terraform_module", "description": "Terraform IaC module generator"},
+    "auth_flow": {"module": "core.computer.auth_flow", "func": "generate_auth_flow", "description": "OAuth2, JWT & API key authentication strategy generator"},
+    "nginx_gen": {"module": "core.computer.nginx_config", "func": "generate_nginx_config", "description": "Nginx reverse proxy, SSL & rate limit config generator"},
 }
 
 # ─── KEYWORD ALIASES ─────────────────────────────────────────────────────────
@@ -138,6 +153,13 @@ KEYWORD_ALIASES: Dict[str, List[str]] = {
     "adc_snr": ["adc", "snr", "enob", "quantization noise"],
     "can_bus": ["can bus", "canbus", "can fd", "bit timing"],
     "via_current": ["via", "via current", "thermal via", "ipc-2152"],
+    "ldo_thermal": ["ldo", "dropout", "quiescent current", "regülatör"],
+    "mosfet_driver": ["mosfet", "gate driver", "gate charge", "switching loss"],
+    "analog_filter": ["analog filter", "sallen key", "butterworth filter"],
+    "current_sense": ["current sense", "shunt", "ina219", "ina180"],
+    "uart_config": ["uart", "baud rate", "parity", "usart"],
+    "wheatstone_bridge": ["wheatstone", "strain gauge", "load cell", "köprü"],
+    "pcb_cost": ["pcb cost", "pcb manufacturing cost", "smt cost"],
     "bootloader": ["bootloader", "boot", "vector table", "flash offset"],
     "stack_guard": ["stack", "freertos", "rtos task", "stack overflow"],
     "power_profile": ["power", "current", "sleep", "deep sleep", "mA", "güç", "batarya ömrü"],
@@ -151,6 +173,9 @@ KEYWORD_ALIASES: Dict[str, List[str]] = {
     "lorawan": ["lorawan", "lora", "spreading factor", "time on air"],
     "crypto": ["crypto", "aes", "ecc", "sha256", "hardware accelerator"],
     "digital_filter": ["fir", "iir", "digital filter", "filter taps"],
+    "isr_latency": ["isr", "interrupt latency", "nvic", "wcet"],
+    "memory_pool": ["memory pool", "static memory", "fixed block"],
+    "ring_buffer": ["ring buffer", "circular buffer", "dma buffer", "lock free"],
     "enclosure": ["enclosure", "box", "case", "kutu", "3d print", "openscad"],
     "snap_fit": ["snap", "clip", "klips", "cantilever"],
     "gasket": ["gasket", "o-ring", "seal", "conta", "ip67", "waterproof", "su geçirmez"],
@@ -164,6 +189,8 @@ KEYWORD_ALIASES: Dict[str, List[str]] = {
     "spring_design": ["spring", "spring rate", "helical spring", "yay hesabı"],
     "gear_ratio": ["gear", "gear ratio", "dişli oranı", "gearbox"],
     "heatsink": ["heatsink", "thermal resistance", "soğutucu kanatçık"],
+    "tolerance_stack": ["tolerance stack", "tolerance analysis", "worst case", "rss"],
+    "bearing_life": ["bearing", "bearing life", "l10", "rulman ömrü"],
     "web_api": ["api", "rest", "fastapi", "express", "backend"],
     "react": ["react", "frontend", "component", "tsx", "jsx"],
     "edge_ai": ["tinyml", "edge ai", "model deploy", "quantization"],
@@ -171,9 +198,13 @@ KEYWORD_ALIASES: Dict[str, List[str]] = {
     "sql_gen": ["sql", "ddl", "postgres", "table schema"],
     "graphql_gen": ["graphql", "sdl", "resolver", "query mutation"],
     "terraform_gen": ["terraform", "iac", "hcl", "aws infrastructure"],
+    "auth_flow": ["auth", "jwt", "oauth2", "authentication"],
+    "nginx_gen": ["nginx", "reverse proxy", "ssl", "tls"],
+    "env_manager": ["env", "environment variables", "secret key", "secret rotation"],
     "cost_forecast": ["cost", "maliyet", "token cost", "api cost"],
     "agent_health": ["health", "sağlık", "system status", "sistem durumu"],
 }
+
 
 
 

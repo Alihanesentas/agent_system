@@ -7,9 +7,9 @@ and heatsink sizing requirements for LDOs, MOSFETs, and power ICs.
 from typing import Dict, Any
 
 def analyze_thermal_dissipation(
-    input_voltage: float,
-    output_voltage: float,
-    current_amps: float,
+    input_voltage: float = 5.0,
+    output_voltage: float = 3.3,
+    current_amps: float = 0.5,
     theta_ja_cw: float = 65.0,  # °C/W for SOT-223
     max_ambient_temp_c: float = 50.0,
     max_junction_temp_c: float = 125.0

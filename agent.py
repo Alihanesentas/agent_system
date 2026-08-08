@@ -140,6 +140,13 @@ from core.hardware.opamp_circuit import calculate_opamp_circuit
 from core.hardware.adc_snr import analyze_adc_performance
 from core.hardware.can_bus import configure_can_bus
 from core.hardware.via_current import calculate_via_current
+from core.hardware.ldo_thermal import analyze_ldo_thermal
+from core.hardware.mosfet_driver import design_mosfet_driver
+from core.hardware.filter_design import design_analog_filter
+from core.hardware.current_sense import design_current_sense
+from core.hardware.uart_config import configure_uart
+from core.hardware.wheatstone_bridge import calculate_wheatstone_bridge
+from core.hardware.pcb_cost_estimator import estimate_pcb_cost
 from core.software.rtos_task_design import design_rtos_tasks
 from core.software.pid_tuner import tune_pid_controller
 from core.software.modbus_gen import generate_modbus_map
@@ -148,21 +155,30 @@ from core.software.ble_gatt import generate_ble_gatt_profile
 from core.software.lorawan_params import calculate_lorawan_params
 from core.software.crypto_engine import design_crypto_params
 from core.software.fir_iir_filter import design_digital_filter
+from core.software.isr_latency import analyze_isr_latency
+from core.software.memory_pool import design_memory_pool
+from core.software.ring_buffer import design_ring_buffer
 from core.production.print_cost import estimate_3d_print_cost
 from core.production.motor_sizing import size_motor
 from core.production.bolt_torque import calculate_bolt_torque
 from core.production.spring_design import design_spring
 from core.production.gear_ratio import calculate_gear_ratio
 from core.production.heatsink_design import design_heatsink
+from core.production.tolerance_stack import analyze_tolerance_stack
+from core.production.bearing_life import calculate_bearing_life
 from core.computer.rest_api_gen import generate_rest_api_scaffold
 from core.computer.ci_cd_pipeline import generate_ci_cd_pipeline
 from core.computer.sql_schema_gen import generate_sql_schema
 from core.computer.graphql_schema import generate_graphql_schema
 from core.computer.terraform_gen import generate_terraform_module
+from core.computer.auth_flow import generate_auth_flow
+from core.computer.nginx_config import generate_nginx_config
 from core.engine.prompt_template import render_prompt_template
 from core.engine.chain_of_thought import run_chain_of_thought
 from core.infra.health_check import run_health_check
 from core.infra.cron_scheduler import schedule_cron_job
+from core.infra.env_manager import manage_env_config
+
 from core.engine.llm_fallback import (
     smart_dispatch, search_engine_registry, list_all_engines,
     get_generated_scripts_list, generate_fallback_script, execute_generated_script,
@@ -296,6 +312,13 @@ def print_commands(category: str = None):
         print(f"  {Colors.GREEN}/adc-snr{Colors.RESET}                   -> Calculate ADC SNR, ENOB, LSB size & quantization noise")
         print(f"  {Colors.GREEN}/can-bus{Colors.RESET}                   -> Calculate CAN bus bit timing segments, prescaler & 120Ω termination")
         print(f"  {Colors.GREEN}/via-current{Colors.RESET}              -> Calculate PCB via DC current capacity (IPC-2152) & thermal via array")
+        print(f"  {Colors.GREEN}/ldo-thermal{Colors.RESET}              -> Calculate LDO regulator power loss, junction temp & efficiency")
+        print(f"  {Colors.GREEN}/mosfet-driver{Colors.RESET}            -> Size MOSFET gate driver peak current, switching time & power loss")
+        print(f"  {Colors.GREEN}/analog-filter{Colors.RESET}            -> Design Sallen-Key 2nd-order active low-pass/high-pass filters")
+        print(f"  {Colors.GREEN}/current-sense{Colors.RESET}            -> Calculate shunt current sense resistor, power loss & INA gain")
+        print(f"  {Colors.GREEN}/uart-config{Colors.RESET}              -> Calculate UART baud rate clock dividers & baud error %")
+        print(f"  {Colors.GREEN}/wheatstone-bridge{Colors.RESET}        -> Calculate Wheatstone bridge output voltage & strain gauge sensitivity")
+        print(f"  {Colors.GREEN}/pcb-cost{Colors.RESET}                 -> Estimate bare board PCB fab & SMT assembly batch cost")
         print(f"  {Colors.GREEN}/rf [freq_mhz]{Colors.RESET}              -> Calculate PCB antenna dimensions & 50Ω matching")
         print(f"  {Colors.GREEN}/genetic-hw{Colors.RESET}                 -> Multi-objective Pareto genetic hardware optimizer\n")
 
@@ -319,6 +342,9 @@ def print_commands(category: str = None):
         print(f"  {Colors.GREEN}/lorawan{Colors.RESET}                   -> Calculate LoRaWAN Time-on-Air, SF, link budget & ETSI duty cycle")
         print(f"  {Colors.GREEN}/crypto{Colors.RESET}                    -> Calculate hardware crypto throughput (Mbps) & key sizing")
         print(f"  {Colors.GREEN}/digital-filter{Colors.RESET}            -> Generate FIR/IIR filter tap coefficients & C arrays")
+        print(f"  {Colors.GREEN}/isr-latency{Colors.RESET}              -> Calculate NVIC interrupt latency, WCET & max trigger frequency")
+        print(f"  {Colors.GREEN}/memory-pool{Colors.RESET}              -> Design deterministic O(1) static fixed-block memory pools")
+        print(f"  {Colors.GREEN}/ring-buffer{Colors.RESET}              -> Design lock-free circular ring buffers with power-of-2 masks")
         print(f"  {Colors.GREEN}/watchdog{Colors.RESET}                   -> Firmware CPU panic crash dump & watchdog reset analyzer")
         print(f"  {Colors.GREEN}/power <code>{Colors.RESET}                -> Firmware energy consumption & battery life profiler\n")
 
@@ -330,6 +356,8 @@ def print_commands(category: str = None):
         print(f"  {Colors.GREEN}/complexity <code>{Colors.RESET}          -> AST cyclomatic code complexity & maintainability index auditor")
         print(f"  {Colors.GREEN}/rest-gen [resource]{Colors.RESET}         -> Scaffold CRUD REST API endpoints & DTO models")
         print(f"  {Colors.GREEN}/graphql-gen [type]{Colors.RESET}          -> Generate GraphQL SDL schemas & resolver stubs")
+        print(f"  {Colors.GREEN}/auth-flow{Colors.RESET}                -> Generate OAuth2 / JWT authentication & RBAC middleware")
+        print(f"  {Colors.GREEN}/nginx-gen{Colors.RESET}                 -> Generate production Nginx reverse proxy, SSL & rate limits")
         print(f"  {Colors.GREEN}/ci-cd [provider]{Colors.RESET}            -> Generate GitHub Actions / GitLab CI workflow YAML pipelines")
         print(f"  {Colors.GREEN}/sql-gen [table]{Colors.RESET}             -> Generate PostgreSQL / SQLite DDL schemas & indexes")
         print(f"  {Colors.GREEN}/terraform-gen [mod]{Colors.RESET}          -> Generate AWS Terraform IaC HCL infrastructure modules")
@@ -354,6 +382,8 @@ def print_commands(category: str = None):
         print(f"  {Colors.GREEN}/spring{Colors.RESET}                     -> Calculate helical compression spring rate k, Wahl factor & stress")
         print(f"  {Colors.GREEN}/gear-ratio{Colors.RESET}                 -> Calculate spur gear train reduction ratio, output torque & center distance")
         print(f"  {Colors.GREEN}/heatsink{Colors.RESET}                   -> Calculate aluminum finned heatsink thermal resistance Rth & volume")
+        print(f"  {Colors.GREEN}/tolerance-stack{Colors.RESET}            -> Calculate Worst-Case & RSS 3-sigma statistical tolerance stack-up")
+        print(f"  {Colors.GREEN}/bearing-life{Colors.RESET}               -> Calculate ISO 281 ball & roller bearing L10 & L10h lifespan")
         print(f"  {Colors.GREEN}/slicer <material>{Colors.RESET}          -> Recommend 3D printing slicer settings (PLA/ABS/PETG/TPU)")
         print(f"  {Colors.GREEN}/bom-opt{Colors.RESET}                     -> Analyze BOM cost drivers & production quantity tiers")
         print(f"  {Colors.GREEN}/supply-risk{Colors.RESET}                 -> Multi-vendor BOM stock availability & EOL risk alert")
@@ -367,6 +397,8 @@ def print_commands(category: str = None):
         print(f"  {Colors.GREEN}/graph <query>{Colors.RESET}                 -> Query Hardware Knowledge Graph for MCU/Sensors")
         print(f"  {Colors.GREEN}/health-probe{Colors.RESET}              -> Run synthetic health checks across system DBs & services")
         print(f"  {Colors.GREEN}/cron-schedule{Colors.RESET}             -> Schedule periodic background cron tasks")
+        print(f"  {Colors.GREEN}/env-manager{Colors.RESET}               -> Audit environment variables & check required production secrets")
+
 
 
         print(f"  {Colors.GREEN}/reflect <task>{Colors.RESET}               -> Run task with self-reflective failure critique loop")
@@ -1373,6 +1405,67 @@ def start_interactive_shell(default_agent: str = "orchestrator", default_model: 
                     res = schedule_cron_job()
                     print(f"{Colors.CYAN}--- PERIODIC BACKGROUND CRON TASK SCHEDULER ---{Colors.RESET}")
                     print(f"  Job: {res['job_name']} | Schedule: {res['cron_expression']} | Next Run: {res['next_run_timestamp']}\n")
+                elif cmd == "/ldo-thermal":
+                    res = analyze_ldo_thermal()
+                    print(f"{Colors.CYAN}--- LDO THERMAL & DROPOUT ANALYZER ---{Colors.RESET}")
+                    print(f"  P-Loss: {res['power_dissipation_w']} W | Tj: {res['junction_temperature_c']} °C | Eff: {res['efficiency_pct']}% | Status: {res['thermal_status']}\n")
+                elif cmd == "/mosfet-driver":
+                    res = design_mosfet_driver()
+                    print(f"{Colors.CYAN}--- MOSFET GATE DRIVER & LOSS SIZER ---{Colors.RESET}")
+                    print(f"  Peak Current: {res['peak_gate_current_a']} A | Switching Time: {res['switching_time_ns']} ns | Loss: {res['total_mosfet_loss_w']} W\n")
+                elif cmd == "/analog-filter":
+                    res = design_analog_filter()
+                    print(f"{Colors.CYAN}--- SALLEN-KEY ANALOG FILTER DESIGNER ---{Colors.RESET}")
+                    print(f"  Cutoff: {res['cutoff_freq_hz']} Hz | Q: {res['q_factor']} | C1: {res['c1_calculated_nf']} nF | C2: {res['c2_calculated_nf']} nF\n")
+                elif cmd == "/current-sense":
+                    res = design_current_sense()
+                    print(f"{Colors.CYAN}--- SHUNT CURRENT SENSE CIRCUIT DESIGNER ---{Colors.RESET}")
+                    print(f"  R_sense: {res['recommended_r_sense_mohm']} mΩ | Loss: {res['shunt_power_dissipation_w']} W | V_out: {res['max_output_voltage_v']} V\n")
+                elif cmd == "/uart-config":
+                    res = configure_uart()
+                    print(f"{Colors.CYAN}--- UART BAUD RATE & DIVIDER CALCULATOR ---{Colors.RESET}")
+                    print(f"  Actual Baud: {res['actual_baud']} | Error: {res['error_pct']}% | Status: {res['compliance']}\n")
+                elif cmd == "/wheatstone-bridge":
+                    res = calculate_wheatstone_bridge()
+                    print(f"{Colors.CYAN}--- WHEATSTONE BRIDGE & STRAIN GAUGE CALCULATOR ---{Colors.RESET}")
+                    print(f"  V_out: {res['output_voltage_mv']} mV | Sensitivity: {res['sensitivity_mv_per_v']} mV/V | Gain Rec: {res['recommended_adc_gain']}\n")
+                elif cmd == "/pcb-cost":
+                    res = estimate_pcb_cost()
+                    print(f"{Colors.CYAN}--- PCB FABRICATION & SMT ASSEMBLY COST ESTIMATOR ---{Colors.RESET}")
+                    print(f"  Area: {res['area_cm2']} cm² | Bare Board Unit: ${res['bare_board_unit_usd']} | Total Batch ({res['quantity']} pcs): ${res['total_batch_cost_usd']}\n")
+                elif cmd == "/isr-latency":
+                    res = analyze_isr_latency()
+                    print(f"{Colors.CYAN}--- ISR LATENCY & NESTED INTERRUPT ANALYZER ---{Colors.RESET}")
+                    print(f"  Entry: {res['entry_latency_us']} us | WCET: {res['worst_case_execution_time_us']} us | Max Rate: {res['max_recommended_trigger_rate_khz']} kHz\n")
+                elif cmd == "/memory-pool":
+                    res = design_memory_pool()
+                    print(f"{Colors.CYAN}--- STATIC FIXED-BLOCK MEMORY POOL DESIGNER ---{Colors.RESET}")
+                    print(f"  Aligned Block: {res['aligned_block_size_bytes']} B | Total RAM: {res['total_pool_ram_bytes']} B | Complexity: {res['alloc_dealloc_complexity']}\n")
+                elif cmd == "/ring-buffer":
+                    res = design_ring_buffer()
+                    print(f"{Colors.CYAN}--- LOCK-FREE CIRCULAR RING BUFFER DESIGNER ---{Colors.RESET}")
+                    print(f"  Capacity: {res['power_of_two_capacity']} | Mask: {res['bitmask_hex']} | Total RAM: {res['total_ram_bytes']} B | Thread-Safety: {res['thread_safety']}\n")
+                elif cmd == "/tolerance-stack":
+                    res = analyze_tolerance_stack()
+                    print(f"{Colors.CYAN}--- TOLERANCE STACK-UP ANALYSIS (WORST-CASE & RSS) ---{Colors.RESET}")
+                    print(f"  Nominal Gap: {res['nominal_gap_mm']} mm | Worst-Case: ±{res['worst_case']['tolerance_mm']} mm | RSS 3-Sigma: ±{res['rss_3sigma_statistical']['tolerance_mm']} mm\n")
+                elif cmd == "/bearing-life":
+                    res = calculate_bearing_life()
+                    print(f"{Colors.CYAN}--- ISO 281 BEARING L10 LIFE CALCULATOR ---{Colors.RESET}")
+                    print(f"  Equiv Load P: {res['equivalent_load_p_n']} N | L10: {res['l10_million_revolutions']} M-revs | L10h: {res['l10h_operating_hours']} hrs ({res['service_years_continuous']} yrs)\n")
+                elif cmd == "/auth-flow":
+                    res = generate_auth_flow()
+                    print(f"{Colors.CYAN}--- AUTHENTICATION & SECURITY STRATEGY GENERATOR ---{Colors.RESET}")
+                    print(f"  Type: {res['auth_type']} | Token TTL: {res['token_ttl_minutes']} min | Roles: {', '.join(res['roles_configured'])}\n")
+                elif cmd == "/nginx-gen":
+                    res = generate_nginx_config()
+                    print(f"{Colors.CYAN}--- NGINX REVERSE PROXY & SSL CONFIG GENERATOR ---{Colors.RESET}")
+                    print(f"  Domain: {res['domain_name']} | Upstream Port: {res['upstream_port']} | SSL: {res['ssl_enabled']}\n")
+                elif cmd == "/env-manager":
+                    res = manage_env_config()
+                    print(f"{Colors.CYAN}--- ENVIRONMENT VARIABLE & SECRET KEY MANAGER ---{Colors.RESET}")
+                    print(f"  Audit Pass: {res['audit_pass']} | Found: {len(res['found_keys'])} | Missing: {len(res['missing_keys'])}\n")
+
 
                 # ─── LLM SMART DISPATCH & FALLBACK ───
                 elif cmd == "/smart":
