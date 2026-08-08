@@ -13,8 +13,6 @@
 - [ ] core/hardware/psu_ripple.py           → Güç kaynağı ripple/noise, filtre kapasitör boyutlandırma | def analyze_psu_ripple(**kwargs) -> Dict
 
 ## Analog & Sinyal İşleme
-- [ ] core/hardware/opamp_circuit.py        → Op-Amp topolojileri, kazanç, bant genişliği | def calculate_opamp_circuit(**kwargs) -> Dict
-- [ ] core/hardware/adc_snr.py              → ADC SNR, ENOB, quantization noise analizi | def analyze_adc_performance(**kwargs) -> Dict
 - [ ] core/hardware/filter_design.py        → Aktif/pasif filtre tasarımı (Butterworth, Chebyshev) | def design_analog_filter(**kwargs) -> Dict
 - [ ] core/hardware/dac_output.py           → DAC çıkış tampon, settling time | def design_dac_output(**kwargs) -> Dict
 - [ ] core/hardware/current_sense.py        → Shunt akım ölçüm devresi, INA amplifikatör | def design_current_sense(**kwargs) -> Dict
@@ -22,7 +20,6 @@
 ## Dijital & Haberleşme
 - [ ] core/hardware/uart_config.py          → UART baud rate, parity, hata oranı | def configure_uart(**kwargs) -> Dict
 - [ ] core/hardware/spi_timing.py           → SPI bus timing, clock phase/polarity | def analyze_spi_timing(**kwargs) -> Dict
-- [ ] core/hardware/can_bus.py              → CAN bus termination, bit timing | def configure_can_bus(**kwargs) -> Dict
 - [ ] core/hardware/usb_impedance.py        → USB 2.0/3.0 diferansiyel empedans kontrolü | def check_usb_impedance(**kwargs) -> Dict
 - [ ] core/hardware/ethernet_magnetics.py   → Ethernet magnetics seçimi, PoE güç hesabı | def design_ethernet_interface(**kwargs) -> Dict
 - [ ] core/hardware/lvds_serdes.py          → LVDS/SerDes sinyal bütünlüğü | def analyze_lvds_signal(**kwargs) -> Dict
@@ -33,7 +30,6 @@
 - [ ] core/hardware/thermocouple.py         → Termokupl tipi seçimi, cold junction komp. | def design_thermocouple_interface(**kwargs) -> Dict
 
 ## PCB İleri Seviye
-- [ ] core/hardware/via_current.py          → Via akım kapasitesi, thermal via array | def calculate_via_current(**kwargs) -> Dict
 - [ ] core/hardware/crosstalk_analysis.py   → PCB crosstalk (NEXT/FEXT), guard trace | def analyze_pcb_crosstalk(**kwargs) -> Dict
 - [ ] core/hardware/pcb_cost_estimator.py   → PCB üretim maliyet tahmini | def estimate_pcb_cost(**kwargs) -> Dict
 - [ ] core/hardware/impedance_calculator.py → Microstrip/Stripline/Coplanar empedans | def calculate_trace_impedance_advanced(**kwargs) -> Dict
@@ -58,13 +54,10 @@
 
 ## Haberleşme Protokolleri
 - [ ] core/software/protobuf_gen.py         → Protocol Buffers schema → C struct | def generate_protobuf_schema(**kwargs) -> Dict
-- [ ] core/software/ble_gatt.py             → BLE GATT service/characteristic tanımlama | def generate_ble_gatt_profile(**kwargs) -> Dict
-- [ ] core/software/lorawan_params.py       → LoRaWAN SF, BW, link budget, airtime | def calculate_lorawan_params(**kwargs) -> Dict
 - [ ] core/software/zigbee_mesh.py          → Zigbee mesh topolojisi, routing table | def design_zigbee_mesh(**kwargs) -> Dict
 
 ## Güvenlik & Kriptografi
 - [ ] core/software/secure_boot.py          → Secure boot chain konfigürasyon üreteci | def configure_secure_boot(**kwargs) -> Dict
-- [ ] core/software/crypto_engine.py        → AES/RSA/ECDSA anahtar boyutlandırma | def design_crypto_params(**kwargs) -> Dict
 - [ ] core/software/cert_manager.py         → X.509 sertifika zinciri, TLS mutual auth | def generate_cert_config(**kwargs) -> Dict
 
 ## Veri & Depolama
@@ -80,7 +73,6 @@
 - [ ] core/software/firmware_diff.py        → İki firmware binary section-level diff | def diff_firmware_binaries(**kwargs) -> Dict
 
 ## DSP & Kontrol
-- [ ] core/software/fir_iir_filter.py       → FIR/IIR dijital filtre katsayı hesaplama | def design_digital_filter(**kwargs) -> Dict
 - [ ] core/software/fft_analyzer.py         → FFT pencere, frekans çözünürlüğü, aliasing | def analyze_fft_params(**kwargs) -> Dict
 
 # ──────────────────────────────────────────────────────────────────────
@@ -96,13 +88,10 @@
 
 ## Mekanik Analiz
 - [ ] core/production/beam_stress.py        → Kiriş eğilme moment, kesme, sehim | def analyze_beam_stress(**kwargs) -> Dict
-- [ ] core/production/spring_design.py      → Yay tasarımı (helisel basma/çekme/burulma) | def design_spring(**kwargs) -> Dict
-- [ ] core/production/gear_ratio.py         → Dişli çark oranı (modül, diş sayısı) | def calculate_gear_ratio(**kwargs) -> Dict
 - [ ] core/production/bearing_life.py       → Rulman ömür hesabı (L10, dinamik yük) | def calculate_bearing_life(**kwargs) -> Dict
 - [ ] core/production/vibration_analysis.py → Doğal frekans, titreşim izolasyon | def analyze_vibration(**kwargs) -> Dict
 
 ## Termal & Akışkan
-- [ ] core/production/heatsink_design.py    → Kanatçıklı soğutucu boyutlandırma | def design_heatsink(**kwargs) -> Dict
 - [ ] core/production/fan_selection.py      → Soğutma fanı seçimi (CFM, noise) | def select_cooling_fan(**kwargs) -> Dict
 - [ ] core/production/pipe_flow.py          → Boru akış (Reynolds, basınç düşümü) | def calculate_pipe_flow(**kwargs) -> Dict
 
@@ -119,7 +108,6 @@
 # ──────────────────────────────────────────────────────────────────────
 
 ## Backend & API
-- [ ] core/computer/graphql_schema.py       → GraphQL schema ve resolver scaffold | def generate_graphql_schema(**kwargs) -> Dict
 - [ ] core/computer/auth_flow.py            → OAuth2/JWT/API Key auth flow config | def generate_auth_flow(**kwargs) -> Dict
 - [ ] core/computer/rate_limit_design.py    → API rate limiting stratejisi tasarımı | def design_rate_limiter(**kwargs) -> Dict
 - [ ] core/computer/websocket_handler.py    → WebSocket event handler scaffold | def generate_websocket_handler(**kwargs) -> Dict
@@ -130,7 +118,6 @@
 - [ ] core/computer/data_pipeline.py        → ETL/ELT data pipeline DAG tasarımı | def design_data_pipeline(**kwargs) -> Dict
 
 ## DevOps & Altyapı
-- [ ] core/computer/terraform_gen.py        → Terraform IaC modül scaffold | def generate_terraform_module(**kwargs) -> Dict
 - [ ] core/computer/nginx_config.py         → Nginx reverse proxy, SSL config | def generate_nginx_config(**kwargs) -> Dict
 - [ ] core/computer/monitoring_stack.py     → Prometheus + Grafana config üreteci | def generate_monitoring_stack(**kwargs) -> Dict
 - [ ] core/computer/log_aggregation.py      → ELK/Loki log toplama pipeline config | def generate_log_pipeline(**kwargs) -> Dict
@@ -156,7 +143,6 @@
 # ENGINE — Agent Orkestrasyon (15 yeni modül)
 # ──────────────────────────────────────────────────────────────────────
 
-- [ ] core/engine/chain_of_thought.py       → CoT / ToT reasoning framework | def run_chain_of_thought(**kwargs) -> Dict
 - [ ] core/engine/tool_registry.py          → Dinamik tool registration & discovery | def register_tool(**kwargs) -> Dict
 - [ ] core/engine/agent_memory_index.py     → Vektör tabanlı agent long-term memory | def index_agent_memory(**kwargs) -> Dict
 - [ ] core/engine/multi_model_router.py     → Çoklu LLM model router | def route_to_best_model(**kwargs) -> Dict
@@ -178,9 +164,9 @@
 - [ ] core/infra/env_manager.py             → .env dosya yönetimi, secret rotation | def manage_env_config(**kwargs) -> Dict
 - [ ] core/infra/retry_policy.py            → Konfigüre edilebilir retry policy | def execute_with_retry(**kwargs) -> Dict
 - [ ] core/infra/feature_flags.py           → Feature flag yönetimi (on/off, rollout) | def check_feature_flag(**kwargs) -> Dict
+
 - [ ] core/infra/audit_logger.py            → Immutable audit log (compliance ready) | def log_audit_event(**kwargs) -> Dict
 - [ ] core/infra/config_validator.py        → YAML/JSON/TOML schema validation | def validate_config(**kwargs) -> Dict
-- [ ] core/infra/cron_scheduler.py          → Cron job tanımlama ve çalıştırma | def schedule_cron_job(**kwargs) -> Dict
 - [ ] core/infra/file_watcher.py            → Dosya sistemi değişiklik izleme | def watch_file_changes(**kwargs) -> Dict
 - [ ] core/infra/perf_benchmark.py          → Micro-benchmark runner | def run_benchmark(**kwargs) -> Dict
 - [ ] core/infra/data_anonymizer.py         → PII/KVKK veri anonimleştirme | def anonymize_data(**kwargs) -> Dict

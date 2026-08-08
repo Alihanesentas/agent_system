@@ -63,6 +63,8 @@ Layer 5 (Persistence & Infrastructure): ChromaDB RAG Engine, SQLite Long-Term Me
   - `rest_api_gen.py`: `/rest-gen` REST API Router & Scaffold Generator
   - `ci_cd_pipeline.py`: `/ci-cd` CI/CD Workflow Pipeline Generator
   - `sql_schema_gen.py`: `/sql-gen` SQL DDL Schema & Migration Generator
+  - `graphql_schema.py`: `/graphql-gen` GraphQL SDL Schema & Resolver Generator
+  - `terraform_gen.py`: `/terraform-gen` AWS Terraform IaC Module Generator
 - **`core/software/`**: Firmware, Testing, DevOps & Container Engines
   - `executor.py`: Shell Runner for gcc / make / platformio
   - `docker_k8s.py`: `/docker-gen` Dockerfile & Kubernetes Deployment Manifest Generator
@@ -70,12 +72,23 @@ Layer 5 (Persistence & Infrastructure): ChromaDB RAG Engine, SQLite Long-Term Me
   - `pid_tuner.py`: `/pid-tune` PID Controller Auto-Tuner
   - `modbus_gen.py`: `/modbus-gen` Modbus RTU/TCP Register Map & C Struct Generator
   - `mqtt_topic.py`: `/mqtt-cfg` MQTT Topic Hierarchy Generator
+  - `ble_gatt.py`: `/ble-gatt` BLE GATT Custom UUID Service Generator
+  - `lorawan_params.py`: `/lorawan` LoRaWAN Time-on-Air & Link Budget Calculator
+  - `crypto_engine.py`: `/crypto` Embedded Crypto Accelerator Sizer
+  - `fir_iir_filter.py`: `/digital-filter` FIR/IIR Digital Filter Tap Coefficient Generator
 - **`core/production/`**: Mechanical CAD & Manufacturing
   - `print_cost.py`: `/print-cost` 3D Printing Manufacturing Cost Estimator
   - `motor_sizing.py`: `/motor-size` Motor Torque & Power Sizing Engine
   - `bolt_torque.py`: `/bolt-torque` Bolt Tightening Torque Calculator
+  - `spring_design.py`: `/spring` Helical Compression Spring Designer
+  - `gear_ratio.py`: `/gear-ratio` Spur & Planetary Gear Train Calculator
+  - `heatsink_design.py`: `/heatsink` Finned Aluminum Heatsink Dimensioning Engine
+- **`core/engine/`**: Orchestration & Reasoning
+  - `chain_of_thought.py`: `/cot` Chain-of-Thought / Tree-of-Thought Reasoning Framework
 - **`core/infra/`**: Infrastructure & Systems
   - `health_check.py`: `/health-probe` Service Health Probe Engine
+  - `cron_scheduler.py`: `/cron-schedule` Periodic Background Cron Task Scheduler
+
 
   - `cloud_devops.py`: `/devops` AWS Terraform HCL & GitHub Actions CI/CD Pipeline
   - `uml_generator.py`: `/uml` Mermaid UML Sequence Diagram Generator

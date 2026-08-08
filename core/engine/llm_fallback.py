@@ -47,6 +47,10 @@ ENGINE_REGISTRY: Dict[str, Dict[str, Any]] = {
     "voltage_divider": {"module": "core.hardware.voltage_divider", "func": "calculate_voltage_divider", "description": "Resistor voltage divider calculator"},
     "i2c_pullup": {"module": "core.hardware.i2c_pullup", "func": "calculate_i2c_pullup", "description": "I2C bus pull-up resistor calculator"},
     "esd": {"module": "core.hardware.esd_protection", "func": "design_esd_protection", "description": "ESD protection TVS diode sizer"},
+    "opamp": {"module": "core.hardware.opamp_circuit", "func": "calculate_opamp_circuit", "description": "Op-Amp gain & bandwidth calculator"},
+    "adc_snr": {"module": "core.hardware.adc_snr", "func": "analyze_adc_performance", "description": "ADC SNR & ENOB performance analyzer"},
+    "can_bus": {"module": "core.hardware.can_bus", "func": "configure_can_bus", "description": "CAN bus bit timing & termination calculator"},
+    "via_current": {"module": "core.hardware.via_current", "func": "calculate_via_current", "description": "PCB via current capacity & thermal array calculator"},
     
     # ── Software & Firmware ──
     "bootloader": {"module": "core.software.bootloader_checker", "func": "audit_bootloader_config", "description": "Bootloader integrity checker"},
@@ -64,6 +68,10 @@ ENGINE_REGISTRY: Dict[str, Dict[str, Any]] = {
     "pid_tuner": {"module": "core.software.pid_tuner", "func": "tune_pid_controller", "description": "PID controller auto-tuner"},
     "modbus": {"module": "core.software.modbus_gen", "func": "generate_modbus_map", "description": "Modbus register map & C struct generator"},
     "mqtt": {"module": "core.software.mqtt_topic", "func": "generate_mqtt_config", "description": "MQTT topic hierarchy & QoS generator"},
+    "ble_gatt": {"module": "core.software.ble_gatt", "func": "generate_ble_gatt_profile", "description": "BLE GATT service profile & C code generator"},
+    "lorawan": {"module": "core.software.lorawan_params", "func": "calculate_lorawan_params", "description": "LoRaWAN airtime & link budget calculator"},
+    "crypto": {"module": "core.software.crypto_engine", "func": "design_crypto_params", "description": "Crypto hardware accelerator throughput & key sizer"},
+    "digital_filter": {"module": "core.software.fir_iir_filter", "func": "design_digital_filter", "description": "FIR/IIR digital filter tap coefficient generator"},
     
     # ── Production & Mechanical ──
     "enclosure": {"module": "core.production.mechanical", "func": "generate_openscad_enclosure", "description": "3D enclosure generator"},
@@ -81,6 +89,9 @@ ENGINE_REGISTRY: Dict[str, Dict[str, Any]] = {
     "print_cost": {"module": "core.production.print_cost", "func": "estimate_3d_print_cost", "description": "3D print manufacturing cost estimator"},
     "motor_size": {"module": "core.production.motor_sizing", "func": "size_motor", "description": "Motor torque & power sizer"},
     "bolt_torque": {"module": "core.production.bolt_torque", "func": "calculate_bolt_torque", "description": "Bolt tightening torque calculator"},
+    "spring_design": {"module": "core.production.spring_design", "func": "design_spring", "description": "Helical compression spring design engine"},
+    "gear_ratio": {"module": "core.production.gear_ratio", "func": "calculate_gear_ratio", "description": "Gear train ratio & backlash calculator"},
+    "heatsink": {"module": "core.production.heatsink_design", "func": "design_heatsink", "description": "Aluminum finned heatsink dimensioning engine"},
     
     # ── Infrastructure ──
     "cost_forecast": {"module": "core.infra.cost_forecast", "func": "forecast_token_costs", "description": "Token cost forecast"},
@@ -89,7 +100,9 @@ ENGINE_REGISTRY: Dict[str, Dict[str, Any]] = {
     "dlq": {"module": "core.infra.dead_letter_queue", "func": "global_dlq", "description": "Dead letter queue"},
     "critical_path": {"module": "core.engine.critical_path", "func": "calculate_critical_path", "description": "Critical path profiler"},
     "prompt_template": {"module": "core.engine.prompt_template", "func": "render_prompt_template", "description": "Versioned prompt template renderer"},
+    "chain_of_thought": {"module": "core.engine.chain_of_thought", "func": "run_chain_of_thought", "description": "Chain-of-thought reasoning framework"},
     "health_check": {"module": "core.infra.health_check", "func": "run_health_check", "description": "Service health probe runner"},
+    "cron_scheduler": {"module": "core.infra.cron_scheduler", "func": "schedule_cron_job", "description": "Background cron task scheduler"},
     
     # ── Computer / Web ──
     "web_api": {"module": "core.computer.web_stack", "func": "generate_web_api_architecture", "description": "REST API scaffold generator"},
@@ -99,6 +112,8 @@ ENGINE_REGISTRY: Dict[str, Dict[str, Any]] = {
     "rest_gen": {"module": "core.computer.rest_api_gen", "func": "generate_rest_api_scaffold", "description": "REST API router scaffold generator"},
     "ci_cd": {"module": "core.computer.ci_cd_pipeline", "func": "generate_ci_cd_pipeline", "description": "CI/CD workflow pipeline generator"},
     "sql_gen": {"module": "core.computer.sql_schema_gen", "func": "generate_sql_schema", "description": "SQL DDL schema generator"},
+    "graphql_gen": {"module": "core.computer.graphql_schema", "func": "generate_graphql_schema", "description": "GraphQL SDL schema & resolver generator"},
+    "terraform_gen": {"module": "core.computer.terraform_gen", "func": "generate_terraform_module", "description": "Terraform IaC module generator"},
 }
 
 # ─── KEYWORD ALIASES ─────────────────────────────────────────────────────────
@@ -119,6 +134,10 @@ KEYWORD_ALIASES: Dict[str, List[str]] = {
     "voltage_divider": ["voltage divider", "resistor divider", "voltaj bölücü"],
     "i2c_pullup": ["i2c pullup", "i2c pull-up", "pullup resistor", "bus capacitance"],
     "esd": ["esd", "tvs", "surge", "transient", "diode"],
+    "opamp": ["opamp", "op-amp", "operational amplifier", "amplifikatör"],
+    "adc_snr": ["adc", "snr", "enob", "quantization noise"],
+    "can_bus": ["can bus", "canbus", "can fd", "bit timing"],
+    "via_current": ["via", "via current", "thermal via", "ipc-2152"],
     "bootloader": ["bootloader", "boot", "vector table", "flash offset"],
     "stack_guard": ["stack", "freertos", "rtos task", "stack overflow"],
     "power_profile": ["power", "current", "sleep", "deep sleep", "mA", "güç", "batarya ömrü"],
@@ -128,6 +147,10 @@ KEYWORD_ALIASES: Dict[str, List[str]] = {
     "pid_tuner": ["pid", "pid tuner", "ziegler nichols", "kp ki kd"],
     "modbus": ["modbus", "modbus rtu", "modbus tcp", "holding register"],
     "mqtt": ["mqtt", "mqtt topic", "qos", "broker"],
+    "ble_gatt": ["ble", "gatt", "bluetooth", "uuid", "characteristic"],
+    "lorawan": ["lorawan", "lora", "spreading factor", "time on air"],
+    "crypto": ["crypto", "aes", "ecc", "sha256", "hardware accelerator"],
+    "digital_filter": ["fir", "iir", "digital filter", "filter taps"],
     "enclosure": ["enclosure", "box", "case", "kutu", "3d print", "openscad"],
     "snap_fit": ["snap", "clip", "klips", "cantilever"],
     "gasket": ["gasket", "o-ring", "seal", "conta", "ip67", "waterproof", "su geçirmez"],
@@ -138,14 +161,20 @@ KEYWORD_ALIASES: Dict[str, List[str]] = {
     "print_cost": ["print cost", "3d print cost", "filament cost", "baskı maliyeti"],
     "motor_size": ["motor size", "motor sizing", "torque", "motor torku"],
     "bolt_torque": ["bolt torque", "tightening torque", "civata torku"],
+    "spring_design": ["spring", "spring rate", "helical spring", "yay hesabı"],
+    "gear_ratio": ["gear", "gear ratio", "dişli oranı", "gearbox"],
+    "heatsink": ["heatsink", "thermal resistance", "soğutucu kanatçık"],
     "web_api": ["api", "rest", "fastapi", "express", "backend"],
     "react": ["react", "frontend", "component", "tsx", "jsx"],
     "edge_ai": ["tinyml", "edge ai", "model deploy", "quantization"],
     "ci_cd": ["ci cd", "github actions", "pipeline", "workflow"],
     "sql_gen": ["sql", "ddl", "postgres", "table schema"],
+    "graphql_gen": ["graphql", "sdl", "resolver", "query mutation"],
+    "terraform_gen": ["terraform", "iac", "hcl", "aws infrastructure"],
     "cost_forecast": ["cost", "maliyet", "token cost", "api cost"],
     "agent_health": ["health", "sağlık", "system status", "sistem durumu"],
 }
+
 
 
 # ─── GENERATED SCRIPTS CACHE ─────────────────────────────────────────────────

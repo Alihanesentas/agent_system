@@ -95,19 +95,35 @@ For specific, one-off engineering queries, you can invoke any of the 58+ symboli
 - `/v-divider`: Calculates E24 standard resistor pairs for precision voltage dividers.
 - `/i2c-pullup`: Calculates min/max I2C pull-up resistor values based on bus capacitance and speed.
 - `/esd`: Selects IEC 61000-4-2 compliant TVS diodes and ESD protection networks.
+- `/opamp`: Calculates Op-Amp gain (dB / V/V), feedback resistor values, input impedance, and 3dB bandwidth.
+- `/adc-snr`: Calculates ADC theoretical SNR, measured ENOB, LSB size (uV), quantization noise, and Nyquist bandwidth.
+- `/can-bus`: Calculates CAN bus bit timing segments (Prop/Phase1/Phase2/SJW), prescaler, and 120Ω termination.
+- `/via-current`: Calculates PCB via DC current capacity (IPC-2152), via resistance, voltage drop, and thermal matrix.
 - `/rtos-design`: Designs FreeRTOS task priorities, stack memory allocation, and CPU utilization.
 - `/pid-tune`: Calculates Kp, Ki, Kd PID tuning parameters using Ziegler-Nichols method.
 - `/modbus-gen`: Generates industrial Modbus RTU/TCP holding register maps and C struct headers.
 - `/mqtt-cfg`: Generates structured IoT MQTT topic hierarchies and QoS parameters.
+- `/ble-gatt`: Generates BLE GATT custom 128-bit UUID services, characteristics, and NimBLE C code.
+- `/lorawan`: Calculates LoRaWAN Time-on-Air (ms), Spreading Factor (SF), sensitivity, link budget, and ETSI duty cycle.
+- `/crypto`: Calculates embedded crypto accelerator throughput (Mbps), execution time, and RAM footprint.
+- `/digital-filter`: Generates FIR/IIR filter tap coefficients and C header array definitions.
 - `/print-cost`: Estimates total 3D printing manufacturing cost (material, power, machine wear).
 - `/motor-size`: Sizes DC/BLDC/Stepper motor torque, RPM, and mechanical power.
 - `/bolt-torque`: Calculates metric bolt tightening torque (Nm) and preload force (kN) per VDI 2230.
+- `/spring`: Designs helical compression springs, calculating spring rate k, Wahl factor, and shear stress.
+- `/gear-ratio`: Calculates spur gear train reduction ratio, output RPM, output torque (Nm), and center distance.
+- `/heatsink`: Calculates finned aluminum heatsink required thermal resistance Rth (°C/W) and volume.
 - `/rest-gen`: Generates FastAPI / Express CRUD REST API router scaffolds.
+- `/graphql-gen`: Generates GraphQL SDL schemas and query/mutation resolver stubs.
 - `/ci-cd`: Generates GitHub Actions / GitLab CI workflow YAML pipelines.
 - `/sql-gen`: Generates PostgreSQL / SQLite DDL table schemas and indexes.
+- `/terraform-gen`: Generates AWS Terraform IaC module HCL configurations.
+- `/cot`: Runs Tree-of-Thought reasoning decomposition and parallel branch evaluation.
 - `/health-probe`: Runs synthetic health probe checks across background DBs, workers, and services.
+- `/cron-schedule`: Schedules periodic background cron jobs.
 - `/cad <L> <W> <H>`: Generates parametric OpenSCAD 3D enclosure script.
 - `/fasteners [M2-M4]`: Sizes 3D printed screw boss pilot holes and outer wall OD.
+
 - `/snap-fit`: Calculates 3D printed cantilever snap-fit joint deflection and strain.
 - `/flexure`: Calculates compliant living hinge bend radius and fatigue limits.
 - `/gasket`: Sizes IP67 waterproof rubber O-ring gasket gland grooves.

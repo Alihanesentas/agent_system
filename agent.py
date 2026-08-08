@@ -136,23 +136,39 @@ from core.hardware.power_budget import calculate_power_budget
 from core.hardware.voltage_divider import calculate_voltage_divider
 from core.hardware.i2c_pullup import calculate_i2c_pullup
 from core.hardware.esd_protection import design_esd_protection
+from core.hardware.opamp_circuit import calculate_opamp_circuit
+from core.hardware.adc_snr import analyze_adc_performance
+from core.hardware.can_bus import configure_can_bus
+from core.hardware.via_current import calculate_via_current
 from core.software.rtos_task_design import design_rtos_tasks
 from core.software.pid_tuner import tune_pid_controller
 from core.software.modbus_gen import generate_modbus_map
 from core.software.mqtt_topic import generate_mqtt_config
+from core.software.ble_gatt import generate_ble_gatt_profile
+from core.software.lorawan_params import calculate_lorawan_params
+from core.software.crypto_engine import design_crypto_params
+from core.software.fir_iir_filter import design_digital_filter
 from core.production.print_cost import estimate_3d_print_cost
 from core.production.motor_sizing import size_motor
 from core.production.bolt_torque import calculate_bolt_torque
+from core.production.spring_design import design_spring
+from core.production.gear_ratio import calculate_gear_ratio
+from core.production.heatsink_design import design_heatsink
 from core.computer.rest_api_gen import generate_rest_api_scaffold
 from core.computer.ci_cd_pipeline import generate_ci_cd_pipeline
 from core.computer.sql_schema_gen import generate_sql_schema
+from core.computer.graphql_schema import generate_graphql_schema
+from core.computer.terraform_gen import generate_terraform_module
 from core.engine.prompt_template import render_prompt_template
+from core.engine.chain_of_thought import run_chain_of_thought
 from core.infra.health_check import run_health_check
+from core.infra.cron_scheduler import schedule_cron_job
 from core.engine.llm_fallback import (
     smart_dispatch, search_engine_registry, list_all_engines,
     get_generated_scripts_list, generate_fallback_script, execute_generated_script,
     ENGINE_REGISTRY
 )
+
 
 
 class Colors:
@@ -252,7 +268,8 @@ def print_commands(category: str = None):
         print(f"  {Colors.GREEN}/tree [goal]{Colors.RESET}                 -> Live visual Agent Tree Simulation & runtime monitor")
         print(f"  {Colors.GREEN}/fsm{Colors.RESET}                        -> Sub-agent finite state machine status & rollback")
         print(f"  {Colors.GREEN}/critical-path{Colors.RESET}              -> Multi-agent task dependency critical path bottleneck profiler")
-        print(f"  {Colors.GREEN}/agent-telemetry{Colors.RESET}           -> Multi-agent step-by-step latency Gantt profiler\n")
+        print(f"  {Colors.GREEN}/agent-telemetry{Colors.RESET}           -> Multi-agent step-by-step latency Gantt profiler")
+        print(f"  {Colors.GREEN}/cot [prompt]{Colors.RESET}                -> Run Tree-of-Thought reasoning decomposition & branch evaluation\n")
 
     if cat in ["hardware", "all"]:
         print(f"{Colors.BOLD}{Colors.YELLOW}🔌 [core.hardware] KiCad PCB, DRC, SPICE & Antennas:{Colors.RESET}")
@@ -275,6 +292,10 @@ def print_commands(category: str = None):
         print(f"  {Colors.GREEN}/v-divider{Colors.RESET}                 -> Calculate precision E24 resistor pair voltage dividers")
         print(f"  {Colors.GREEN}/i2c-pullup{Colors.RESET}                -> Calculate min/max I2C pull-up resistor & rise time")
         print(f"  {Colors.GREEN}/esd{Colors.RESET}                       -> Select IEC 61000-4-2 compliant TVS diode ESD protection")
+        print(f"  {Colors.GREEN}/opamp{Colors.RESET}                     -> Calculate Op-Amp gain, feedback resistors & 3dB bandwidth")
+        print(f"  {Colors.GREEN}/adc-snr{Colors.RESET}                   -> Calculate ADC SNR, ENOB, LSB size & quantization noise")
+        print(f"  {Colors.GREEN}/can-bus{Colors.RESET}                   -> Calculate CAN bus bit timing segments, prescaler & 120Ω termination")
+        print(f"  {Colors.GREEN}/via-current{Colors.RESET}              -> Calculate PCB via DC current capacity (IPC-2152) & thermal via array")
         print(f"  {Colors.GREEN}/rf [freq_mhz]{Colors.RESET}              -> Calculate PCB antenna dimensions & 50Ω matching")
         print(f"  {Colors.GREEN}/genetic-hw{Colors.RESET}                 -> Multi-objective Pareto genetic hardware optimizer\n")
 
@@ -294,6 +315,10 @@ def print_commands(category: str = None):
         print(f"  {Colors.GREEN}/pid-tune{Colors.RESET}                  -> Auto-tune PID controller Kp, Ki, Kd parameters")
         print(f"  {Colors.GREEN}/modbus-gen{Colors.RESET}                -> Generate Modbus RTU/TCP register maps & C struct headers")
         print(f"  {Colors.GREEN}/mqtt-cfg{Colors.RESET}                  -> Generate structured IoT MQTT topic trees & QoS params")
+        print(f"  {Colors.GREEN}/ble-gatt{Colors.RESET}                  -> Generate BLE GATT custom UUID services & C code")
+        print(f"  {Colors.GREEN}/lorawan{Colors.RESET}                   -> Calculate LoRaWAN Time-on-Air, SF, link budget & ETSI duty cycle")
+        print(f"  {Colors.GREEN}/crypto{Colors.RESET}                    -> Calculate hardware crypto throughput (Mbps) & key sizing")
+        print(f"  {Colors.GREEN}/digital-filter{Colors.RESET}            -> Generate FIR/IIR filter tap coefficients & C arrays")
         print(f"  {Colors.GREEN}/watchdog{Colors.RESET}                   -> Firmware CPU panic crash dump & watchdog reset analyzer")
         print(f"  {Colors.GREEN}/power <code>{Colors.RESET}                -> Firmware energy consumption & battery life profiler\n")
 
@@ -304,8 +329,10 @@ def print_commands(category: str = None):
         print(f"  {Colors.GREEN}/react [component]{Colors.RESET}           -> Modern React Vite / Next.js TSX component boilerplate")
         print(f"  {Colors.GREEN}/complexity <code>{Colors.RESET}          -> AST cyclomatic code complexity & maintainability index auditor")
         print(f"  {Colors.GREEN}/rest-gen [resource]{Colors.RESET}         -> Scaffold CRUD REST API endpoints & DTO models")
+        print(f"  {Colors.GREEN}/graphql-gen [type]{Colors.RESET}          -> Generate GraphQL SDL schemas & resolver stubs")
         print(f"  {Colors.GREEN}/ci-cd [provider]{Colors.RESET}            -> Generate GitHub Actions / GitLab CI workflow YAML pipelines")
         print(f"  {Colors.GREEN}/sql-gen [table]{Colors.RESET}             -> Generate PostgreSQL / SQLite DDL schemas & indexes")
+        print(f"  {Colors.GREEN}/terraform-gen [mod]{Colors.RESET}          -> Generate AWS Terraform IaC HCL infrastructure modules")
         print(f"  {Colors.GREEN}/docker-gen [service]{Colors.RESET}         -> Automated Dockerfile & Kubernetes deployment manifest generator")
         print(f"  {Colors.GREEN}/uml [system]{Colors.RESET}                -> Software UML sequence & class diagram generator (Mermaid)")
         print(f"  {Colors.GREEN}/db-schema [table]{Colors.RESET}           -> Database PostgreSQL DDL schema & migration generator")
@@ -324,6 +351,9 @@ def print_commands(category: str = None):
         print(f"  {Colors.GREEN}/print-cost{Colors.RESET}                 -> Estimate 3D printing manufacturing cost (material, power, wear)")
         print(f"  {Colors.GREEN}/motor-size{Colors.RESET}                 -> Size DC/BLDC/Stepper motor torque, RPM & mechanical power")
         print(f"  {Colors.GREEN}/bolt-torque{Colors.RESET}                -> Calculate bolt tightening torque & preload force per VDI 2230")
+        print(f"  {Colors.GREEN}/spring{Colors.RESET}                     -> Calculate helical compression spring rate k, Wahl factor & stress")
+        print(f"  {Colors.GREEN}/gear-ratio{Colors.RESET}                 -> Calculate spur gear train reduction ratio, output torque & center distance")
+        print(f"  {Colors.GREEN}/heatsink{Colors.RESET}                   -> Calculate aluminum finned heatsink thermal resistance Rth & volume")
         print(f"  {Colors.GREEN}/slicer <material>{Colors.RESET}          -> Recommend 3D printing slicer settings (PLA/ABS/PETG/TPU)")
         print(f"  {Colors.GREEN}/bom-opt{Colors.RESET}                     -> Analyze BOM cost drivers & production quantity tiers")
         print(f"  {Colors.GREEN}/supply-risk{Colors.RESET}                 -> Multi-vendor BOM stock availability & EOL risk alert")
@@ -336,6 +366,8 @@ def print_commands(category: str = None):
         print(f"  {Colors.GREEN}/voice <prompt>{Colors.RESET}              -> Voice Assistant hands-free workbench command")
         print(f"  {Colors.GREEN}/graph <query>{Colors.RESET}                 -> Query Hardware Knowledge Graph for MCU/Sensors")
         print(f"  {Colors.GREEN}/health-probe{Colors.RESET}              -> Run synthetic health checks across system DBs & services")
+        print(f"  {Colors.GREEN}/cron-schedule{Colors.RESET}             -> Schedule periodic background cron tasks")
+
 
         print(f"  {Colors.GREEN}/reflect <task>{Colors.RESET}               -> Run task with self-reflective failure critique loop")
         print(f"  {Colors.GREEN}/cost <prompt>{Colors.RESET}                -> Multi-model dynamic cost-optimizer router check")
@@ -1281,6 +1313,67 @@ def start_interactive_shell(default_agent: str = "orchestrator", default_model: 
                     res = run_health_check()
                     print(f"{Colors.CYAN}--- SERVICE HEALTH PROBE RUNNER ---{Colors.RESET}")
                     print(f"  Status: {res['overall_health']} | Latency: {res['probe_latency_ms']}ms | Probes: {len(res['probes'])}\n")
+                elif cmd == "/opamp":
+                    res = calculate_opamp_circuit()
+                    print(f"{Colors.CYAN}--- OP-AMP CIRCUIT DESIGN & BANDWIDTH ENGINE ---{Colors.RESET}")
+                    print(f"  Topology: {res['topology']} | Gain: {res['calculated_gain_v_v']} V/V ({res['calculated_gain_db']} dB) | Rf: {res['recommended_r_feedback_kohm']}kΩ | BW: {res['bandwidth_3db_khz']} kHz\n")
+                elif cmd == "/adc-snr":
+                    res = analyze_adc_performance()
+                    print(f"{Colors.CYAN}--- ADC PERFORMANCE & SNR / ENOB ANALYZER ---{Colors.RESET}")
+                    print(f"  Bits: {res['resolution_bits']} | Theoretical SNR: {res['theoretical_snr_db']} dB | ENOB: {res['effective_number_of_bits_enob']} bits | LSB: {res['lsb_size_uv']} uV\n")
+                elif cmd == "/can-bus":
+                    res = configure_can_bus()
+                    print(f"{Colors.CYAN}--- CAN BUS BIT TIMING & TERMINATION CALCULATOR ---{Colors.RESET}")
+                    print(f"  Baud: {res['actual_baud_kbps']} kbps | Prescaler: {res['prescaler']} | Sample Point: {res['calculated_sample_point_pct']}%\n")
+                elif cmd == "/via-current":
+                    res = calculate_via_current()
+                    print(f"{Colors.CYAN}--- PCB VIA CURRENT CAPACITY & THERMAL VIA MATRIX ---{Colors.RESET}")
+                    print(f"  Max Current/Via: {res['max_current_per_via_a']} A | Resistance: {res['via_dc_resistance_mohm']} mΩ | V-Drop: {res['voltage_drop_at_max_current_mv']} mV\n")
+                elif cmd == "/ble-gatt":
+                    res = generate_ble_gatt_profile()
+                    print(f"{Colors.CYAN}--- BLE GATT SERVICE & CHARACTERISTIC PROFILE GENERATOR ---{Colors.RESET}")
+                    print(f"  Device: {res['device_name']} | Service UUID: {res['service_uuid']} | Characteristics: {res['characteristics_count']}\n")
+                elif cmd == "/lorawan":
+                    res = calculate_lorawan_params()
+                    print(f"{Colors.CYAN}--- LORAWAN AIRTIME & LINK BUDGET CALCULATOR ---{Colors.RESET}")
+                    print(f"  SF: {res['spreading_factor']} | Time-on-Air: {res['time_on_air_ms']} ms | Sensitivity: {res['receiver_sensitivity_dbm']} dBm | Link Budget: {res['max_link_budget_db']} dB\n")
+                elif cmd == "/crypto":
+                    res = design_crypto_params()
+                    print(f"{Colors.CYAN}--- EMBEDDED CRYPTO ACCELERATOR SIZER ---{Colors.RESET}")
+                    print(f"  Algorithm: {res['algorithm']} | Throughput: {res['throughput_mbps']} Mbps | Exec Time: {res['execution_time_ms']} ms | RAM: {res['ram_footprint_bytes']} B\n")
+                elif cmd == "/digital-filter":
+                    res = design_digital_filter()
+                    print(f"{Colors.CYAN}--- FIR / IIR DIGITAL FILTER DESIGNER ---{Colors.RESET}")
+                    print(f"  Type: {res['filter_type']} | Order: {res['filter_order']} | Taps: {res['num_taps']} | Fc: {res['cutoff_freq_hz']} Hz (Fs: {res['sampling_freq_hz']} Hz)\n")
+                elif cmd == "/spring":
+                    res = design_spring()
+                    print(f"{Colors.CYAN}--- MECHANICAL HELICAL COMPRESSION SPRING DESIGNER ---{Colors.RESET}")
+                    print(f"  Spring Rate k: {res['spring_rate_n_mm']} N/mm | Wahl Factor: {res['wahl_factor']} | Shear Stress: {res['corrected_shear_stress_mpa']} MPa ({res['stress_safety']})\n")
+                elif cmd == "/gear-ratio":
+                    res = calculate_gear_ratio()
+                    print(f"{Colors.CYAN}--- SPUR & PLANETARY GEAR TRAIN CALCULATOR ---{Colors.RESET}")
+                    print(f"  Ratio: {res['gear_ratio']}:1 | Output RPM: {res['output_rpm']} | Output Torque: {res['output_torque_nm']} Nm | Center Dist: {res['center_distance_mm']} mm\n")
+                elif cmd == "/heatsink":
+                    res = design_heatsink()
+                    print(f"{Colors.CYAN}--- FINNED ALUMINUM HEATSINK DIMENSIONING ENGINE ---{Colors.RESET}")
+                    print(f"  Req. Heatsink Rth: {res['required_heatsink_rth_c_w']} °C/W | Type: {res['cooling_type']} | Volume: {res['estimated_aluminum_heatsink_volume_cm3']} cm³\n")
+                elif cmd == "/graphql-gen":
+                    res = generate_graphql_schema()
+                    print(f"{Colors.CYAN}--- GRAPHQL SCHEMA DEFINITION & RESOLVER GENERATOR ---{Colors.RESET}")
+                    print(f"  Type: {res['type_name']} | Queries: {res['queries_count']} | Mutations: {res['mutations_count']}\n")
+                elif cmd == "/terraform-gen":
+                    res = generate_terraform_module()
+                    print(f"{Colors.CYAN}--- TERRAFORM IAC MODULE SCAFFOLD GENERATOR ---{Colors.RESET}")
+                    print(f"  Module: {res['module_name']} | Provider: {res['cloud_provider'].upper()} | Resources: {len(res['resources_created'])}\n")
+                elif cmd == "/cot":
+                    res = run_chain_of_thought()
+                    print(f"{Colors.CYAN}--- CHAIN-OF-THOUGHT (COT) REASONING FRAMEWORK ---{Colors.RESET}")
+                    print(f"  Mode: {res['reasoning_mode']} | Branches: {res['branches_evaluated']} | Confidence: {res['confidence_score']}\n")
+                elif cmd == "/cron-schedule":
+                    res = schedule_cron_job()
+                    print(f"{Colors.CYAN}--- PERIODIC BACKGROUND CRON TASK SCHEDULER ---{Colors.RESET}")
+                    print(f"  Job: {res['job_name']} | Schedule: {res['cron_expression']} | Next Run: {res['next_run_timestamp']}\n")
+
                 # ─── LLM SMART DISPATCH & FALLBACK ───
                 elif cmd == "/smart":
                     task = " ".join(parts[1:]) if len(parts) > 1 else "voltaj bölücü hesapla"

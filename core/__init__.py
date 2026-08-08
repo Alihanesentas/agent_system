@@ -49,6 +49,10 @@ from core.hardware.power_budget import calculate_power_budget
 from core.hardware.voltage_divider import calculate_voltage_divider
 from core.hardware.i2c_pullup import calculate_i2c_pullup
 from core.hardware.esd_protection import design_esd_protection
+from core.hardware.opamp_circuit import calculate_opamp_circuit
+from core.hardware.adc_snr import analyze_adc_performance
+from core.hardware.can_bus import configure_can_bus
+from core.hardware.via_current import calculate_via_current
 
 from core.software.executor import execute_command, compile_c, compile_cpp
 from core.software.self_heal import auto_compile_and_fix
@@ -74,6 +78,10 @@ from core.software.rtos_task_design import design_rtos_tasks
 from core.software.pid_tuner import tune_pid_controller
 from core.software.modbus_gen import generate_modbus_map
 from core.software.mqtt_topic import generate_mqtt_config
+from core.software.ble_gatt import generate_ble_gatt_profile
+from core.software.lorawan_params import calculate_lorawan_params
+from core.software.crypto_engine import design_crypto_params
+from core.software.fir_iir_filter import design_digital_filter
 
 from core.computer.web_stack import generate_web_api_architecture
 from core.computer.microservices import generate_microservice_proto
@@ -82,6 +90,8 @@ from core.computer.code_complexity import audit_code_complexity
 from core.computer.rest_api_gen import generate_rest_api_scaffold
 from core.computer.ci_cd_pipeline import generate_ci_cd_pipeline
 from core.computer.sql_schema_gen import generate_sql_schema
+from core.computer.graphql_schema import generate_graphql_schema
+from core.computer.terraform_gen import generate_terraform_module
 
 from core.production.mechanical import generate_openscad_enclosure, recommend_slicer_settings
 from core.production.battery import calculate_battery_lifespan
@@ -103,9 +113,15 @@ from core.production.cable_gland import calculate_cable_gland_dimensions
 from core.production.print_cost import estimate_3d_print_cost
 from core.production.motor_sizing import size_motor
 from core.production.bolt_torque import calculate_bolt_torque
+from core.production.spring_design import design_spring
+from core.production.gear_ratio import calculate_gear_ratio
+from core.production.heatsink_design import design_heatsink
 
 from core.engine.prompt_template import render_prompt_template
+from core.engine.chain_of_thought import run_chain_of_thought
 from core.infra.health_check import run_health_check
+from core.infra.cron_scheduler import schedule_cron_job
+
 
 
 from core.infra.profile import load_user_profile, save_user_profile, build_personalized_system_prompt
