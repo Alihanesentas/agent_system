@@ -42,6 +42,11 @@ ENGINE_REGISTRY: Dict[str, Dict[str, Any]] = {
     "genetic_hw": {"module": "core.hardware.genetic_optimizer", "func": "run_genetic_hardware_optimization", "description": "Genetic hardware optimization"},
     "subsheets": {"module": "core.hardware.kicad_subsheets", "func": "generate_hierarchical_subsheets", "description": "KiCad hierarchical subsheet generator"},
     "drc_rules": {"module": "core.hardware.kicad_drc_rules", "func": "generate_kicad_dru_file", "description": "KiCad DRC rules exporter"},
+    "smps": {"module": "core.hardware.smps_design", "func": "design_smps_converter", "description": "Buck/Boost SMPS converter design"},
+    "power_budget": {"module": "core.hardware.power_budget", "func": "calculate_power_budget", "description": "System power budget calculator"},
+    "voltage_divider": {"module": "core.hardware.voltage_divider", "func": "calculate_voltage_divider", "description": "Resistor voltage divider calculator"},
+    "i2c_pullup": {"module": "core.hardware.i2c_pullup", "func": "calculate_i2c_pullup", "description": "I2C bus pull-up resistor calculator"},
+    "esd": {"module": "core.hardware.esd_protection", "func": "design_esd_protection", "description": "ESD protection TVS diode sizer"},
     
     # ── Software & Firmware ──
     "bootloader": {"module": "core.software.bootloader_checker", "func": "audit_bootloader_config", "description": "Bootloader integrity checker"},
@@ -55,6 +60,10 @@ ENGINE_REGISTRY: Dict[str, Dict[str, Any]] = {
     "edge_ai": {"module": "core.software.edge_ai", "func": "estimate_edge_ai_memory", "description": "TinyML memory estimator"},
     "hil_test": {"module": "core.software.hil_testing", "func": "run_hil_hardware_test", "description": "Hardware-in-the-loop testing"},
     "unittest_gen": {"module": "core.software.embedded_test_gen", "func": "generate_unity_c_test", "description": "Unity C test generator"},
+    "rtos_design": {"module": "core.software.rtos_task_design", "func": "design_rtos_tasks", "description": "FreeRTOS task priority & stack designer"},
+    "pid_tuner": {"module": "core.software.pid_tuner", "func": "tune_pid_controller", "description": "PID controller auto-tuner"},
+    "modbus": {"module": "core.software.modbus_gen", "func": "generate_modbus_map", "description": "Modbus register map & C struct generator"},
+    "mqtt": {"module": "core.software.mqtt_topic", "func": "generate_mqtt_config", "description": "MQTT topic hierarchy & QoS generator"},
     
     # ── Production & Mechanical ──
     "enclosure": {"module": "core.production.mechanical", "func": "generate_openscad_enclosure", "description": "3D enclosure generator"},
@@ -69,6 +78,9 @@ ENGINE_REGISTRY: Dict[str, Dict[str, Any]] = {
     "harness": {"module": "core.production.harness", "func": "calculate_wire_harness", "description": "Wire harness AWG sizer"},
     "bom_opt": {"module": "core.production.bom_optimizer", "func": "optimize_bom_cost", "description": "BOM cost optimizer"},
     "gantt": {"module": "core.production.gantt_planner", "func": "generate_project_gantt_chart", "description": "Project Gantt chart"},
+    "print_cost": {"module": "core.production.print_cost", "func": "estimate_3d_print_cost", "description": "3D print manufacturing cost estimator"},
+    "motor_size": {"module": "core.production.motor_sizing", "func": "size_motor", "description": "Motor torque & power sizer"},
+    "bolt_torque": {"module": "core.production.bolt_torque", "func": "calculate_bolt_torque", "description": "Bolt tightening torque calculator"},
     
     # ── Infrastructure ──
     "cost_forecast": {"module": "core.infra.cost_forecast", "func": "forecast_token_costs", "description": "Token cost forecast"},
@@ -76,12 +88,17 @@ ENGINE_REGISTRY: Dict[str, Dict[str, Any]] = {
     "agent_health": {"module": "core.infra.agent_health", "func": "get_system_subpackage_health", "description": "System health monitor"},
     "dlq": {"module": "core.infra.dead_letter_queue", "func": "global_dlq", "description": "Dead letter queue"},
     "critical_path": {"module": "core.engine.critical_path", "func": "calculate_critical_path", "description": "Critical path profiler"},
+    "prompt_template": {"module": "core.engine.prompt_template", "func": "render_prompt_template", "description": "Versioned prompt template renderer"},
+    "health_check": {"module": "core.infra.health_check", "func": "run_health_check", "description": "Service health probe runner"},
     
     # ── Computer / Web ──
     "web_api": {"module": "core.computer.web_stack", "func": "generate_web_api_architecture", "description": "REST API scaffold generator"},
     "microservice": {"module": "core.computer.microservices", "func": "generate_microservice_proto", "description": "gRPC proto generator"},
     "react": {"module": "core.computer.frontend_gen", "func": "generate_react_component", "description": "React component generator"},
     "complexity": {"module": "core.computer.code_complexity", "func": "audit_code_complexity", "description": "Code complexity auditor"},
+    "rest_gen": {"module": "core.computer.rest_api_gen", "func": "generate_rest_api_scaffold", "description": "REST API router scaffold generator"},
+    "ci_cd": {"module": "core.computer.ci_cd_pipeline", "func": "generate_ci_cd_pipeline", "description": "CI/CD workflow pipeline generator"},
+    "sql_gen": {"module": "core.computer.sql_schema_gen", "func": "generate_sql_schema", "description": "SQL DDL schema generator"},
 }
 
 # ─── KEYWORD ALIASES ─────────────────────────────────────────────────────────
@@ -97,11 +114,20 @@ KEYWORD_ALIASES: Dict[str, List[str]] = {
     "rf_antenna": ["antenna", "rf", "anten", "wireless", "bluetooth", "wifi"],
     "emc": ["emc", "fcc", "ce", "electromagnetic", "emi", "radiated emission"],
     "stencil": ["stencil", "solder paste", "lehim", "smd", "reflow"],
+    "smps": ["smps", "buck", "boost", "converter", "dcdc", "power supply"],
+    "power_budget": ["power budget", "current draw", "power consumption", "güç bütçesi"],
+    "voltage_divider": ["voltage divider", "resistor divider", "voltaj bölücü"],
+    "i2c_pullup": ["i2c pullup", "i2c pull-up", "pullup resistor", "bus capacitance"],
+    "esd": ["esd", "tvs", "surge", "transient", "diode"],
     "bootloader": ["bootloader", "boot", "vector table", "flash offset"],
     "stack_guard": ["stack", "freertos", "rtos task", "stack overflow"],
     "power_profile": ["power", "current", "sleep", "deep sleep", "mA", "güç", "batarya ömrü"],
     "flash_partition": ["partition", "nvs", "ota partition", "flash layout"],
     "ota": ["ota", "update", "firmware update", "güncelleme"],
+    "rtos_design": ["rtos design", "freertos task", "task priority", "rtos stack"],
+    "pid_tuner": ["pid", "pid tuner", "ziegler nichols", "kp ki kd"],
+    "modbus": ["modbus", "modbus rtu", "modbus tcp", "holding register"],
+    "mqtt": ["mqtt", "mqtt topic", "qos", "broker"],
     "enclosure": ["enclosure", "box", "case", "kutu", "3d print", "openscad"],
     "snap_fit": ["snap", "clip", "klips", "cantilever"],
     "gasket": ["gasket", "o-ring", "seal", "conta", "ip67", "waterproof", "su geçirmez"],
@@ -109,9 +135,14 @@ KEYWORD_ALIASES: Dict[str, List[str]] = {
     "battery": ["battery", "batarya", "pil", "solar", "güneş paneli"],
     "fea": ["fea", "stress", "strain", "gerilme", "deformasyon", "von mises"],
     "harness": ["wire", "harness", "awg", "kablo", "iletken"],
+    "print_cost": ["print cost", "3d print cost", "filament cost", "baskı maliyeti"],
+    "motor_size": ["motor size", "motor sizing", "torque", "motor torku"],
+    "bolt_torque": ["bolt torque", "tightening torque", "civata torku"],
     "web_api": ["api", "rest", "fastapi", "express", "backend"],
     "react": ["react", "frontend", "component", "tsx", "jsx"],
     "edge_ai": ["tinyml", "edge ai", "model deploy", "quantization"],
+    "ci_cd": ["ci cd", "github actions", "pipeline", "workflow"],
+    "sql_gen": ["sql", "ddl", "postgres", "table schema"],
     "cost_forecast": ["cost", "maliyet", "token cost", "api cost"],
     "agent_health": ["health", "sağlık", "system status", "sistem durumu"],
 }

@@ -131,11 +131,29 @@ from core.computer.web_stack import generate_web_api_architecture
 from core.computer.microservices import generate_microservice_proto
 from core.computer.frontend_gen import generate_react_component
 from core.computer.code_complexity import audit_code_complexity
+from core.hardware.smps_design import design_smps_converter
+from core.hardware.power_budget import calculate_power_budget
+from core.hardware.voltage_divider import calculate_voltage_divider
+from core.hardware.i2c_pullup import calculate_i2c_pullup
+from core.hardware.esd_protection import design_esd_protection
+from core.software.rtos_task_design import design_rtos_tasks
+from core.software.pid_tuner import tune_pid_controller
+from core.software.modbus_gen import generate_modbus_map
+from core.software.mqtt_topic import generate_mqtt_config
+from core.production.print_cost import estimate_3d_print_cost
+from core.production.motor_sizing import size_motor
+from core.production.bolt_torque import calculate_bolt_torque
+from core.computer.rest_api_gen import generate_rest_api_scaffold
+from core.computer.ci_cd_pipeline import generate_ci_cd_pipeline
+from core.computer.sql_schema_gen import generate_sql_schema
+from core.engine.prompt_template import render_prompt_template
+from core.infra.health_check import run_health_check
 from core.engine.llm_fallback import (
     smart_dispatch, search_engine_registry, list_all_engines,
     get_generated_scripts_list, generate_fallback_script, execute_generated_script,
     ENGINE_REGISTRY
 )
+
 
 class Colors:
     CYAN = '\033[96m'
@@ -252,6 +270,11 @@ def print_commands(category: str = None):
         print(f"  {Colors.GREEN}/trace-matching{Colors.RESET}             -> PCB high-speed differential pair length matching")
         print(f"  {Colors.GREEN}/subsheets{Colors.RESET}                  -> Generate multi-sheet hierarchical KiCad schematics")
         print(f"  {Colors.GREEN}/stencil{Colors.RESET}                   -> PCB SMT solder paste stencil foil thickness & volume calculator")
+        print(f"  {Colors.GREEN}/smps{Colors.RESET}                      -> Design Buck/Boost SMPS converter inductors & capacitors")
+        print(f"  {Colors.GREEN}/power-budget{Colors.RESET}              -> Calculate system active vs sleep current draw & power budget")
+        print(f"  {Colors.GREEN}/v-divider{Colors.RESET}                 -> Calculate precision E24 resistor pair voltage dividers")
+        print(f"  {Colors.GREEN}/i2c-pullup{Colors.RESET}                -> Calculate min/max I2C pull-up resistor & rise time")
+        print(f"  {Colors.GREEN}/esd{Colors.RESET}                       -> Select IEC 61000-4-2 compliant TVS diode ESD protection")
         print(f"  {Colors.GREEN}/rf [freq_mhz]{Colors.RESET}              -> Calculate PCB antenna dimensions & 50Ω matching")
         print(f"  {Colors.GREEN}/genetic-hw{Colors.RESET}                 -> Multi-objective Pareto genetic hardware optimizer\n")
 
@@ -267,6 +290,10 @@ def print_commands(category: str = None):
         print(f"  {Colors.GREEN}/coverage{Colors.RESET}                   -> C++ unit test line & branch LCOV coverage report generator")
         print(f"  {Colors.GREEN}/stack-guard{Colors.RESET}                -> FreeRTOS task C++ call graph stack overflow guard calculator")
         print(f"  {Colors.GREEN}/bootloader-check{Colors.RESET}          -> Firmware bootloader flash offset & vector table auditor")
+        print(f"  {Colors.GREEN}/rtos-design{Colors.RESET}               -> Design FreeRTOS task priorities, stack memory & CPU load")
+        print(f"  {Colors.GREEN}/pid-tune{Colors.RESET}                  -> Auto-tune PID controller Kp, Ki, Kd parameters")
+        print(f"  {Colors.GREEN}/modbus-gen{Colors.RESET}                -> Generate Modbus RTU/TCP register maps & C struct headers")
+        print(f"  {Colors.GREEN}/mqtt-cfg{Colors.RESET}                  -> Generate structured IoT MQTT topic trees & QoS params")
         print(f"  {Colors.GREEN}/watchdog{Colors.RESET}                   -> Firmware CPU panic crash dump & watchdog reset analyzer")
         print(f"  {Colors.GREEN}/power <code>{Colors.RESET}                -> Firmware energy consumption & battery life profiler\n")
 
@@ -276,6 +303,9 @@ def print_commands(category: str = None):
         print(f"  {Colors.GREEN}/proto [service]{Colors.RESET}             -> Microservices gRPC protobuf3 & event bus schema generator")
         print(f"  {Colors.GREEN}/react [component]{Colors.RESET}           -> Modern React Vite / Next.js TSX component boilerplate")
         print(f"  {Colors.GREEN}/complexity <code>{Colors.RESET}          -> AST cyclomatic code complexity & maintainability index auditor")
+        print(f"  {Colors.GREEN}/rest-gen [resource]{Colors.RESET}         -> Scaffold CRUD REST API endpoints & DTO models")
+        print(f"  {Colors.GREEN}/ci-cd [provider]{Colors.RESET}            -> Generate GitHub Actions / GitLab CI workflow YAML pipelines")
+        print(f"  {Colors.GREEN}/sql-gen [table]{Colors.RESET}             -> Generate PostgreSQL / SQLite DDL schemas & indexes")
         print(f"  {Colors.GREEN}/docker-gen [service]{Colors.RESET}         -> Automated Dockerfile & Kubernetes deployment manifest generator")
         print(f"  {Colors.GREEN}/uml [system]{Colors.RESET}                -> Software UML sequence & class diagram generator (Mermaid)")
         print(f"  {Colors.GREEN}/db-schema [table]{Colors.RESET}           -> Database PostgreSQL DDL schema & migration generator")
@@ -291,6 +321,9 @@ def print_commands(category: str = None):
         print(f"  {Colors.GREEN}/cable-gland{Colors.RESET}                -> 3D printed enclosure waterproof cable gland sizer")
         print(f"  {Colors.GREEN}/airflow{Colors.RESET}                     -> 3D enclosure thermal ventilation slot & CFM airflow calculator")
         print(f"  {Colors.GREEN}/fea [force_N]{Colors.RESET}               -> 3D mechanical FEA stress & deformation simulator")
+        print(f"  {Colors.GREEN}/print-cost{Colors.RESET}                 -> Estimate 3D printing manufacturing cost (material, power, wear)")
+        print(f"  {Colors.GREEN}/motor-size{Colors.RESET}                 -> Size DC/BLDC/Stepper motor torque, RPM & mechanical power")
+        print(f"  {Colors.GREEN}/bolt-torque{Colors.RESET}                -> Calculate bolt tightening torque & preload force per VDI 2230")
         print(f"  {Colors.GREEN}/slicer <material>{Colors.RESET}          -> Recommend 3D printing slicer settings (PLA/ABS/PETG/TPU)")
         print(f"  {Colors.GREEN}/bom-opt{Colors.RESET}                     -> Analyze BOM cost drivers & production quantity tiers")
         print(f"  {Colors.GREEN}/supply-risk{Colors.RESET}                 -> Multi-vendor BOM stock availability & EOL risk alert")
@@ -302,6 +335,8 @@ def print_commands(category: str = None):
         print(f"{Colors.BOLD}{Colors.YELLOW}🛡️ [core.infra] RAG, DSPy Optimizer, DLQ, Voice & Telemetry:{Colors.RESET}")
         print(f"  {Colors.GREEN}/voice <prompt>{Colors.RESET}              -> Voice Assistant hands-free workbench command")
         print(f"  {Colors.GREEN}/graph <query>{Colors.RESET}                 -> Query Hardware Knowledge Graph for MCU/Sensors")
+        print(f"  {Colors.GREEN}/health-probe{Colors.RESET}              -> Run synthetic health checks across system DBs & services")
+
         print(f"  {Colors.GREEN}/reflect <task>{Colors.RESET}               -> Run task with self-reflective failure critique loop")
         print(f"  {Colors.GREEN}/cost <prompt>{Colors.RESET}                -> Multi-model dynamic cost-optimizer router check")
         print(f"  {Colors.GREEN}/guard <code>{Colors.RESET}                -> Real-time output guardrail & syntax filter")
@@ -1182,6 +1217,70 @@ def start_interactive_shell(default_agent: str = "orchestrator", default_model: 
                     res = audit_code_complexity(c_in)
                     print(f"{Colors.CYAN}--- AST CODE COMPLEXITY AUDITOR ---{Colors.RESET}")
                     print(f"  Cyclomatic Score: {res['cyclomatic_complexity']} | Grade: {res['maintainability_grade']}\n")
+                elif cmd == "/smps":
+                    res = design_smps_converter()
+                    print(f"{Colors.CYAN}--- SMPS BUCK/BOOST CONVERTER DESIGNER ---{Colors.RESET}")
+                    print(f"  Inductor: {res['recommended_inductor_uh']}uH | Cap: {res['recommended_capacitor_uf']}uF | Est. Eff: {res['estimated_efficiency_pct']}%\n")
+                elif cmd == "/power-budget":
+                    res = calculate_power_budget()
+                    print(f"{Colors.CYAN}--- SYSTEM POWER BUDGET & CURRENT DRAW MATRIX ---{Colors.RESET}")
+                    print(f"  Peak Current: {res['peak_active_current_ma']}mA | Avg Power: {res['average_power_mw']}mW | Components: {res['component_count']}\n")
+                elif cmd == "/v-divider":
+                    res = calculate_voltage_divider()
+                    print(f"{Colors.CYAN}--- PRECISION VOLTAGE DIVIDER CALCULATOR ---{Colors.RESET}")
+                    print(f"  R1: {res['recommended_r1_ohms']}Ω | R2: {res['recommended_r2_ohms']}Ω | Vout: {res['actual_vout_v']}V (Err: {res['error_pct']}%)\n")
+                elif cmd == "/i2c-pullup":
+                    res = calculate_i2c_pullup()
+                    print(f"{Colors.CYAN}--- I2C PULL-UP RESISTOR CALCULATOR ---{Colors.RESET}")
+                    print(f"  Rec. R: {res['recommended_r_ohms']}Ω | Range: {res['r_min_ohms']}Ω - {res['r_max_ohms']}Ω | Compliance: {res['compliance']}\n")
+                elif cmd == "/esd":
+                    res = design_esd_protection()
+                    print(f"{Colors.CYAN}--- ESD PROTECTION & TVS DIODE SIZER ---{Colors.RESET}")
+                    print(f"  Interface: {res['interface_type']} | TVS Diode: {res['recommended_tvs_diode']} | Max Cap: {res['max_parasitic_capacitance_pf']}pF\n")
+                elif cmd == "/rtos-design":
+                    res = design_rtos_tasks()
+                    print(f"{Colors.CYAN}--- FREERTOS TASK ARCHITECTURE & STACK SIZER ---{Colors.RESET}")
+                    print(f"  CPU Load: {res['total_cpu_utilization_pct']}% | Total Stack: {res['total_rtos_stack_ram_bytes']} Bytes | Schedulable: {res['schedulable']}\n")
+                elif cmd == "/pid-tune":
+                    res = tune_pid_controller()
+                    print(f"{Colors.CYAN}--- PID CONTROLLER AUTO-TUNER ---{Colors.RESET}")
+                    print(f"  Kp: {res['gains']['kp']} | Ki: {res['gains']['ki']} | Kd: {res['gains']['kd']} ({res['tuning_method']})\n")
+                elif cmd == "/modbus-gen":
+                    res = generate_modbus_map()
+                    print(f"{Colors.CYAN}--- MODBUS RTU/TCP MAP & STRUCT GENERATOR ---{Colors.RESET}")
+                    print(f"  Device: {res['device_name']} | Holding Registers: {res['total_holding_registers']}\n")
+                elif cmd == "/mqtt-cfg":
+                    res = generate_mqtt_config()
+                    print(f"{Colors.CYAN}--- MQTT TOPIC HIERARCHY GENERATOR ---{Colors.RESET}")
+                    print(f"  Base Topic: {res['base_prefix']} | Configured Topics: {len(res['topics'])}\n")
+                elif cmd == "/print-cost":
+                    res = estimate_3d_print_cost()
+                    print(f"{Colors.CYAN}--- 3D PRINT MANUFACTURING COST ESTIMATOR ---{Colors.RESET}")
+                    print(f"  Material: {res['material']} ({res['weight_g']}g) | Unit Cost: ${res['total_unit_cost_usd']} | MSRP: ${res['recommended_retail_price_usd']}\n")
+                elif cmd == "/motor-size":
+                    res = size_motor()
+                    print(f"{Colors.CYAN}--- MOTOR SIZING & INERTIA CALCULATOR ---{Colors.RESET}")
+                    print(f"  Torque: {res['peak_torque_nm']} Nm ({res['peak_torque_oz_in']} oz-in) | Mech Power: {res['mechanical_power_watts']} W | Category: {res['recommended_motor_category']}\n")
+                elif cmd == "/bolt-torque":
+                    res = calculate_bolt_torque()
+                    print(f"{Colors.CYAN}--- BOLT TIGHTENING TORQUE CALCULATOR ---{Colors.RESET}")
+                    print(f"  Bolt: {res['bolt_size']} ({res['property_class']}) | Preload: {res['preload_force_kn']} kN | Torque: {res['tightening_torque_nm']} Nm\n")
+                elif cmd == "/rest-gen":
+                    res = generate_rest_api_scaffold()
+                    print(f"{Colors.CYAN}--- REST API ROUTER SCAFFOLD GENERATOR ---{Colors.RESET}")
+                    print(f"  Resource: {res['resource_name']} | Framework: {res['framework']} | Endpoints: {res['endpoints_scaffolded']}\n")
+                elif cmd == "/ci-cd":
+                    res = generate_ci_cd_pipeline()
+                    print(f"{Colors.CYAN}--- CI/CD PIPELINE YAML GENERATOR ---{Colors.RESET}")
+                    print(f"  Provider: {res['provider']} | File: {res['pipeline_file']} | Docker: {res['docker_support']}\n")
+                elif cmd == "/sql-gen":
+                    res = generate_sql_schema()
+                    print(f"{Colors.CYAN}--- SQL DDL SCHEMA GENERATOR ---{Colors.RESET}")
+                    print(f"  Table: {res['table_name']} | DB: {res['database_type'].upper()} | Indexes: {res['indexes_created']}\n")
+                elif cmd == "/health-probe":
+                    res = run_health_check()
+                    print(f"{Colors.CYAN}--- SERVICE HEALTH PROBE RUNNER ---{Colors.RESET}")
+                    print(f"  Status: {res['overall_health']} | Latency: {res['probe_latency_ms']}ms | Probes: {len(res['probes'])}\n")
                 # ─── LLM SMART DISPATCH & FALLBACK ───
                 elif cmd == "/smart":
                     task = " ".join(parts[1:]) if len(parts) > 1 else "voltaj bölücü hesapla"

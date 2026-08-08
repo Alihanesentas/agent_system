@@ -44,6 +44,11 @@ from core.hardware.trace_length_matching import calculate_length_matching
 from core.hardware.kicad_subsheets import generate_hierarchical_subsheets
 from core.hardware.solder_stencil import calculate_solder_stencil_specs
 from core.hardware.genetic_optimizer import run_genetic_hardware_optimization
+from core.hardware.smps_design import design_smps_converter
+from core.hardware.power_budget import calculate_power_budget
+from core.hardware.voltage_divider import calculate_voltage_divider
+from core.hardware.i2c_pullup import calculate_i2c_pullup
+from core.hardware.esd_protection import design_esd_protection
 
 from core.software.executor import execute_command, compile_c, compile_cpp
 from core.software.self_heal import auto_compile_and_fix
@@ -65,11 +70,18 @@ from core.software.docker_k8s import generate_docker_k8s_manifests
 from core.software.uml_generator import generate_uml_architecture_diagram
 from core.software.db_migration import generate_db_schema_and_migrations
 from core.software.cloud_devops import generate_devops_terraform_config
+from core.software.rtos_task_design import design_rtos_tasks
+from core.software.pid_tuner import tune_pid_controller
+from core.software.modbus_gen import generate_modbus_map
+from core.software.mqtt_topic import generate_mqtt_config
 
 from core.computer.web_stack import generate_web_api_architecture
 from core.computer.microservices import generate_microservice_proto
 from core.computer.frontend_gen import generate_react_component
 from core.computer.code_complexity import audit_code_complexity
+from core.computer.rest_api_gen import generate_rest_api_scaffold
+from core.computer.ci_cd_pipeline import generate_ci_cd_pipeline
+from core.computer.sql_schema_gen import generate_sql_schema
 
 from core.production.mechanical import generate_openscad_enclosure, recommend_slicer_settings
 from core.production.battery import calculate_battery_lifespan
@@ -88,6 +100,13 @@ from core.production.snap_fit import calculate_snap_fit_joint
 from core.production.flexure_hinge import calculate_flexure_hinge
 from core.production.gasket_sizer import calculate_gasket_groove_dimensions
 from core.production.cable_gland import calculate_cable_gland_dimensions
+from core.production.print_cost import estimate_3d_print_cost
+from core.production.motor_sizing import size_motor
+from core.production.bolt_torque import calculate_bolt_torque
+
+from core.engine.prompt_template import render_prompt_template
+from core.infra.health_check import run_health_check
+
 
 from core.infra.profile import load_user_profile, save_user_profile, build_personalized_system_prompt
 from core.infra.cache import get_cache_metrics

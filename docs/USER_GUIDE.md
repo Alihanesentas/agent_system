@@ -90,7 +90,22 @@ For specific, one-off engineering queries, you can invoke any of the 58+ symboli
 - `/power <code>`: Profiles active vs deep-sleep current draw (mA) and battery life (days).
 - `/watchdog`: Analyzes CPU panic crash dumps and EXCCAUSE register codes.
 
-#### Mekanik CAD & Üretim Komutları
+- `/smps`: Calculates Buck/Boost SMPS inductor, capacitor, peak current, and efficiency.
+- `/power-budget`: Computes system power budget, active vs sleep current draw (mA), and rail headroom.
+- `/v-divider`: Calculates E24 standard resistor pairs for precision voltage dividers.
+- `/i2c-pullup`: Calculates min/max I2C pull-up resistor values based on bus capacitance and speed.
+- `/esd`: Selects IEC 61000-4-2 compliant TVS diodes and ESD protection networks.
+- `/rtos-design`: Designs FreeRTOS task priorities, stack memory allocation, and CPU utilization.
+- `/pid-tune`: Calculates Kp, Ki, Kd PID tuning parameters using Ziegler-Nichols method.
+- `/modbus-gen`: Generates industrial Modbus RTU/TCP holding register maps and C struct headers.
+- `/mqtt-cfg`: Generates structured IoT MQTT topic hierarchies and QoS parameters.
+- `/print-cost`: Estimates total 3D printing manufacturing cost (material, power, machine wear).
+- `/motor-size`: Sizes DC/BLDC/Stepper motor torque, RPM, and mechanical power.
+- `/bolt-torque`: Calculates metric bolt tightening torque (Nm) and preload force (kN) per VDI 2230.
+- `/rest-gen`: Generates FastAPI / Express CRUD REST API router scaffolds.
+- `/ci-cd`: Generates GitHub Actions / GitLab CI workflow YAML pipelines.
+- `/sql-gen`: Generates PostgreSQL / SQLite DDL table schemas and indexes.
+- `/health-probe`: Runs synthetic health probe checks across background DBs, workers, and services.
 - `/cad <L> <W> <H>`: Generates parametric OpenSCAD 3D enclosure script.
 - `/fasteners [M2-M4]`: Sizes 3D printed screw boss pilot holes and outer wall OD.
 - `/snap-fit`: Calculates 3D printed cantilever snap-fit joint deflection and strain.
@@ -98,6 +113,7 @@ For specific, one-off engineering queries, you can invoke any of the 58+ symboli
 - `/gasket`: Sizes IP67 waterproof rubber O-ring gasket gland grooves.
 - `/cable-gland`: Sizes waterproof cable gland panel cutout holes (PG7-PG9).
 - `/airflow`: Calculates ventilation slot surface area (mm²) and CFM fan specs.
+
 - `/fea [force_N]`: Simulates 3D enclosure mechanical stress (MPa) and deformation.
 - `/supply-risk`: Audits BOM parts for EOL risk and global distributor stock.
 - `/report`: Exports full multidisciplinary Markdown project report.

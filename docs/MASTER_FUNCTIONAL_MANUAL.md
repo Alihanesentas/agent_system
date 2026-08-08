@@ -32,7 +32,7 @@ Layer 5 (Persistence & Infrastructure): ChromaDB RAG Engine, SQLite Long-Term Me
   - `state_machine.py`: `/fsm` Finite State Machine & Rollback Engine
   - `critical_path.py`: `/critical-path` Critical Bottleneck Path Profiler
   - `agent_telemetry.py`: `/agent-telemetry` Sub-Agent Latency Profiler
-  - `llm_fallback.py`: `/smart` LLM Fallback Smart Dispatch Engine — ENGINE_REGISTRY'de eşleşme bulunamazsa LLM'in kendi Python scripti üretip sandbox'ta çalıştırmasını sağlar. 50+ kayıtlı 0-token engine ve fallback code generation.
+  - `prompt_template.py`: Versioned Prompt Template Engine
 - **`core/hardware/`**: KiCad, PCB, SPICE & Hardware Tools
   - `schematics.py`: KiCad Schematic & Netlist S-Expression Parser
   - `spice.py`: `/spice` RC Filter Simulator
@@ -50,14 +50,33 @@ Layer 5 (Persistence & Infrastructure): ChromaDB RAG Engine, SQLite Long-Term Me
   - `footprint_crosscheck.py`: `/footprint-check` Symbol vs Footprint Pad Cross-Checker
   - `trace_length_matching.py`: `/trace-matching` Differential Pair Length Matching
   - `genetic_optimizer.py`: `/genetic-hw` Multi-Objective Genetic Hardware Optimizer
+  - `smps_design.py`: `/smps` Buck/Boost SMPS Converter Designer
+  - `power_budget.py`: `/power-budget` System Power Consumption & Current Draw Matrix
+  - `voltage_divider.py`: `/v-divider` Precision Resistor Voltage Divider Calculator
+  - `i2c_pullup.py`: `/i2c-pullup` I2C Bus Pull-Up Resistor & Rise Time Calculator
+  - `esd_protection.py`: `/esd` ESD Protection & TVS Diode Selector
 - **`core/computer/`**: Full-Stack Web, Microservices, Frontend & Computer Science Engines
   - `web_stack.py`: `/web-stack` Full-Stack FastAPI / Express REST API Generator
   - `microservices.py`: `/proto` gRPC Protobuf3 & Message Queue Bus Generator
   - `frontend_gen.py`: `/react` React Vite / Next.js TSX Component Scaffolding
   - `code_complexity.py`: `/complexity` AST Cyclomatic Code Complexity Auditor
+  - `rest_api_gen.py`: `/rest-gen` REST API Router & Scaffold Generator
+  - `ci_cd_pipeline.py`: `/ci-cd` CI/CD Workflow Pipeline Generator
+  - `sql_schema_gen.py`: `/sql-gen` SQL DDL Schema & Migration Generator
 - **`core/software/`**: Firmware, Testing, DevOps & Container Engines
   - `executor.py`: Shell Runner for gcc / make / platformio
   - `docker_k8s.py`: `/docker-gen` Dockerfile & Kubernetes Deployment Manifest Generator
+  - `rtos_task_design.py`: `/rtos-design` FreeRTOS Task Priority & Stack Sizing Designer
+  - `pid_tuner.py`: `/pid-tune` PID Controller Auto-Tuner
+  - `modbus_gen.py`: `/modbus-gen` Modbus RTU/TCP Register Map & C Struct Generator
+  - `mqtt_topic.py`: `/mqtt-cfg` MQTT Topic Hierarchy Generator
+- **`core/production/`**: Mechanical CAD & Manufacturing
+  - `print_cost.py`: `/print-cost` 3D Printing Manufacturing Cost Estimator
+  - `motor_sizing.py`: `/motor-size` Motor Torque & Power Sizing Engine
+  - `bolt_torque.py`: `/bolt-torque` Bolt Tightening Torque Calculator
+- **`core/infra/`**: Infrastructure & Systems
+  - `health_check.py`: `/health-probe` Service Health Probe Engine
+
   - `cloud_devops.py`: `/devops` AWS Terraform HCL & GitHub Actions CI/CD Pipeline
   - `uml_generator.py`: `/uml` Mermaid UML Sequence Diagram Generator
   - `db_migration.py`: `/db-schema` PostgreSQL DDL Schema & SQL Migration Generator
@@ -184,3 +203,20 @@ Layer 5 (Persistence & Infrastructure): ChromaDB RAG Engine, SQLite Long-Term Me
 - **`/engines`**: Kayıtlı 50+ adet 0-token engine'in tam listesini gösterir.
 - **`/generated`**: LLM'in daha önce üretip cache'lediği script'lerin listesini gösterir.
 - **`/fallback-test <task>`**: Verilen görev için engine registry eşleşme testini çalıştırır.
+- **`/smps`**: Buck/Boost SMPS converter indüktör, kapasitör ve verim hesabı yapar.
+- **`/power-budget`**: Sistem güç bütçesi tablosu ve peak/avg mA çekimini hesaplar.
+- **`/v-divider`**: Hassas E24 direnç çifti voltaj bölücü hesabı yapar.
+- **`/i2c-pullup`**: I2C hattı pull-up direnci ve max yükselme süresini (rise time) hesaplar.
+- **`/esd`**: IEC 61000-4-2 uyumlu TVS diyot koruma devresi seçer.
+- **`/rtos-design`**: FreeRTOS görev öncelikleri, stack boyutu ve CPU yükü planlar.
+- **`/pid-tune`**: Ziegler-Nichols yöntemiyle PID (Kp, Ki, Kd) katsayılarını hesaplar.
+- **`/modbus-gen`**: Modbus RTU/TCP register haritası ve C struct başlık dosyası üretir.
+- **`/mqtt-cfg`**: IoT MQTT topic hiyerarşisi ve QoS konfigürasyonu üretir.
+- **`/print-cost`**: 3D baskı filament gramı, zaman ve elektrik maliyeti hesaplar.
+- **`/motor-size`**: DC/BLDC/Stepper motor tork, RPM ve mekanik güç hesabı yapar.
+- **`/bolt-torque`**: VDI 2230 standardında metrik cıvata sıkma torku ve ön gerilme force hesabı yapar.
+- **`/rest-gen`**: FastAPI / Express CRUD REST API endpoint scaffold üretir.
+- **`/ci-cd`**: GitHub Actions / GitLab CI otomatik test ve build YAML workflow üretir.
+- **`/sql-gen`**: PostgreSQL / SQLite DDL tablo şeması ve index SQL scripti üretir.
+- **`/health-probe`**: Sistem veritabanı, RAG store ve worker queue sağlık kontrolü yapar.
+
