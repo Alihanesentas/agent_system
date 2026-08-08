@@ -16,9 +16,6 @@
 ## Sensör & Ölçüm
 
 ## PCB İleri Seviye
-- [ ] core/hardware/panelization.py         → PCB panelizasyon yerleşim optimizasyonu | def optimize_pcb_panel(**kwargs) -> Dict
-- [ ] core/hardware/gerber_checker.py       → Gerber dosya bütünlük kontrolü | def validate_gerber_files(**kwargs) -> Dict
-- [ ] core/hardware/pcb_thermal_relief.py   → Thermal relief pad pattern, spoke hesabı | def calculate_thermal_relief(**kwargs) -> Dict
 
 ## Koruma & Güvenlik
 
@@ -34,12 +31,8 @@
 ## Güvenlik & Kriptografi
 
 ## Veri & Depolama
-- [ ] core/software/log_framework.py        → Gömülü log framework (severity, circular) | def generate_log_framework(**kwargs) -> Dict
 
 ## Test & Kalite
-- [ ] core/software/unit_test_scaffold.py   → Unity/CMock C unit test scaffold üreteci | def generate_unit_test_scaffold(**kwargs) -> Dict
-- [ ] core/software/code_size_analyzer.py   → .map file parser, RAM/ROM/Flash istatistik | def analyze_code_size(**kwargs) -> Dict
-- [ ] core/software/firmware_diff.py        → İki firmware binary section-level diff | def diff_firmware_binaries(**kwargs) -> Dict
 
 ## DSP & Kontrol
 
@@ -50,20 +43,12 @@
 ## 3D Baskı & İmalat
 
 ## Mekanik Analiz
-- [ ] core/production/vibration_analysis.py → Doğal frekans, titreşim izolasyon | def analyze_vibration(**kwargs) -> Dict
-
 
 ## Termal & Akışkan
-- [ ] core/production/fan_selection.py      → Soğutma fanı seçimi (CFM, noise) | def select_cooling_fan(**kwargs) -> Dict
-- [ ] core/production/pipe_flow.py          → Boru akış (Reynolds, basınç düşümü) | def calculate_pipe_flow(**kwargs) -> Dict
 
 ## Elektro-Mekanik
-- [ ] core/production/solenoid_design.py    → Solenoid kuvvet, flyback diode | def design_solenoid(**kwargs) -> Dict
-- [ ] core/production/linear_actuator.py    → Lineer aktüatör seçimi | def select_linear_actuator(**kwargs) -> Dict
-- [ ] core/production/encoder_resolution.py → Rotary/Linear encoder çözünürlük | def calculate_encoder_resolution(**kwargs) -> Dict
 
 ## Kutu & Konnektör
-- [ ] core/production/enclosure_ip.py       → IP koruma sınıfı tasarım gereksinimleri | def check_ip_rating_requirements(**kwargs) -> Dict
 
 # ──────────────────────────────────────────────────────────────────────
 # COMPUTER — Yazılım Mühendisliği (25 yeni modül)
@@ -72,8 +57,8 @@
 ## Backend & API
 
 ## Veritabanı
-- [ ] core/computer/nosql_model.py          → NoSQL veri modeli tasarımı | def design_nosql_model(**kwargs) -> Dict
 - [ ] core/computer/query_optimizer.py      → SQL EXPLAIN, index önerisi, N+1 tespit | def optimize_sql_query(**kwargs) -> Dict
+
 - [ ] core/computer/data_pipeline.py        → ETL/ELT data pipeline DAG tasarımı | def design_data_pipeline(**kwargs) -> Dict
 
 ## DevOps & Altyapı

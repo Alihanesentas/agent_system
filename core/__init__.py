@@ -72,6 +72,9 @@ from core.hardware.sensor_interface import design_sensor_interface
 from core.hardware.thermocouple import design_thermocouple_interface
 from core.hardware.crosstalk_analysis import analyze_pcb_crosstalk
 from core.hardware.impedance_calculator import calculate_trace_impedance_advanced
+from core.hardware.panelization import optimize_pcb_panel
+from core.hardware.gerber_checker import validate_gerber_files
+from core.hardware.pcb_thermal_relief import calculate_thermal_relief
 
 from core.software.executor import execute_command, compile_c, compile_cpp
 from core.software.self_heal import auto_compile_and_fix
@@ -114,6 +117,10 @@ from core.software.zigbee_mesh import design_zigbee_mesh
 from core.software.cert_manager import generate_cert_config
 from core.software.eeprom_wear import analyze_eeprom_wear
 from core.software.fft_analyzer import analyze_fft_params
+from core.software.log_framework import generate_log_framework
+from core.software.unit_test_scaffold import generate_unit_test_scaffold
+from core.software.code_size_analyzer import analyze_code_size
+from core.software.firmware_diff import diff_firmware_binaries
 
 from core.computer.web_stack import generate_web_api_architecture
 from core.computer.microservices import generate_microservice_proto
@@ -128,6 +135,7 @@ from core.computer.auth_flow import generate_auth_flow
 from core.computer.nginx_config import generate_nginx_config
 from core.computer.rate_limit_design import design_rate_limiter
 from core.computer.websocket_handler import generate_websocket_handler
+from core.computer.nosql_model import design_nosql_model
 
 from core.production.mechanical import generate_openscad_enclosure, recommend_slicer_settings
 from core.production.battery import calculate_battery_lifespan
@@ -159,6 +167,14 @@ from core.production.sheet_metal import calculate_sheet_metal_bend
 from core.production.injection_mold import estimate_injection_mold
 from core.production.cnc_feedrate import calculate_cnc_feedrate
 from core.production.beam_stress import analyze_beam_stress
+from core.production.vibration_analysis import analyze_vibration
+from core.production.fan_selection import select_cooling_fan
+from core.production.pipe_flow import calculate_pipe_flow
+from core.production.solenoid_design import design_solenoid
+from core.production.linear_actuator import select_linear_actuator
+from core.production.encoder_resolution import calculate_encoder_resolution
+from core.production.enclosure_ip import check_ip_rating_requirements
+
 
 
 from core.engine.prompt_template import render_prompt_template

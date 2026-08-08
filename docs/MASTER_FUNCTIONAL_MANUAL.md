@@ -74,6 +74,9 @@ Layer 5 (Persistence & Infrastructure): ChromaDB RAG Engine, SQLite Long-Term Me
   - `thermocouple.py`: `/thermocouple` Thermocouple Cold Junction Compensation & Type Selector
   - `crosstalk_analysis.py`: `/crosstalk` PCB Trace Crosstalk (NEXT/FEXT) & Guard Trace Analyzer
   - `impedance_calculator.py`: `/impedance-adv` Advanced PCB Microstrip & Stripline Impedance Calculator (IPC-2141)
+  - `panelization.py`: `/panelization` PCB Array Panelization & V-Score Breakaway Tab Optimizer
+  - `gerber_checker.py`: `/gerber-checker` Gerber RS-274X Layer Set Integrity Validator
+  - `pcb_thermal_relief.py`: `/thermal-relief` PCB Thermal Relief Spoke Width & Solderability Calculator
 - **`core/computer/`**: Full-Stack Web, Microservices, Frontend & Computer Science Engines
   - `web_stack.py`: `/web-stack` Full-Stack FastAPI / Express REST API Generator
   - `microservices.py`: `/proto` gRPC Protobuf3 & Message Queue Bus Generator
@@ -88,6 +91,7 @@ Layer 5 (Persistence & Infrastructure): ChromaDB RAG Engine, SQLite Long-Term Me
   - `nginx_config.py`: `/nginx-gen` Nginx Reverse Proxy, TLS 1.3 & Rate Limit Config Generator
   - `rate_limit_design.py`: `/rate-limiter` API Rate Limiter & Token Bucket Strategy Generator
   - `websocket_handler.py`: `/websocket` Real-Time WebSocket Connection Manager & Broadcast Generator
+  - `nosql_model.py`: `/nosql-model` NoSQL Document & Key-Value Database Capacity Designer
 - **`core/software/`**: Firmware, Testing, DevOps & Container Engines
   - `executor.py`: Shell Runner for gcc / make / platformio
   - `docker_k8s.py`: `/docker-gen` Dockerfile & Kubernetes Deployment Manifest Generator
@@ -112,6 +116,10 @@ Layer 5 (Persistence & Infrastructure): ChromaDB RAG Engine, SQLite Long-Term Me
   - `cert_manager.py`: `/cert-manager` X.509 Certificate Chain & TLS mTLS Configurator
   - `eeprom_wear.py`: `/eeprom-wear` EEPROM / Flash Wear Leveling Lifetime Endurance Analyzer
   - `fft_analyzer.py`: `/fft-analyzer` FFT Frequency Resolution & Windowing Analyzer
+  - `log_framework.py`: `/log-framework` Embedded Circular Logging Framework Generator
+  - `unit_test_scaffold.py`: `/unit-test` Unity C Unit Test Suite & CMock Generator
+  - `code_size_analyzer.py`: `/code-size` GCC Map File Code Size & Memory Usage Analyzer
+  - `firmware_diff.py`: `/firmware-diff` Firmware Binary Diff & OTA Patch Size Analyzer
 - **`core/production/`**: Mechanical CAD & Manufacturing
   - `print_cost.py`: `/print-cost` 3D Printing Manufacturing Cost Estimator
   - `motor_sizing.py`: `/motor-size` Motor Torque & Power Sizing Engine
@@ -126,6 +134,14 @@ Layer 5 (Persistence & Infrastructure): ChromaDB RAG Engine, SQLite Long-Term Me
   - `injection_mold.py`: `/injection-mold` Plastic Injection Molding Shrinkage & Tooling Estimator
   - `cnc_feedrate.py`: `/cnc-feedrate` CNC Milling Spindle Speed & Feed Rate Calculator
   - `beam_stress.py`: `/beam-stress` Structural Beam Bending Stress & Deflection Calculator
+  - `vibration_analysis.py`: `/vibration` Natural Frequency & Vibration Transmissibility Analyzer
+  - `fan_selection.py`: `/fan-selection` Cooling Fan Selection & Airflow CFM Calculator
+  - `pipe_flow.py`: `/pipe-flow` Fluid Pipe Flow Reynolds & Pressure Drop Calculator
+  - `solenoid_design.py`: `/solenoid` Electromechanical Solenoid Force & Flyback Diode Designer
+  - `linear_actuator.py`: `/linear-actuator` Linear Actuator & Lead Screw Drive Torque Calculator
+  - `encoder_resolution.py`: `/encoder` Rotary & Linear Encoder Resolution Calculator
+  - `enclosure_ip.py`: `/enclosure-ip` IP Rating Ingress Protection Seal Checker
+
 
 - **`core/engine/`**: Orchestration & Reasoning
   - `chain_of_thought.py`: `/cot` Chain-of-Thought / Tree-of-Thought Reasoning Framework

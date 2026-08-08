@@ -69,6 +69,9 @@ ENGINE_REGISTRY: Dict[str, Dict[str, Any]] = {
     "thermocouple": {"module": "core.hardware.thermocouple", "func": "design_thermocouple_interface", "description": "Thermocouple cold junction compensation & type selector"},
     "crosstalk_analysis": {"module": "core.hardware.crosstalk_analysis", "func": "analyze_pcb_crosstalk", "description": "PCB trace crosstalk (NEXT/FEXT) & guard trace analyzer"},
     "impedance_calculator": {"module": "core.hardware.impedance_calculator", "func": "calculate_trace_impedance_advanced", "description": "Advanced PCB microstrip & stripline impedance calculator"},
+    "panelization": {"module": "core.hardware.panelization", "func": "optimize_pcb_panel", "description": "PCB array panelization & V-scoring tab optimizer"},
+    "gerber_checker": {"module": "core.hardware.gerber_checker", "func": "validate_gerber_files", "description": "Gerber RS-274X layer set integrity validator"},
+    "pcb_thermal_relief": {"module": "core.hardware.pcb_thermal_relief", "func": "calculate_thermal_relief", "description": "PCB thermal relief spoke width & solderability calculator"},
     
     # ── Software & Firmware ──
     "bootloader": {"module": "core.software.bootloader_checker", "func": "audit_bootloader_config", "description": "Bootloader integrity checker"},
@@ -103,6 +106,10 @@ ENGINE_REGISTRY: Dict[str, Dict[str, Any]] = {
     "cert_manager": {"module": "core.software.cert_manager", "func": "generate_cert_config", "description": "X.509 certificate chain & TLS mTLS configurator"},
     "eeprom_wear": {"module": "core.software.eeprom_wear", "func": "analyze_eeprom_wear", "description": "EEPROM / Flash wear leveling lifetime endurance analyzer"},
     "fft_analyzer": {"module": "core.software.fft_analyzer", "func": "analyze_fft_params", "description": "FFT frequency resolution & windowing analyzer"},
+    "log_framework": {"module": "core.software.log_framework", "func": "generate_log_framework", "description": "Embedded circular logging framework generator"},
+    "unit_test_scaffold": {"module": "core.software.unit_test_scaffold", "func": "generate_unit_test_scaffold", "description": "Unity C unit test suite & CMock generator"},
+    "code_size_analyzer": {"module": "core.software.code_size_analyzer", "func": "analyze_code_size", "description": "GCC map file code size & memory usage analyzer"},
+    "firmware_diff": {"module": "core.software.firmware_diff", "func": "diff_firmware_binaries", "description": "Firmware binary diff & OTA patch size analyzer"},
     
     # ── Production & Mechanical ──
     "enclosure": {"module": "core.production.mechanical", "func": "generate_openscad_enclosure", "description": "3D enclosure generator"},
@@ -130,6 +137,17 @@ ENGINE_REGISTRY: Dict[str, Dict[str, Any]] = {
     "injection_mold": {"module": "core.production.injection_mold", "func": "estimate_injection_mold", "description": "Plastic injection molding shrinkage & tooling cost estimator"},
     "cnc_feedrate": {"module": "core.production.cnc_feedrate", "func": "calculate_cnc_feedrate", "description": "CNC milling spindle speed & feed rate calculator"},
     "beam_stress": {"module": "core.production.beam_stress", "func": "analyze_beam_stress", "description": "Structural beam bending stress & deflection calculator"},
+    "vibration": {"module": "core.production.vibration_analysis", "func": "analyze_vibration", "description": "Natural frequency & vibration transmissibility analyzer"},
+    "fan_selection": {"module": "core.production.fan_selection", "func": "select_cooling_fan", "description": "Cooling fan selection & airflow CFM calculator"},
+    "pipe_flow": {"module": "core.production.pipe_flow", "func": "calculate_pipe_flow", "description": "Fluid pipe flow Reynolds & pressure drop calculator"},
+    "solenoid": {"module": "core.production.solenoid_design", "func": "design_solenoid", "description": "Electromechanical solenoid force & flyback diode designer"},
+    "linear_actuator": {"module": "core.production.linear_actuator", "func": "select_linear_actuator", "description": "Linear actuator & lead screw drive torque calculator"},
+    "encoder": {"module": "core.production.encoder_resolution", "func": "calculate_encoder_resolution", "description": "Rotary/linear encoder resolution & CPR calculator"},
+    "enclosure_ip": {"module": "core.production.enclosure_ip", "func": "check_ip_rating_requirements", "description": "IP rating ingress protection seal checker"},
+    
+    # ── Computer / Web ──
+    "nosql_model": {"module": "core.computer.nosql_model", "func": "design_nosql_model", "description": "NoSQL document & key-value database capacity designer"},
+
 
     
     # ── Infrastructure ──
@@ -202,6 +220,9 @@ KEYWORD_ALIASES: Dict[str, List[str]] = {
     "thermocouple": ["thermocouple", "cold junction", "seebeck", "max31855"],
     "crosstalk_analysis": ["crosstalk", "next", "fext", "3w rule", "guard trace"],
     "impedance_calculator": ["cpwg", "coplanar waveguide", "stripline impedance"],
+    "panelization": ["panelization", "pcb array", "v-score", "depanelization"],
+    "gerber_checker": ["gerber", "gerber check", "rs-274x", "drill file"],
+    "pcb_thermal_relief": ["thermal relief", "spoke width", "soldering relief"],
     "bootloader": ["bootloader", "boot", "vector table", "flash offset"],
     "stack_guard": ["stack", "freertos", "rtos task", "stack overflow"],
     "power_profile": ["power", "current", "sleep", "deep sleep", "mA", "güç", "batarya ömrü"],
@@ -228,6 +249,10 @@ KEYWORD_ALIASES: Dict[str, List[str]] = {
     "cert_manager": ["cert", "openssl", "mtls", "x.509"],
     "eeprom_wear": ["eeprom", "eeprom wear", "write cycles", "endurance"],
     "fft_analyzer": ["fft", "nyquist", "frequency resolution", "spectrum"],
+    "log_framework": ["logging", "log level", "circular log", "rtt"],
+    "unit_test_scaffold": ["unity", "cmock", "unit test C", "ceedling"],
+    "code_size_analyzer": ["map file", "bss", "text section", "ram usage"],
+    "firmware_diff": ["firmware diff", "bsdiff", "ota patch", "delta update"],
     "enclosure": ["enclosure", "box", "case", "kutu", "3d print", "openscad"],
     "snap_fit": ["snap", "clip", "klips", "cantilever"],
     "gasket": ["gasket", "o-ring", "seal", "conta", "ip67", "waterproof", "su geçirmez"],
@@ -248,6 +273,15 @@ KEYWORD_ALIASES: Dict[str, List[str]] = {
     "injection_mold": ["injection mold", "mold shrinkage", "clamp force", "kalıp hesabı"],
     "cnc_feedrate": ["cnc", "spindle speed", "feed rate", "mrr", "chip load"],
     "beam_stress": ["beam stress", "bending moment", "deflection", "kiriş hesabı"],
+    "vibration": ["vibration", "natural frequency", "transmissibility", "titreşim"],
+    "fan_selection": ["cooling fan", "cfm", "fan size", "static pressure"],
+    "pipe_flow": ["pipe flow", "reynolds", "pressure drop pipe", "friction factor"],
+    "solenoid": ["solenoid", "flyback diode", "holding force", "plunger"],
+    "linear_actuator": ["linear actuator", "lead screw", "ball screw", "thrust force"],
+    "encoder": ["encoder", "ppr", "cpr", "quadrature", "encoder resolution"],
+    "enclosure_ip": ["ip rating", "ip67", "ip65", "iec 60529", "waterproof seal"],
+    "nosql_model": ["nosql", "dynamodb", "mongodb", "partition key", "rcu wcu"],
+
 
     "web_api": ["api", "rest", "fastapi", "express", "backend"],
     "react": ["react", "frontend", "component", "tsx", "jsx"],

@@ -114,6 +114,9 @@ For specific, one-off engineering queries, you can invoke any of the 58+ symboli
 - `/thermocouple`: Calculates Thermocouple Seebeck EMF (mV) and Cold Junction Compensation (CJC).
 - `/crosstalk`: Analyzes PCB trace crosstalk (NEXT/FEXT dB) and 3W rule compliance.
 - `/impedance-adv`: Calculates Microstrip/Stripline/CPWG trace impedance Z0 per IPC-2141.
+- `/panelization`: Optimizes PCB array panelization (X x Y grid) and breakaway V-score / mouse-bite tabs.
+- `/gerber-checker`: Validates Gerber RS-274X layer set completeness and drill file integrity.
+- `/thermal-relief`: Calculates PCB thermal relief spoke pattern width, copper area, and solderability.
 - `/opamp`: Calculates Op-Amp gain (dB / V/V), feedback resistor values, input impedance, and 3dB bandwidth.
 - `/adc-snr`: Calculates ADC theoretical SNR, measured ENOB, LSB size (uV), quantization noise, and Nyquist bandwidth.
 - `/can-bus`: Calculates CAN bus bit timing segments (Prop/Phase1/Phase2/SJW), prescaler, and 120Ω termination.
@@ -139,6 +142,10 @@ For specific, one-off engineering queries, you can invoke any of the 58+ symboli
 - `/cert-manager`: Generates X.509 CA root, client CSR certificates, and mTLS configuration commands.
 - `/eeprom-wear`: Calculates EEPROM / Flash wear leveling lifetime endurance (years) and write frequency.
 - `/fft-analyzer`: Calculates FFT frequency bin resolution (Hz), Nyquist frequency, and windowing loss.
+- `/log-framework`: Generates embedded C logging macros and thread-safe circular log buffer code.
+- `/unit-test`: Generates Unity C unit test suite boilerplate and CMock function mocking stubs.
+- `/code-size`: Analyzes GCC .map file linker memory sections (.text, .data, .bss) and Flash/RAM usage.
+- `/firmware-diff`: Compares two firmware binary images, calculating delta patch size (KB) and OTA savings.
 - `/print-cost`: Estimates total 3D printing manufacturing cost (material, power, machine wear).
 - `/motor-size`: Sizes DC/BLDC/Stepper motor torque, RPM, and mechanical power.
 - `/bolt-torque`: Calculates metric bolt tightening torque (Nm) and preload force (kN) per VDI 2230.
@@ -152,6 +159,15 @@ For specific, one-off engineering queries, you can invoke any of the 58+ symboli
 - `/injection-mold`: Calculates injection molding material shrinkage (%), clamp force (Tons), and cooling time.
 - `/cnc-feedrate`: Calculates CNC milling spindle speed (RPM), table feed rate (mm/min), and MRR (cm³/min).
 - `/beam-stress`: Calculates structural beam bending moment (Nm), stress (MPa), deflection (mm), and safety factor.
+- `/vibration`: Calculates mechanical 1-DOF system natural frequency fn (Hz) and vibration transmissibility.
+- `/fan-selection`: Sizes enclosure cooling fan volumetric airflow (CFM) and static pressure drop.
+- `/pipe-flow`: Calculates fluid pipe flow Reynolds number, flow regime, and Darcy pressure loss (kPa).
+- `/solenoid`: Calculates electromagnetic solenoid holding force (N) and flyback TVS diode ratings.
+- `/linear-actuator`: Calculates ball/lead screw drive torque (Nm), linear travel speed, and motor power.
+- `/encoder`: Calculates rotary/linear encoder resolution (PPR/CPR), angular error, and pulse frequency.
+- `/enclosure-ip`: Audits IP54/IP65/IP67/IP68 enclosure gasket seal and screw spacing per IEC 60529.
+- `/nosql-model`: Calculates NoSQL (DynamoDB / MongoDB) partition key strategy, item size, and RCU/WCU.
+
 
 - `/rest-gen`: Generates FastAPI / Express CRUD REST API router scaffolds.
 - `/graphql-gen`: Generates GraphQL SDL schemas and query/mutation resolver stubs.
