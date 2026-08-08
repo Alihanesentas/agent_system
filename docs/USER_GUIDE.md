@@ -167,6 +167,22 @@ For specific, one-off engineering queries, you can invoke any of the 58+ symboli
 - `/encoder`: Calculates rotary/linear encoder resolution (PPR/CPR), angular error, and pulse frequency.
 - `/enclosure-ip`: Audits IP54/IP65/IP67/IP68 enclosure gasket seal and screw spacing per IEC 60529.
 - `/nosql-model`: Calculates NoSQL (DynamoDB / MongoDB) partition key strategy, item size, and RCU/WCU.
+- `/query-optimizer`: Analyzes SQL queries for EXPLAIN bottlenecks, missing composite indexes, and N+1 patterns.
+- `/data-pipeline`: Calculates ETL data ingestion throughput (GB/hour) and generates Airflow DAG code.
+- `/monitoring-stack`: Generates Prometheus scrape YAML, Alertmanager rules (5xx/CPU), and Grafana configs.
+- `/log-aggregation`: Configures Promtail / Logstash log shipper pipelines for Loki and ELK Stack.
+- `/component-lib`: Generates React TSX UI component code, CSS Modules, Jest unit tests, and Storybook stories.
+- `/responsive-layout`: Generates responsive CSS Grid / Flexbox breakpoint utilities and container queries.
+- `/design-tokens`: Generates Design Tokens JSON, CSS `:root` variables, and Tailwind theme extensions.
+- `/accessibility-audit`: Audits WCAG 2.1 AA color contrast ratios, ARIA attributes, and keyboard navigation.
+- `/system-design`: Estimates distributed system QPS, storage growth (TB/year), and Redis cache RAM requirements.
+- `/event-driven`: Designs Kafka / RabbitMQ event-driven topic partitions and consumer group concurrency.
+- `/saga-orchestrator`: Generates distributed Saga state machine workflows and compensating rollback steps.
+- `/cqrs-scaffold`: Generates CQRS Command Handlers, Query Handlers, and read/write database split schemas.
+- `/mobile-scaffold`: Generates Flutter BLoC / React Native Expo cross-platform mobile project scaffolding.
+- `/push-notification`: Generates FCM V1 HTTP JSON push payloads and APNs HTTP/2 notification headers.
+- `/app-signing`: Generates Java keytool Android release keystores and iOS Fastlane Match signing profiles.
+
 
 
 - `/rest-gen`: Generates FastAPI / Express CRUD REST API router scaffolds.

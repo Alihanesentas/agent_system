@@ -136,6 +136,22 @@ from core.computer.nginx_config import generate_nginx_config
 from core.computer.rate_limit_design import design_rate_limiter
 from core.computer.websocket_handler import generate_websocket_handler
 from core.computer.nosql_model import design_nosql_model
+from core.computer.query_optimizer import optimize_sql_query
+from core.computer.data_pipeline import design_data_pipeline
+from core.computer.monitoring_stack import generate_monitoring_stack
+from core.computer.log_aggregation import generate_log_pipeline
+from core.computer.component_lib import generate_ui_component
+from core.computer.responsive_layout import generate_responsive_layout
+from core.computer.design_tokens import generate_design_tokens
+from core.computer.accessibility_audit import audit_accessibility
+from core.computer.system_design import estimate_system_design
+from core.computer.event_driven import design_event_driven_arch
+from core.computer.saga_orchestrator import design_saga_pattern
+from core.computer.cqrs_scaffold import generate_cqrs_scaffold
+from core.computer.mobile_scaffold import generate_mobile_scaffold
+from core.computer.push_notification import generate_push_config
+from core.computer.app_signing import generate_app_signing_config
+
 
 from core.production.mechanical import generate_openscad_enclosure, recommend_slicer_settings
 from core.production.battery import calculate_battery_lifespan

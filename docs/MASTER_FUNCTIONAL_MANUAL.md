@@ -92,6 +92,22 @@ Layer 5 (Persistence & Infrastructure): ChromaDB RAG Engine, SQLite Long-Term Me
   - `rate_limit_design.py`: `/rate-limiter` API Rate Limiter & Token Bucket Strategy Generator
   - `websocket_handler.py`: `/websocket` Real-Time WebSocket Connection Manager & Broadcast Generator
   - `nosql_model.py`: `/nosql-model` NoSQL Document & Key-Value Database Capacity Designer
+  - `query_optimizer.py`: `/query-optimizer` SQL Query Optimizer & Index Recommender
+  - `data_pipeline.py`: `/data-pipeline` ETL/ELT Data Pipeline & Airflow DAG Designer
+  - `monitoring_stack.py`: `/monitoring-stack` Prometheus & Grafana Monitoring Stack Generator
+  - `log_aggregation.py`: `/log-aggregation` ELK & Grafana Loki Log Pipeline Generator
+  - `component_lib.py`: `/component-lib` React TSX UI Component Scaffold & Storybook Generator
+  - `responsive_layout.py`: `/responsive-layout` Responsive CSS Grid & Breakpoint System Generator
+  - `design_tokens.py`: `/design-tokens` Design System Token JSON & CSS Variable Generator
+  - `accessibility_audit.py`: `/accessibility-audit` WCAG 2.1 AA Web Accessibility & ARIA Auditor
+  - `system_design.py`: `/system-design` Distributed System Capacity & QPS Estimator
+  - `event_driven.py`: `/event-driven` Event-Driven Microservices & Kafka Message Bus Designer
+  - `saga_orchestrator.py`: `/saga-orchestrator` Distributed Saga State Machine & Rollback Designer
+  - `cqrs_scaffold.py`: `/cqrs-scaffold` CQRS Command/Query Handler Scaffold Generator
+  - `mobile_scaffold.py`: `/mobile-scaffold` Flutter / React Native Mobile App Scaffold Generator
+  - `push_notification.py`: `/push-notification` FCM v1 & APNs Push Notification Payload Configurator
+  - `app_signing.py`: `/app-signing` Android Keystore & iOS App Signing Configurator
+
 - **`core/software/`**: Firmware, Testing, DevOps & Container Engines
   - `executor.py`: Shell Runner for gcc / make / platformio
   - `docker_k8s.py`: `/docker-gen` Dockerfile & Kubernetes Deployment Manifest Generator

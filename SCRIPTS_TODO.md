@@ -57,31 +57,15 @@
 ## Backend & API
 
 ## Veritabanı
-- [ ] core/computer/query_optimizer.py      → SQL EXPLAIN, index önerisi, N+1 tespit | def optimize_sql_query(**kwargs) -> Dict
-
-- [ ] core/computer/data_pipeline.py        → ETL/ELT data pipeline DAG tasarımı | def design_data_pipeline(**kwargs) -> Dict
 
 ## DevOps & Altyapı
-- [ ] core/computer/monitoring_stack.py     → Prometheus + Grafana config üreteci | def generate_monitoring_stack(**kwargs) -> Dict
-- [ ] core/computer/log_aggregation.py      → ELK/Loki log toplama pipeline config | def generate_log_pipeline(**kwargs) -> Dict
-
 
 ## Frontend & UI
-- [ ] core/computer/component_lib.py        → React/Vue/Svelte component scaffold | def generate_ui_component(**kwargs) -> Dict
-- [ ] core/computer/responsive_layout.py    → Responsive grid/flexbox layout config | def generate_responsive_layout(**kwargs) -> Dict
-- [ ] core/computer/design_tokens.py        → Design system token JSON/CSS üreteci | def generate_design_tokens(**kwargs) -> Dict
-- [ ] core/computer/accessibility_audit.py  → WCAG 2.1 AA erişilebilirlik kontrol | def audit_accessibility(**kwargs) -> Dict
 
 ## Mimari & Tasarım
-- [ ] core/computer/system_design.py        → Sistem tasarımı hesap makinesi | def estimate_system_design(**kwargs) -> Dict
-- [ ] core/computer/event_driven.py         → Event-driven topic/queue tasarımı | def design_event_driven_arch(**kwargs) -> Dict
-- [ ] core/computer/saga_orchestrator.py    → Distributed saga state machine | def design_saga_pattern(**kwargs) -> Dict
-- [ ] core/computer/cqrs_scaffold.py        → CQRS + Event Sourcing scaffold | def generate_cqrs_scaffold(**kwargs) -> Dict
 
 ## Mobil
-- [ ] core/computer/mobile_scaffold.py      → Flutter/React Native proje scaffold | def generate_mobile_scaffold(**kwargs) -> Dict
-- [ ] core/computer/push_notification.py    → FCM/APNs push notification config | def generate_push_config(**kwargs) -> Dict
-- [ ] core/computer/app_signing.py          → Android/iOS sertifika yönetimi | def generate_app_signing_config(**kwargs) -> Dict
+
 
 # ──────────────────────────────────────────────────────────────────────
 # ENGINE — Agent Orkestrasyon (15 yeni modül)

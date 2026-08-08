@@ -202,6 +202,22 @@ from core.production.linear_actuator import select_linear_actuator
 from core.production.encoder_resolution import calculate_encoder_resolution
 from core.production.enclosure_ip import check_ip_rating_requirements
 from core.computer.nosql_model import design_nosql_model
+from core.computer.query_optimizer import optimize_sql_query
+from core.computer.data_pipeline import design_data_pipeline
+from core.computer.monitoring_stack import generate_monitoring_stack
+from core.computer.log_aggregation import generate_log_pipeline
+from core.computer.component_lib import generate_ui_component
+from core.computer.responsive_layout import generate_responsive_layout
+from core.computer.design_tokens import generate_design_tokens
+from core.computer.accessibility_audit import audit_accessibility
+from core.computer.system_design import estimate_system_design
+from core.computer.event_driven import design_event_driven_arch
+from core.computer.saga_orchestrator import design_saga_pattern
+from core.computer.cqrs_scaffold import generate_cqrs_scaffold
+from core.computer.mobile_scaffold import generate_mobile_scaffold
+from core.computer.push_notification import generate_push_config
+from core.computer.app_signing import generate_app_signing_config
+
 
 
 from core.computer.auth_flow import generate_auth_flow
@@ -1713,6 +1729,67 @@ def start_interactive_shell(default_agent: str = "orchestrator", default_model: 
                     res = design_nosql_model()
                     print(f"{Colors.CYAN}--- NOSQL DOCUMENT & KEY-VALUE DATABASE DESIGNER ---{Colors.RESET}")
                     print(f"  Engine: {res['database_engine']} | Entity: {res['entity_name']} | DynamoDB RCU: {res['dynamodb_rcu_required']} | WCU: {res['dynamodb_wcu_required']}\n")
+                elif cmd == "/query-optimizer":
+                    res = optimize_sql_query()
+                    print(f"{Colors.CYAN}--- SQL QUERY OPTIMIZER & INDEX RECOMMENDER ---{Colors.RESET}")
+                    print(f"  Table: {res['target_table']} | Rec Index: {res['recommended_indexes'][0]} | Speedup: {res['estimated_speedup']}\n")
+                elif cmd == "/data-pipeline":
+                    res = design_data_pipeline()
+                    print(f"{Colors.CYAN}--- ETL/ELT DATA PIPELINE & AIRFLOW DAG DESIGNER ---{Colors.RESET}")
+                    print(f"  Pipeline: {res['pipeline_name']} | Stream: {res['source_type']} -> {res['sink_type']} | Volume: {res['data_volume_gb_hour']} GB/hour\n")
+                elif cmd == "/monitoring-stack":
+                    res = generate_monitoring_stack()
+                    print(f"{Colors.CYAN}--- PROMETHEUS & GRAFANA MONITORING STACK GENERATOR ---{Colors.RESET}")
+                    print(f"  Service: {res['service_name']} | Metrics Port: {res['metrics_port']} | Components: {', '.join(res['stack_components'])}\n")
+                elif cmd == "/log-aggregation":
+                    res = generate_log_pipeline()
+                    print(f"{Colors.CYAN}--- ELK & GRAFANA LOKI LOG PIPELINE GENERATOR ---{Colors.RESET}")
+                    print(f"  Service: {res['service_name']} | Stack: {res['stack']} | Retention: {res['retention_days']} days\n")
+                elif cmd == "/component-lib":
+                    res = generate_ui_component()
+                    print(f"{Colors.CYAN}--- REACT TSX UI COMPONENT SCAFFOLD & STORYBOOK ---{Colors.RESET}")
+                    print(f"  Component: {res['component_name']} | Framework: {res['framework']} | Storybook: {res['storybook_file_generated']}\n")
+                elif cmd == "/responsive-layout":
+                    res = generate_responsive_layout()
+                    print(f"{Colors.CYAN}--- RESPONSIVE CSS GRID & BREAKPOINT SYSTEM ---{Colors.RESET}")
+                    print(f"  Layout: {res['layout_type']} | Breakpoints: {res['breakpoints_configured']} | Typography: {res['fluid_typography']}\n")
+                elif cmd == "/design-tokens":
+                    res = generate_design_tokens()
+                    print(f"{Colors.CYAN}--- DESIGN SYSTEM TOKEN JSON & CSS VARIABLES ---{Colors.RESET}")
+                    print(f"  Primary Hex: {res['brand_primary_hex']} | Dark Mode: {res['dark_mode_supported']} | Spec: {res['design_token_standards']}\n")
+                elif cmd == "/accessibility-audit":
+                    res = audit_accessibility()
+                    print(f"{Colors.CYAN}--- WCAG 2.1 AA WEB ACCESSIBILITY & ARIA AUDITOR ---{Colors.RESET}")
+                    print(f"  Contrast: {res['contrast_ratio']}:1 | WCAG AA: {res['wcag_21_aa_compliance']} | Verdict: {res['accessibility_verdict']}\n")
+                elif cmd == "/system-design":
+                    res = estimate_system_design()
+                    print(f"{Colors.CYAN}--- DISTRIBUTED SYSTEM CAPACITY & QPS ESTIMATOR ---{Colors.RESET}")
+                    print(f"  DAU: {res['daily_active_users_dau']} | Avg QPS: {res['average_qps']} | Peak QPS: {res['peak_qps']} | Redis Cache RAM: {res['redis_cache_ram_required_gb']} GB\n")
+                elif cmd == "/event-driven":
+                    res = design_event_driven_arch()
+                    print(f"{Colors.CYAN}--- EVENT-DRIVEN MICROSERVICES & KAFKA MESSAGE BUS ---{Colors.RESET}")
+                    print(f"  Topic: {res['topic_name']} | Broker: {res['broker_type']} | Partitions: {res['recommended_partitions']} | Idempotency: {res['idempotency_strategy']}\n")
+                elif cmd == "/saga-orchestrator":
+                    res = design_saga_pattern()
+                    print(f"{Colors.CYAN}--- DISTRIBUTED SAGA STATE MACHINE & ROLLBACK ---{Colors.RESET}")
+                    print(f"  Saga: {res['saga_name']} | Steps: {len(res['forward_steps'])} | Rollback Actions: {res['compensating_rollback_steps']}\n")
+                elif cmd == "/cqrs-scaffold":
+                    res = generate_cqrs_scaffold()
+                    print(f"{Colors.CYAN}--- CQRS COMMAND/QUERY HANDLER SCAFFOLD GENERATOR ---{Colors.RESET}")
+                    print(f"  Entity: {res['domain_entity']} | Write DB: {res['write_db']} | Read DB: {res['read_db']}\n")
+                elif cmd == "/mobile-scaffold":
+                    res = generate_mobile_scaffold()
+                    print(f"{Colors.CYAN}--- FLUTTER / REACT NATIVE MOBILE SCAFFOLD GENERATOR ---{Colors.RESET}")
+                    print(f"  Project: {res['project_name']} | Framework: {res['framework']} | State Mgmt: {res['state_management']}\n")
+                elif cmd == "/push-notification":
+                    res = generate_push_config()
+                    print(f"{Colors.CYAN}--- FCM V1 & APNS PUSH NOTIFICATION PAYLOAD CONFIG ---{Colors.RESET}")
+                    print(f"  Topic: {res['topic']} | Standard: {res['protocol_standard']}\n")
+                elif cmd == "/app-signing":
+                    res = generate_app_signing_config()
+                    print(f"{Colors.CYAN}--- ANDROID KEYSTORE & IOS APP SIGNING CONFIGURATOR ---{Colors.RESET}")
+                    print(f"  Alias: {res['key_alias']} | Keystore: {res['keystore_filename']} | iOS: {res['ios_provisioning']}\n")
+
 
 
 

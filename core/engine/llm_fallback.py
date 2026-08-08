@@ -147,6 +147,22 @@ ENGINE_REGISTRY: Dict[str, Dict[str, Any]] = {
     
     # ── Computer / Web ──
     "nosql_model": {"module": "core.computer.nosql_model", "func": "design_nosql_model", "description": "NoSQL document & key-value database capacity designer"},
+    "query_optimizer": {"module": "core.computer.query_optimizer", "func": "optimize_sql_query", "description": "SQL query optimizer & index recommender"},
+    "data_pipeline": {"module": "core.computer.data_pipeline", "func": "design_data_pipeline", "description": "ETL/ELT data pipeline & Airflow DAG designer"},
+    "monitoring_stack": {"module": "core.computer.monitoring_stack", "func": "generate_monitoring_stack", "description": "Prometheus & Grafana monitoring stack generator"},
+    "log_aggregation": {"module": "core.computer.log_aggregation", "func": "generate_log_pipeline", "description": "ELK & Grafana Loki log pipeline generator"},
+    "component_lib": {"module": "core.computer.component_lib", "func": "generate_ui_component", "description": "React TSX UI component scaffold & Storybook generator"},
+    "responsive_layout": {"module": "core.computer.responsive_layout", "func": "generate_responsive_layout", "description": "Responsive CSS grid & breakpoint system generator"},
+    "design_tokens": {"module": "core.computer.design_tokens", "func": "generate_design_tokens", "description": "Design system token JSON & CSS variable generator"},
+    "accessibility_audit": {"module": "core.computer.accessibility_audit", "func": "audit_accessibility", "description": "WCAG 2.1 AA web accessibility & ARIA auditor"},
+    "system_design": {"module": "core.computer.system_design", "func": "estimate_system_design", "description": "Distributed system capacity & QPS estimator"},
+    "event_driven": {"module": "core.computer.event_driven", "func": "design_event_driven_arch", "description": "Event-driven microservices & Kafka message bus designer"},
+    "saga_orchestrator": {"module": "core.computer.saga_orchestrator", "func": "design_saga_pattern", "description": "Distributed Saga state machine & rollback designer"},
+    "cqrs_scaffold": {"module": "core.computer.cqrs_scaffold", "func": "generate_cqrs_scaffold", "description": "CQRS command/query handler scaffold generator"},
+    "mobile_scaffold": {"module": "core.computer.mobile_scaffold", "func": "generate_mobile_scaffold", "description": "Flutter / React Native mobile app scaffold generator"},
+    "push_notification": {"module": "core.computer.push_notification", "func": "generate_push_config", "description": "FCM v1 & APNs push notification payload configurator"},
+    "app_signing": {"module": "core.computer.app_signing", "func": "generate_app_signing_config", "description": "Android keystore & iOS app signing configurator"},
+
 
 
     
@@ -281,6 +297,22 @@ KEYWORD_ALIASES: Dict[str, List[str]] = {
     "encoder": ["encoder", "ppr", "cpr", "quadrature", "encoder resolution"],
     "enclosure_ip": ["ip rating", "ip67", "ip65", "iec 60529", "waterproof seal"],
     "nosql_model": ["nosql", "dynamodb", "mongodb", "partition key", "rcu wcu"],
+    "query_optimizer": ["explain", "sql index", "n+1 query", "table scan"],
+    "data_pipeline": ["etl", "elt", "data pipeline", "airflow", "dagster"],
+    "monitoring_stack": ["prometheus", "grafana", "alertmanager", "opentelemetry"],
+    "log_aggregation": ["loki", "elk", "logstash", "promtail", "fluentbit"],
+    "component_lib": ["storybook", "ui component", "component library", "tsx button"],
+    "responsive_layout": ["responsive grid", "flexbox layout", "css container query"],
+    "design_tokens": ["design tokens", "css variables", "style dictionary", "color palette"],
+    "accessibility_audit": ["wcag", "accessibility", "aria label", "color contrast"],
+    "system_design": ["system design", "back of the envelope", "qps", "dau"],
+    "event_driven": ["event driven", "kafka topic", "message bus", "schema registry"],
+    "saga_orchestrator": ["saga", "saga pattern", "compensating transaction", "outbox"],
+    "cqrs_scaffold": ["cqrs", "event sourcing", "command handler", "query handler"],
+    "mobile_scaffold": ["flutter app", "react native app", "expo", "bloc architecture"],
+    "push_notification": ["fcm", "apns", "push notification", "firebase messaging"],
+    "app_signing": ["keystore", "keytool", "ios provisioning", "app signing", "fastlane match"],
+
 
 
     "web_api": ["api", "rest", "fastapi", "express", "backend"],
